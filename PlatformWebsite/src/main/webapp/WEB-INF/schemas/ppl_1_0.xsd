@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	<xs:element name="ppl">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="companykey" type="xs:string" />
+				<xs:element name="plugin" type="pluginType" minOccurs="1" maxOccurs="unbounded" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+	<xs:complexType name="pluginType">
+		<xs:sequence>
+			<xs:element name="pluginName" type="xs:string" />
+			<xs:element name="version" type="xs:string" />
+			<xs:element name="role" type="xs:string" />
+			<xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1" />
+			<xs:element name="icon" type="xs:string" />
+			
+			<xs:element name="external" type="resourceList" minOccurs="0" maxOccurs="1" />
+			
+			<xs:element name="mainMenu" type="mainMenuType" />
+			<xs:element name="pageDefinition" type="pageDefinitionType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="resourceList">
+		<xs:sequence>
+			<xs:element name="service" type="xs:anyURI" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="pageDefinitionType">
+		<xs:sequence>
+			<xs:element name="id" type="xs:string" />
+			<xs:element name="html" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="script" type="xs:string" minOccurs="0" maxOccurs="unbounded"  />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="mainMenuType">
+		<xs:sequence>
+			<xs:element name="item" type="mainMenuItemType" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="mainMenuItemType">
+		<xs:sequence>
+			<xs:element name="displayName" type="xs:string" />
+			<xs:element name="image" type="xs:string" />
+			<xs:element name="target" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>

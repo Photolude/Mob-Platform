@@ -1,0 +1,234 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.photolude.www</groupId>
+	<artifactId>mob-platform-website</artifactId>
+	<packaging>war</packaging>
+	<version>1.0.0-SNAPSHOT</version>
+	<name>Photolude Platform</name>
+	<repositories>
+	    <repository>
+	      <id>central</id>
+	      <name>Central Repository</name>
+	      <url>http://repo.maven.apache.org/maven2</url>
+	      <layout>default</layout>
+	      <snapshots>
+	        <enabled>false</enabled>
+	      </snapshots>
+	    </repository>
+	  </repositories>
+	<properties>
+		<spring.version>3.0.4.RELEASE</spring.version>
+		<tiles.version>2.2.2</tiles.version>
+		<javax.version>2.5</javax.version>
+		<jackson.version>1.8.6</jackson.version>
+	</properties>
+
+	<dependencies>
+	    <!-- JavaX dependencies -->
+	    <dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${javax.version}</version>
+		</dependency>
+	    
+		<!-- Spring 3 dependencies -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient</artifactId>
+			<version>4.0-alpha4</version>
+		</dependency>
+		
+		<dependency>
+		  <groupId>taglibs</groupId>
+		  <artifactId>standard</artifactId>
+		  <version>1.1.2</version>
+		  <scope>compile</scope>
+		</dependency>
+		
+		<!-- Http Components -->
+		<dependency>
+	      <groupId>org.apache.httpcomponents</groupId>
+	      <artifactId>httpcore</artifactId>
+	      <version>4.1</version>
+	    </dependency>
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		
+		<!-- Tiles dependencies -->
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-jsp</artifactId>
+			<version>${tiles.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-api</artifactId>
+			<version>${tiles.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-core</artifactId>
+			<version>${tiles.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-servlet</artifactId>
+			<version>${tiles.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tiles</groupId>
+			<artifactId>tiles-template</artifactId>
+			<version>${tiles.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-digester</groupId>
+			<artifactId>commons-digester</artifactId>
+			<version>2.1</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.8.3</version>
+		</dependency>
+		
+		<!-- Jackson -->
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-core-asl</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+         <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-jaxrs</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        
+         <!-- Photolude -->
+		<dependency>
+		  <groupId>com.photolude.mob</groupId>
+		  <artifactId>mob-platform-commons</artifactId>
+		  <version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		
+		<!-- Logging dependencies -->
+		<dependency>
+	        <groupId>org.slf4j</groupId>
+	        <artifactId>slf4j-log4j12</artifactId>
+	        <version>1.5.2</version>
+	    </dependency>
+		
+		<dependency>
+		  <groupId>jstl</groupId>
+		  <artifactId>jstl</artifactId>
+		  <version>1.2</version>
+		  <scope>compile</scope>
+		</dependency>
+		
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+			<version>1.4</version>
+		</dependency>
+
+		<!-- Test -->
+		<dependency>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.11</version>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<version>1.8.4</version>
+			<scope>test</scope>
+		</dependency>
+
+	</dependencies>
+
+	<build>
+		<sourceDirectory>src/main/java</sourceDirectory>
+		<testSourceDirectory>src/test/java</testSourceDirectory>
+		
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+			<plugin>
+		            <groupId>org.apache.tomcat.maven</groupId>
+		            <artifactId>tomcat7-maven-plugin</artifactId>
+		            <version>2.0</version>
+		            <executions>
+		                <execution>
+		                    <id>default-cli</id>
+		                    <goals>
+		                        <goal>run</goal>
+		                    </goals>
+		                    <configuration>
+		                        <port>13002</port>
+		                        <httpsPort>13444</httpsPort>
+		                        <path>/</path>
+		                        <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>
+		                        <keystoreFile>C:\Dev\Photolude\WebLayer\PlatformWebsite\keystore.jks</keystoreFile>
+		                        <keystorePass>Product!Success</keystorePass>
+		                    </configuration>
+		                </execution>
+		            </executions>
+		        </plugin>
+		        <plugin>
+		           <groupId>org.apache.maven.plugins</groupId>
+		           <artifactId>maven-surefire-plugin</artifactId>
+		           <version>2.15</version>
+		           <configuration>
+		               <includes>
+		                   <include>**/*Tests.java</include>
+		               </includes>
+		           </configuration>
+		       </plugin>
+		       <plugin>
+			      <groupId>br.com.ingenieux</groupId>
+			      <artifactId>beanstalk-maven-plugin</artifactId>
+			      <version>1.0.1</version>
+			      <configuration>
+			          <s3Bucket>elasticbeanstalk-us-west-2-172777662485</s3Bucket>
+			          <s3Key>${project.artifactId}/${project.artifactId}.war</s3Key>
+					</configuration>
+			    </plugin>
+		</plugins>
+	</build>
+</project>

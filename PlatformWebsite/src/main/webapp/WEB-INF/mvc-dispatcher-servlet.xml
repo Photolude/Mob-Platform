@@ -1,0 +1,61 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd
+        http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
+
+    <mvc:annotation-driven/>
+    
+    <mvc:resources mapping="/scripts/**" location="/WEB-INF/scripts/" />
+    <mvc:resources mapping="/styles/**" location="/WEB-INF/styles/" />
+    <mvc:resources mapping="/images/**" location="/WEB-INF/images/" />
+    <mvc:resources mapping="/schemas/**" location="/WEB-INF/schemas/" />
+    
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter" />
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+	
+    <mvc:interceptors>
+	    <bean class="com.photolude.mob.www.platform.controller.SecurityInterceptor">
+	        <property name="loggedOutPage"><value>https://localhost:13433</value></property>
+	    </bean>
+	</mvc:interceptors>
+	    
+    <bean id="userService" class="com.photolude.mob.www.platform.services.DefaultUserService">
+        <property name="endpoint"><value>http://localhost:13050/user</value></property>
+    </bean>
+    
+	<bean class="com.photolude.mob.www.platform.controller.PlatformController">
+	    <property name="userServiceClient">
+            <ref bean="userService"/>
+        </property>
+        <property name="pluginService">
+            <bean class="com.photolude.mob.www.platform.services.DefaultPluginService">
+                <property name="endpoint"><value>http://localhost:13050/Plugins</value></property>
+            </bean>
+        </property>
+        <property name="contractService">
+            <bean class="com.photolude.mob.www.platform.services.ExternalServiceContract"/>
+        </property>
+	</bean>
+	
+	<bean id="viewResolver" class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property name="viewClass">
+			<value>
+				org.springframework.web.servlet.view.tiles2.TilesView
+			</value>
+		</property>
+	</bean>
+	<bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles2.TilesConfigurer">
+	    <property name="definitions">
+	        <list>
+	            <value>/WEB-INF/tiles.xml</value>
+	        </list>
+	    </property>
+	</bean>
+</beans>

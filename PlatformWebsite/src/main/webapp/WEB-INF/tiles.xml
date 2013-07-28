@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+    <definition name="base.definition" template="/WEB-INF/pages/layouts/layout.jsp">
+        <put-attribute name="title" value="" />
+        
+        <put-attribute name="body" value="" />
+        
+    </definition>
+    <definition name="empty.definition" template="/WEB-INF/pages/layouts/empty.jsp">
+        
+    </definition>
+ 
+    <definition name="index" extends="base.definition">
+        <put-attribute name="title" value="Photolude" />
+        <put-attribute name="body" value="/WEB-INF/pages/content/index.jsp" />
+    </definition>
+    
+    <definition name="apiResponse" extends="empty.definition">
+        <put-attribute name="body" value="/WEB-INF/pages/content/rawbody.jsp" />
+    </definition>
+</tiles-definitions>

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:jaxrs="http://cxf.apache.org/jaxrs"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xsi:schemaLocation="
+		http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+		http://cxf.apache.org/jaxrs
+		http://cxf.apache.org/schemas/jaxrs.xsd">
+
+	<import resource="classpath:META-INF/cxf/cxf.xml" />
+
+	<context:property-placeholder/>
+	<context:annotation-config/>
+	<bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer"/>
+	<bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer"/>
+
+	<bean id="userDomain" class="com.photolude.mob.user.domain.UserAccountDomain">
+		<property name="userAccessLayer">
+			<bean class="com.photolude.mob.user.dal.UserAccessLayer">
+				<property name="databaseUrl"><value>jdbc:mysql://localhost/photolude</value></property>
+				<property name="userName"><value>serviceuser</value></property>
+				<property name="password"><value>password</value></property>
+			</bean>
+		</property>
+		<property name="ceemAccessLayer">
+			<bean class="com.photolude.mob.user.dal.CeemAccessLayer">
+				<property name="connectionString"><value>jdbc:jtds:sqlserver://localhost;databaseName=ProductsAndTechnologies_CEEM;user=serviceuser;password=password;</value></property>
+			</bean>
+		</property>
+	</bean>
+	<bean id="pluginAccessLayer" class="com.photolude.mob.plugin.dal.PluginSqlAccessLayer">
+		<property name="databaseUrl"><value>jdbc:mysql://localhost/photolude</value></property>
+		<property name="userName"><value>serviceuser</value></property>
+		<property name="password"><value>password</value></property>
+	</bean>
+	<jaxrs:server id="services" address="/">
+		<jaxrs:serviceBeans>
+			<bean class="com.photolude.mob.services.PluginManagementSvc">
+				<property name="domain">
+					<bean class="com.photolude.mob.plugin.domain.PluginDomain">
+						<property name="dataAccessLayer">
+							<ref bean="pluginAccessLayer"/>
+						</property>
+						<property name="userAccountService">
+							<ref bean="userDomain"/>
+						</property>
+						<property name="defaultPluginUser"><value>PluginDefaultUser</value></property>
+					</bean>
+				</property>
+				<property name="developmentDomain">
+					<bean class="com.photolude.mob.plugin.domain.DefaultDevelopmentDomain">
+						<property name="dataAccessLayer">
+							<ref bean="pluginAccessLayer"/>
+						</property>
+						<property name="userAccountService">
+							<ref bean="userDomain"/>
+						</property>
+					</bean>
+				</property>
+			</bean>
+			<bean class="com.photolude.mob.services.UserManagementSvc">
+				<property name="userDomain">
+					<ref bean="userDomain"/>
+				</property>
+			</bean>
+		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>
+		</jaxrs:providers>
+	</jaxrs:server>
+
+</beans>

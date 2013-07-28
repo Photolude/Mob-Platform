@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ppl>
+	<plugin>
+		<pluginName>Apps Manager</pluginName>
+		<version>1.0.0</version>
+		<role>AppManager</role>
+		
+		<mainMenu>
+			<item>
+				<displayName>displayName</displayName>
+				<image>target/test-classes/gear_32.png</image>
+				<target>AppsManager</target>
+			</item>
+		</mainMenu>
+		
+		<pageDefinition>
+		    <id>AppsManager</id>
+			<script>target/test-classes/pageLogic.js</script>
+			<html>body.html</html>
+		</pageDefinition>
+	</plugin>
+</ppl>

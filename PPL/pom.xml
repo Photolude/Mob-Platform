@@ -7,6 +7,16 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
+    <repositories>
+        <repository>
+            <id>com.photolude</id>
+            <name>Photolude Local Repo</name>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+            <url>http://localhost:8081/nexus/content/repositories</url>
+        </repository>
+    </repositories>
+    
     <dependencies>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -59,8 +69,8 @@
 
         <!-- Photolude -->
         <dependency>
-		  <groupId>com.photolude</groupId>
-		  <artifactId>photolude-plugins-commons</artifactId>
+		  <groupId>com.photolude.mob</groupId>
+		  <artifactId>mob-platform-commons</artifactId>
 		  <version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		

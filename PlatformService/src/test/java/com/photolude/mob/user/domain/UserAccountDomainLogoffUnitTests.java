@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static org.mockito.Mockito.*;
 
-import com.photolude.mob.user.dal.ICeemAccessLayer;
+import com.photolude.mob.user.dal.ILogonAccessLayer;
 import com.photolude.mob.user.dal.IUserAccessLayer;
 import com.photolude.mob.user.domain.UserAccountDomain;
 
@@ -12,16 +12,16 @@ public class UserAccountDomainLogoffUnitTests {
 
 	private UserAccountDomain domain;
 	private IUserAccessLayer testUserAccessLayer;
-	private ICeemAccessLayer testCeemAccessLayer;
+	private ILogonAccessLayer testCeemAccessLayer;
 	
 	public UserAccountDomainLogoffUnitTests()
 	{
 		this.testUserAccessLayer = mock(IUserAccessLayer.class);
-		this.testCeemAccessLayer = mock(ICeemAccessLayer.class);
+		this.testCeemAccessLayer = mock(ILogonAccessLayer.class);
 		
 		this.domain = new UserAccountDomain()
 						.setUserAccessLayer((IUserAccessLayer) this.testUserAccessLayer)
-						.setCeemAccessLayer(this.testCeemAccessLayer);
+						.setLogonAccessLayer(this.testCeemAccessLayer);
 	}
 	
 	@Test

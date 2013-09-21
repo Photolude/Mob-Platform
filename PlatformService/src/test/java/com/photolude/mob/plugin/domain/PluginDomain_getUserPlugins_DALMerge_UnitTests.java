@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.photolude.mob.plugins.commons.servicemodel.PluginDefinition;
+import com.photolude.mob.commons.plugins.servicemodel.PluginDefinition;
 
 @RunWith(Parameterized.class)
 public class PluginDomain_getUserPlugins_DALMerge_UnitTests extends PluginDomain_getUserPagePlugins_LogicBase {
@@ -107,6 +107,33 @@ public class PluginDomain_getUserPlugins_DALMerge_UnitTests extends PluginDomain
 			},
 			{
 				//17. Multiple results
+				VALID_USER_ID,
+				new PluginDefinition[]
+				{
+					new PluginDefinition().setId(0)
+										.setName(PLUGIN_NAME)
+										.setCompany(COMPANY_DEFAULT)
+										.setVersion(VERSION_1_0),
+					new PluginDefinition().setId(1)
+										.setName(PLUGIN_NAME)
+										.setCompany(COMPANY_2)
+										.setVersion(VERSION_1_0)
+				},
+				new PluginDefinition[]
+				{ 
+					new PluginDefinition().setId(0)
+										.setName(PLUGIN_NAME)
+										.setCompany(COMPANY_DEFAULT)
+										.setVersion(VERSION_1_0), 
+					new PluginDefinition().setId(1)
+										.setName(PLUGIN_NAME)
+										.setCompany(COMPANY_2)
+										.setVersion(VERSION_1_0)
+    			}
+			},
+
+			{
+				//18. No page specific plugin
 				VALID_USER_ID,
 				new PluginDefinition[]
 				{

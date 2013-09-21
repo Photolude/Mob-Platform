@@ -204,7 +204,7 @@
 		                        <httpsPort>13444</httpsPort>
 		                        <path>/</path>
 		                        <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>
-		                        <keystoreFile>C:\Dev\Photolude\WebLayer\PlatformWebsite\keystore.jks</keystoreFile>
+		                        <keystoreFile>${basedir}\keystore.jks</keystoreFile>
 		                        <keystorePass>Product!Success</keystorePass>
 		                    </configuration>
 		                </execution>

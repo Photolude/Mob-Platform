@@ -7,12 +7,12 @@ import javax.servlet.http.HttpSessionListener;
 import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
-import com.photolude.mob.www.platform.services.IUserService;
+import com.photolude.mob.commons.service.clients.IUserServiceClient;
 
 public class SessionListener implements HttpSessionListener {
-	private IUserService userService;
-	public IUserService getUserService(){ return this.userService; }
-	public SessionListener setUserService(IUserService value)
+	private IUserServiceClient userService;
+	public IUserServiceClient getUserService(){ return this.userService; }
+	public SessionListener setUserService(IUserServiceClient value)
 	{
 		this.userService = value;
 		return this;
@@ -40,7 +40,7 @@ public class SessionListener implements HttpSessionListener {
 	        
 		        if(ctx != null)
 		        {
-			        this.userService = (IUserService) ctx.getBean("userService");
+			        this.userService = (IUserServiceClient) ctx.getBean("userService");
 		        }
 			}
 		

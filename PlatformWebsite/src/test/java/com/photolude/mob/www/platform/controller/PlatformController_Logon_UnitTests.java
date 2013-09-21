@@ -12,10 +12,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.photolude.mob.commons.service.clients.IPluginService;
+import com.photolude.mob.commons.service.clients.IUserServiceClient;
 import com.photolude.mob.www.platform.controller.PlatformController;
 import com.photolude.mob.www.platform.model.LogonRequest;
-import com.photolude.mob.www.platform.services.IPluginService;
-import com.photolude.mob.www.platform.services.IUserService;
 
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
@@ -96,7 +96,7 @@ public class PlatformController_Logon_UnitTests {
 	}
 	
 	private PlatformController domain = new PlatformController();
-	private IUserService testClient;
+	private IUserServiceClient testClient;
 	private IPluginService pluginService;
 	private String email;
 	private String password;
@@ -105,7 +105,7 @@ public class PlatformController_Logon_UnitTests {
 	
 	public PlatformController_Logon_UnitTests(String email, String password, String clientToken, int expectedUserServiceCalls, String expectedResult)
 	{
-		this.testClient = mock(IUserService.class);
+		this.testClient = mock(IUserServiceClient.class);
 		this.pluginService = mock(IPluginService.class);
 		
 		Mockito.when(this.testClient.logon(email, password)).thenReturn(clientToken);

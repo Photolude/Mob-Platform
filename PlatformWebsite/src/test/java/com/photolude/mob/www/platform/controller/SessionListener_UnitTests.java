@@ -14,9 +14,9 @@ import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
+import com.photolude.mob.commons.service.clients.IUserServiceClient;
 import com.photolude.mob.www.platform.controller.PlatformController;
 import com.photolude.mob.www.platform.controller.SessionListener;
-import com.photolude.mob.www.platform.services.IUserService;
 
 @RunWith(Parameterized.class)
 public class SessionListener_UnitTests {
@@ -54,7 +54,7 @@ public class SessionListener_UnitTests {
 	@Test
 	public void TestEndSession()
 	{
-		IUserService userService = mock(IUserService.class);
+		IUserServiceClient userService = mock(IUserServiceClient.class);
 		HttpSessionEvent eventObject = mock(HttpSessionEvent.class);
 		HttpSession mockSession = mock(HttpSession.class);
 		

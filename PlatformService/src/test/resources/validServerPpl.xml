@@ -17,8 +17,19 @@
 		
 		<pageDefinition>
 		    <id>AppsManager</id>
+		    <datacall>
+		        <method>POST</method>
+		        <uri>http://test/uri</uri>
+		        <content>This is content</content>
+		        <contentType>plain/text</contentType>
+		        <pageVariable>testContent</pageVariable>
+		    </datacall>
 			<script>this is javascript content</script>
 			<html>this is html content</html>
 		</pageDefinition>
+		<attribute>
+		    <link>http://www.photolude.com</link>
+		    <reason>To test out attribution</reason>
+		</attribute>
 	</plugin>
 </ppl>

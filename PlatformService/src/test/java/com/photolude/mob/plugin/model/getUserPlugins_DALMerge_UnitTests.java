@@ -8,8 +8,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import com.photolude.mob.services.PluginManagementSvc;
-import com.photolude.mob.plugins.commons.servicemodel.PluginPage;
-import com.photolude.mob.plugins.commons.servicemodel.PluginScript;
+import com.photolude.mob.commons.plugins.servicemodel.PluginPage;
+import com.photolude.mob.commons.plugins.servicemodel.PluginScript;
 
 @RunWith(Parameterized.class)
 public class getUserPlugins_DALMerge_UnitTests extends ServiceLogicBase {

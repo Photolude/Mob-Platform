@@ -9,11 +9,11 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
+import com.photolude.mob.commons.plugins.servicemodel.PluginDefinition;
+import com.photolude.mob.commons.plugins.servicemodel.PluginPage;
+import com.photolude.mob.commons.plugins.servicemodel.PluginScript;
 import com.photolude.mob.plugin.domain.IPluginDomain;
 import com.photolude.mob.services.PluginManagementSvc;
-import com.photolude.mob.plugins.commons.servicemodel.PluginDefinition;
-import com.photolude.mob.plugins.commons.servicemodel.PluginPage;
-import com.photolude.mob.plugins.commons.servicemodel.PluginScript;
 
 
 public abstract class ServiceLogicBase {

@@ -26,7 +26,7 @@
 	    </bean>
 	</mvc:interceptors>
 	    
-    <bean id="userService" class="com.photolude.mob.www.platform.services.DefaultUserService">
+    <bean id="userService" class="com.photolude.mob.commons.service.clients.DefaultUserServiceClient">
         <property name="endpoint"><value>http://localhost:13050/user</value></property>
     </bean>
     
@@ -35,7 +35,7 @@
             <ref bean="userService"/>
         </property>
         <property name="pluginService">
-            <bean class="com.photolude.mob.www.platform.services.DefaultPluginService">
+            <bean class="com.photolude.mob.commons.service.clients.DefaultPluginServiceClient">
                 <property name="endpoint"><value>http://localhost:13050/Plugins</value></property>
             </bean>
         </property>

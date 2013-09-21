@@ -1,0 +1,43 @@
+<ppl>
+	<companykey>856a50bf-4735-4e1c-9e77-d05fa983c5b5</companykey>
+	<plugin>
+		<pluginName>Apps Manager</pluginName>
+		<version>1.0.0</version>
+		<role>AppManager</role>
+		<description>This app allows you to manage your apps &amp; plugins</description>
+		<icon>images/windows_128.png</icon>
+		<tags>#appmanagement</tags>
+		
+		<external>
+		    <service>
+		        <root>http://localhost:13050/</root>
+		        <alias>
+		            <name>pluginAction</name>
+		            <uri>Plugins/user/${usertoken}/plugin</uri>
+		        </alias>
+		        <alias>
+		            <name>catalog</name>
+		            <uri>Plugins/user/${usertoken}/catalog</uri>
+		        </alias>
+	        </service>
+		</external>
+		
+		<mainMenu>
+			<item>
+				<displayName>Apps</displayName>
+				<image>images/windows_32.png</image>
+				<target>AppsManager</target>
+			</item>
+		</mainMenu>
+		
+		<pageDefinition>
+			<id>AppsManager</id>
+			<script>scripts/AppModel.js</script>
+			<script>scripts/pageLogic.js</script>
+			<html>html/body.html</html>
+			
+			<html>html/detailsDialog.html</html>
+			<script>scripts/detailsDialogModel.js</script>
+		</pageDefinition>
+	</plugin>
+</ppl>

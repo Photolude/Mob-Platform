@@ -7,7 +7,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.photolude.mob.plugins.commons.servicemodel.PluginDefinition;
+import com.photolude.mob.commons.plugins.servicemodel.PluginDefinition;
 
 @RunWith(Parameterized.class)
 public class PluginDomain_getUserPlugins_DALEdgecase_UnitTests extends PluginDomain_getUserPagePlugins_LogicBase {

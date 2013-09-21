@@ -5,7 +5,7 @@
 		<version>1.0.0</version>
 		<role>AppManager</role>
 		<icon>target/test-classes/gear_32.png</icon>
-		
+		<tags>#browsing</tags>
 		<mainMenu>
 			<item>
 				<displayName>displayName</displayName>

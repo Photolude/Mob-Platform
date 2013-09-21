@@ -12,11 +12,11 @@ import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
+import com.photolude.mob.commons.plugins.servicemodel.PluginDefinition;
+import com.photolude.mob.commons.plugins.servicemodel.WebPage;
 import com.photolude.mob.plugin.dal.IPluginAccessLayer;
 import com.photolude.mob.plugin.domain.PluginDomain;
 import com.photolude.mob.user.domain.IUserAccountDomain;
-import com.photolude.mob.plugins.commons.servicemodel.PluginDefinition;
-import com.photolude.mob.plugins.commons.servicemodel.WebPage;
 
 @RunWith(Parameterized.class)
 public class PluginDomain_getPages_UnitTests {

@@ -32,8 +32,9 @@ public class UserAccessLayer extends MySqlDataAccessLayerBase<UserAccessLayer> i
 				retval = true;
 				
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Logger logger = Logger.getLogger(this.getClass());
+				logger.error("call setTemporaryUserId(" + staticUserId + ", '" + temporaryId + "', " + expiration + ")");
+				logger.error(e);
 			}
 		}
 		

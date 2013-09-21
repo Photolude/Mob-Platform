@@ -4,7 +4,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
-import com.photolude.mob.user.dal.ICeemAccessLayer;
+import com.photolude.mob.user.dal.ILogonAccessLayer;
 import com.photolude.mob.user.dal.IUserAccessLayer;
 import com.photolude.mob.user.dal.UserLogonData;
 
@@ -17,11 +17,11 @@ public class UserAccountDomain implements IUserAccountDomain {
 		return this;
 	}
 	
-	private ICeemAccessLayer ceemAccessLayer;
-	public ICeemAccessLayer getCeemAccessLayer(){ return this.ceemAccessLayer; }
-	public UserAccountDomain setCeemAccessLayer(ICeemAccessLayer value)
+	private ILogonAccessLayer logonAccessLayer;
+	public ILogonAccessLayer getLogonAccessLayer(){ return this.logonAccessLayer; }
+	public UserAccountDomain setLogonAccessLayer(ILogonAccessLayer value)
 	{
-		this.ceemAccessLayer = value;
+		this.logonAccessLayer = value;
 		return this;
 	}
 	
@@ -41,7 +41,7 @@ public class UserAccountDomain implements IUserAccountDomain {
 			return null;
 		}
 		
-		Long userStaticId = this.ceemAccessLayer.attemptLogOn(username, password);
+		Long userStaticId = this.logonAccessLayer.attemptLogOn(username, password);
 		String temporaryId = null;
 		
 		if(userStaticId != null)

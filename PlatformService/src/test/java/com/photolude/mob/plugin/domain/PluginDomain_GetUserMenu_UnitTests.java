@@ -12,10 +12,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.photolude.mob.commons.plugins.servicemodel.MainMenuItem;
 import com.photolude.mob.plugin.dal.IPluginAccessLayer;
 import com.photolude.mob.plugin.domain.PluginDomain;
 import com.photolude.mob.user.domain.IUserAccountDomain;
-import com.photolude.mob.plugins.commons.servicemodel.MainMenuItem;
 
 @RunWith(Parameterized.class)
 public class PluginDomain_GetUserMenu_UnitTests {

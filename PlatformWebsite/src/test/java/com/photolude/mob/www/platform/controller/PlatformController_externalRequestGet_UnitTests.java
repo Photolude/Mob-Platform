@@ -4,17 +4,15 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import org.mockito.Mockito;
-import org.springframework.web.servlet.ModelAndView;
-
 import static org.mockito.Mockito.*;
 
 import com.photolude.mob.www.platform.controller.PlatformController;
@@ -67,16 +65,13 @@ public class PlatformController_externalRequestGet_UnitTests {
 	private IServiceContracts contractService = mock(IServiceContracts.class);
 	private boolean isCallAllowed; 
 	private String serviceCall;
-	private String expectedBody;
 	
 	public PlatformController_externalRequestGet_UnitTests(String serviceCall, boolean isCallAllowed, String serviceResponse, String expectedBody)
 	{
 		this.serviceCall = serviceCall;
 		this.isCallAllowed = isCallAllowed;
-		this.expectedBody = expectedBody;
 		
 		Mockito.when(this.contractService.isCallAllowed(any(HttpSession.class), eq(serviceCall))).thenReturn(isCallAllowed);
-		Mockito.when(this.contractService.callServiceWithGet(this.serviceCall)).thenReturn(serviceResponse);
 		domain.setContractService(this.contractService);
 	}
 	
@@ -88,12 +83,10 @@ public class PlatformController_externalRequestGet_UnitTests {
 		Mockito.when(request.getSession()).thenReturn(session);
 		Mockito.when(request.getParameter(PlatformController.API_REQUEST_PARAM)).thenReturn(this.serviceCall);
 		
-		ModelAndView response = this.domain.externalRequestGet(request);
+		HttpServletResponse response = mock(HttpServletResponse.class);
 		
-		Assert.assertNotNull(response);
-		Assert.assertEquals("apiResponse", response.getViewName());
-		Assert.assertEquals(this.expectedBody, (String)response.getModel().get(PlatformController.MODEL_API_BODY));
+		this.domain.externalRequestGet(request, response);
 		
-		verify(this.contractService, times(this.isCallAllowed? 1 : 0)).callServiceWithGet(this.serviceCall);
+		verify(this.contractService, times(this.isCallAllowed? 1 : 0)).callServiceWithGet(session, this.serviceCall);
 	}
 }

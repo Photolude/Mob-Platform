@@ -6,17 +6,27 @@
 		<version>1.0.0</version>
 		<role>AppManager</role>
 		<icon>target/test-classes/gear_32.png</icon>
+		<tags>#photos</tags>
+		<priority>1000000</priority>
 		
 		<mainMenu>
 			<item>
 				<displayName>displayName</displayName>
 				<image>target/test-classes/gear_32.png</image>
 				<target>AppsManager</target>
+				<defaultPriority>1000000</defaultPriority>
 			</item>
 		</mainMenu>
 		
 		<pageDefinition>
 		    <id>AppsManager</id>
+		    <datacall>
+		        <method>POST</method>
+		        <uri>http://test</uri>
+		        <content>test content</content>
+		        <contentType>plain/text</contentType>
+		        <pageVariable>test</pageVariable>
+		    </datacall>
 			<script>target/test-classes/pageLogic.js</script>
 			<html>target/test-classes/body.html</html>
 		</pageDefinition>

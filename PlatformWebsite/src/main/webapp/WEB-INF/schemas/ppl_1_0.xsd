@@ -16,25 +16,59 @@
 			<xs:element name="role" type="xs:string" />
 			<xs:element name="description" type="xs:string" minOccurs="0" maxOccurs="1" />
 			<xs:element name="icon" type="xs:string" />
+			<xs:element name="tags" type="xs:string" minOccurs="0" />
+			<xs:element name="priority" type="xs:int" minOccurs="0" />
 			
 			<xs:element name="external" type="resourceList" minOccurs="0" maxOccurs="1" />
 			
-			<xs:element name="mainMenu" type="mainMenuType" />
+			<xs:element name="mainMenu" type="mainMenuType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="pageDefinition" type="pageDefinitionType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="attribute" type="attributeType" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="resourceList">
 		<xs:sequence>
-			<xs:element name="service" type="xs:anyURI" maxOccurs="unbounded" />
+			<xs:element name="service" type="service" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="service">
+		<xs:sequence>
+			<xs:element name="root" type="xs:anyURI" />
+			<xs:element name="alias" type="alias" minOccurs="1" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="alias">
+		<xs:sequence>
+			<xs:element name="name" type="xs:string" />
+			<xs:element name="uri" type="xs:string" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="attributeType">
+		<xs:sequence>
+			<xs:element name="link" type="xs:anyURI" />
+			<xs:element name="reason" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="pageDefinitionType">
 		<xs:sequence>
 			<xs:element name="id" type="xs:string" />
+			<xs:element name="datacall" type="dataCallType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="html" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="script" type="xs:string" minOccurs="0" maxOccurs="unbounded"  />
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="dataCallType">
+		<xs:sequence>
+			<xs:element name="method" type="xs:string" />
+			<xs:element name="uri" type="xs:string" />
+			<xs:element name="content" type="xs:string" />
+			<xs:element name="contentType" type="xs:string" />
+			<xs:element name="pageVariable" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
 	<xs:complexType name="mainMenuType">
@@ -47,6 +81,7 @@
 			<xs:element name="displayName" type="xs:string" />
 			<xs:element name="image" type="xs:string" />
 			<xs:element name="target" type="xs:string" />
+			<xs:element name="defaultPriority" type="xs:int" />
 		</xs:sequence>
 	</xs:complexType>
 </xs:schema>

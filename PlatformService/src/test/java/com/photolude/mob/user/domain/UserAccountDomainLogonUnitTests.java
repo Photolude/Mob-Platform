@@ -14,7 +14,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
-import com.photolude.mob.user.dal.ICeemAccessLayer;
+import com.photolude.mob.user.dal.ILogonAccessLayer;
 import com.photolude.mob.user.dal.IUserAccessLayer;
 import com.photolude.mob.user.domain.UserAccountDomain;
 
@@ -92,7 +92,7 @@ public class UserAccountDomainLogonUnitTests {
 	
 	private UserAccountDomain domain;
 	private IUserAccessLayer testUserAccessLayer;
-	private ICeemAccessLayer testCeemAccessLayer;
+	private ILogonAccessLayer testLogonAccessLayer;
 	
 	public UserAccountDomainLogonUnitTests(String username, String password, Long userId, boolean ceemCalled, boolean userCall, boolean userCalled, boolean succeeds)
 	{
@@ -106,12 +106,12 @@ public class UserAccountDomainLogonUnitTests {
 		this.testUserAccessLayer = mock(IUserAccessLayer.class);
 		Mockito.when(this.testUserAccessLayer.setTemporaryUserId(eq(userId), anyString(), any(Date.class))).thenReturn(userCall);
 		
-		this.testCeemAccessLayer = mock(ICeemAccessLayer.class);
-		Mockito.when(this.testCeemAccessLayer.attemptLogOn(username, password)).thenReturn(userId);
+		this.testLogonAccessLayer = mock(ILogonAccessLayer.class);
+		Mockito.when(this.testLogonAccessLayer.attemptLogOn(username, password)).thenReturn(userId);
 		
 		this.domain = new UserAccountDomain()
 						.setUserAccessLayer(this.testUserAccessLayer)
-						.setCeemAccessLayer(this.testCeemAccessLayer);
+						.setLogonAccessLayer(this.testLogonAccessLayer);
 	}
 	
 	@Test
@@ -124,11 +124,11 @@ public class UserAccountDomainLogonUnitTests {
 		
 		if(this.ceemCalled)
 		{
-			verify(this.testCeemAccessLayer, atLeast(1)).attemptLogOn(this.username, this.password);
+			verify(this.testLogonAccessLayer, atLeast(1)).attemptLogOn(this.username, this.password);
 		}
 		else
 		{
-			verify(this.testCeemAccessLayer, atMost(0)).attemptLogOn(this.username, this.password);
+			verify(this.testLogonAccessLayer, atMost(0)).attemptLogOn(this.username, this.password);
 		}
 		
 		if(this.userCalled)

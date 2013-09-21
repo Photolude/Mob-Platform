@@ -1,6 +1,6 @@
 package com.photolude.sdk.ppl.domain;
 
-import com.photolude.plugins.commons.ppl.Ppl;
+import com.photolude.mob.commons.plugins.ppl.Ppl;
 
 public interface IPplTransformService {
 	boolean packagePpl(Ppl ppl);

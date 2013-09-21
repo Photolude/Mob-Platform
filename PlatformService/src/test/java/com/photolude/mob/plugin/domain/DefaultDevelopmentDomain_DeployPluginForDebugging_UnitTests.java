@@ -9,10 +9,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
+import com.photolude.mob.commons.plugins.ppl.Ppl;
+import com.photolude.mob.commons.plugins.servicemodel.ExternalAttribution;
+import com.photolude.mob.commons.plugins.servicemodel.ServiceAlias;
+import com.photolude.mob.commons.plugins.utils.PplUtils;
 import com.photolude.mob.plugin.dal.IPluginAccessLayer;
 import com.photolude.mob.plugin.domain.DefaultDevelopmentDomain;
-import com.photolude.mob.plugins.commons.ppl.Ppl;
-import com.photolude.mob.plugins.commons.utils.PplUtils;
 
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
@@ -20,8 +22,9 @@ import static org.mockito.Mockito.*;
 @RunWith(Parameterized.class)
 public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
 	private static final String TOKEN_VALID = "valid token";
-	private static final String PPL_SOURCE_VALID = "/validServerPpl.xml";
+	public static final String PPL_SOURCE_VALID = "/validServerPpl.xml";
 	private static final Integer MENU_ID_VALID = 1;
+	private static final Integer DATACALL_ID_VALID = 1;
 	
 	@SuppressWarnings("rawtypes")
 	@Parameters
@@ -32,6 +35,15 @@ public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
     			TOKEN_VALID,
     			PPL_SOURCE_VALID,
     			MENU_ID_VALID,
+    			DATACALL_ID_VALID,
+    			null,
+    			true
+    		},
+    		{
+    			TOKEN_VALID,
+    			"/validServerPpl_MissingMenu.xml",
+    			MENU_ID_VALID,
+    			DATACALL_ID_VALID,
     			null,
     			true
     		},
@@ -39,6 +51,7 @@ public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
     			"",
     			PPL_SOURCE_VALID,
     			MENU_ID_VALID,
+    			DATACALL_ID_VALID,
     			null,
     			false
     		},
@@ -46,6 +59,7 @@ public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
     			null,
     			PPL_SOURCE_VALID,
     			MENU_ID_VALID,
+    			DATACALL_ID_VALID,
     			null,
     			false
     		},
@@ -53,6 +67,7 @@ public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
     			TOKEN_VALID,
     			null,
     			MENU_ID_VALID,
+    			DATACALL_ID_VALID,
     			null,
     			false
     		},
@@ -60,6 +75,7 @@ public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
     			TOKEN_VALID,
     			"/invalidImageServerPpl.xml",
     			MENU_ID_VALID,
+    			DATACALL_ID_VALID,
     			null,
     			false
     		},
@@ -67,6 +83,7 @@ public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
     			TOKEN_VALID,
     			PPL_SOURCE_VALID,
     			MENU_ID_VALID,
+    			DATACALL_ID_VALID,
     			1,
     			true
     		},
@@ -74,7 +91,16 @@ public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
     			TOKEN_VALID,
     			PPL_SOURCE_VALID,
     			null,
+    			DATACALL_ID_VALID,
     			null,
+    			false
+    		},
+    		{
+    			TOKEN_VALID,
+    			PPL_SOURCE_VALID,
+    			MENU_ID_VALID,
+    			null,
+    			1,
     			false
     		},
 		});
@@ -87,7 +113,7 @@ public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
 	private boolean expectedResult;
 	private Integer previousId;
 	
-	public DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests(String userToken, String pplSource, Integer menuId, Integer previousId, boolean expectedResult)
+	public DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests(String userToken, String pplSource, Integer menuId, Integer datacallId, Integer previousId, boolean expectedResult)
 	{
 		this.userToken = userToken;
 		this.expectedResult = expectedResult;
@@ -100,11 +126,12 @@ public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
 		}
 		
 		this.dal = mock(IPluginAccessLayer.class);
-		Mockito.when(this.dal.addPlugin(any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(1);
-		Mockito.when(this.dal.addScript(anyInt(), anyInt(), any(String.class), any(String.class), any(String.class))).thenReturn(2);
+		Mockito.when(this.dal.addPlugin(any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(ServiceAlias[].class), any(String.class), any(String.class), anyInt(), any(ExternalAttribution[].class))).thenReturn(1);
+		Mockito.when(this.dal.addScript(anyInt(), anyInt(), any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(2);
 		Mockito.when(this.dal.getCompanyName(any(String.class))).thenReturn("Company X");
 		Mockito.when(this.dal.getPluginByCompanyNameVersionToken(any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(previousId);
 		Mockito.when(this.dal.addMenuItem(anyInt(), any(String.class), any(String.class), any(String.class), anyInt())).thenReturn(menuId);
+		Mockito.when(this.dal.addDataCall(anyInt(), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(datacallId);
 		this.domain.setDataAccessLayer(this.dal);
 	}
 	

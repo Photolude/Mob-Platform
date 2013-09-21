@@ -12,11 +12,11 @@ import org.junit.runners.Parameterized.Parameters;
 
 import org.mockito.Mockito;
 
+import com.photolude.mob.commons.plugins.servicemodel.PluginCatalog;
+import com.photolude.mob.commons.plugins.servicemodel.PluginDefinition;
 import com.photolude.mob.plugin.dal.IPluginAccessLayer;
 import com.photolude.mob.plugin.domain.PluginDomain;
 import com.photolude.mob.user.domain.IUserAccountDomain;
-import com.photolude.mob.plugins.commons.servicemodel.PluginCatalog;
-import com.photolude.mob.plugins.commons.servicemodel.PluginDefinition;
 
 import static org.mockito.Mockito.*;
 
@@ -98,7 +98,7 @@ public class PluginDomain_getCatalog_UnitTests {
 		Mockito.when(this.userService.getStaticIdFromToken(token)).thenReturn(userId);
 		
 		Mockito.when(this.pluginAccessLayer.getUserPlugins((userId != null)? userId.longValue() : 0L)).thenReturn(userPlugins);
-		Mockito.when(this.pluginAccessLayer.getPlugins()).thenReturn(fullPlugins);
+		Mockito.when(this.pluginAccessLayer.getPlugins(token)).thenReturn(fullPlugins);
 		
 		this.domain.setDataAccessLayer(this.pluginAccessLayer);
 		this.domain.setUserAccountService(this.userService);

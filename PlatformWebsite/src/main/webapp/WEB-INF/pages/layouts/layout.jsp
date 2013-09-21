@@ -8,9 +8,11 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0">
 	
 	<script type="text/javascript" src="<c:url value="/scripts/jquery-1.4.1.js" />" ></script>
-	<script type="text/javascript" src="<c:url value="/scripts/FancyTextSystem.js" />" ></script>
 	<script type="text/javascript" src="<c:url value="/scripts/ServiceCalls.js" />"></script>
 	<script type="text/javascript" src="<c:url value="/scripts/PlatformInfo.js" />"></script>
+	<script type="text/javascript" src="<c:url value="/scripts/CacheManagement.js"/>"></script>
+	<script type="text/javascript" src="<c:url value="/scripts/MobInfrastructure.js"/>"></script>
+	<script type="text/javascript" src="<c:url value="/scripts/Layout.js"/>"></script>
 	<LINK href="<c:url value="/styles/defaultstyles_1.1.css"/>" rel="stylesheet" type="text/css"/>
 	<link rel="icon" type="image/ico" href="<c:url value="/images/favicon.ico"/>"/>
 </head>
@@ -34,11 +36,39 @@
 			</c:forEach>
 		</div>
 	</div>
+	<c:forEach items="${datacalls}" var="call">
+		${call.script}
+	</c:forEach>
 
-	<div id="contentBody" class="contentBody">
-		<div id="contentObject">
-			<tiles:insertAttribute name="body" />
-		</div>
+	<c:if test="${plugins != null}">
+		<c:forEach items="${plugins}" var="plugin">
+			<c:if test="${plugin.name == null || plugin.name == \"\" || plugin.type == \"html\"}">
+				<c:if test="${plugin.type == \"html\" }">
+					${plugin.script}
+				</c:if>
+				<c:if test="${plugin.type != \"html\" }">
+					<script type="${plugin.type}">
+						${plugin.script}
+					</script>
+				</c:if>
+			</c:if>
+			<c:if test="${plugin.name != null && plugin.name != \"\"}">
+				<script type="${plugin.type}" src="script/${plugin.name}"></script>
+			</c:if>
+		</c:forEach>
+	</c:if>
+	
+	<div id="attributions" class="pageFooterCredits">
+		<c:if test="${attributions != null}">
+			<c:forEach items="${attributions}" var="attribution">
+				<div>
+					<a href="${attribution.link}">${attribution.link}</a> - ${attribution.reason}
+				</div>
+			</c:forEach>
+		</c:if>
+	</div>
+	<div id="pageFooter">
+		<a id="pageFooterAttributionsLink" href="#">Credits</a></span>
 	</div>
 </body>
 </html>

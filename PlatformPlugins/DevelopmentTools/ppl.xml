@@ -1,0 +1,21 @@
+<ppl>
+	<companykey>856a50bf-4735-4e1c-9e77-d05fa983c5b5</companykey>
+	<plugin>
+		<pluginName>Development Tools</pluginName>
+		<version>1.0.0</version>
+		<role>DevTools</role>
+		<description>
+		    This app gives you tools used to develop new pages and page roles by giving you visiblity into your temporary
+		    login id provided for your current session.
+	    </description>
+		<icon>images/traffic_lights_128.png</icon>
+		<tags>#devtools</tags>
+		
+		<pageDefinition>
+		    <!-- leverage this plugin on all the pages -->
+			<id>*</id>
+			<script>scripts/developmentDialogModel.js</script>
+			<html>html/dialog.html</html>
+		</pageDefinition>
+	</plugin>
+</ppl>

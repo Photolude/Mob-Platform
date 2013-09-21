@@ -11,8 +11,9 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.photolude.plugins.commons.ppl.Ppl;
-import com.photolude.plugins.commons.utils.PplUtils;
+import com.photolude.mob.commons.plugins.ppl.PluginType;
+import com.photolude.mob.commons.plugins.ppl.Ppl;
+import com.photolude.mob.commons.plugins.utils.PplUtils;
 
 @RunWith(Parameterized.class)
 public class PluginDomain_validate_UnitTests {
@@ -45,5 +46,7 @@ public class PluginDomain_validate_UnitTests {
 		Ppl ppl = PplUtils.unmarshalPplFile(url);
 		
 		Assert.assertEquals(this.expectedResult, this.domain.validate(ppl));
+		PluginType plugin = ppl.getPlugin().get(0);
+		Assert.assertNotNull(plugin.getTags());
 	}
 }

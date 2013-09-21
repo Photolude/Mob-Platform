@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ppl>
+	<plugin>
+		<pluginName>Apps Manager</pluginName>
+		<version>1.0.0</version>
+		<role>AppManager</role>
+		<description>This is a test</description>
+		<icon>data:gear_32.png</icon>
+		
+		<pageDefinition>
+		    <id>AppsManager</id>
+			<script>this is javascript content</script>
+			<html>this is html content</html>
+		</pageDefinition>
+	</plugin>
+</ppl>

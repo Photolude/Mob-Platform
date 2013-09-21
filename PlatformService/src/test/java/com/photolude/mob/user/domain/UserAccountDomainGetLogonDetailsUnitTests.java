@@ -13,7 +13,7 @@ import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
-import com.photolude.mob.user.dal.ICeemAccessLayer;
+import com.photolude.mob.user.dal.ILogonAccessLayer;
 import com.photolude.mob.user.dal.IUserAccessLayer;
 import com.photolude.mob.user.dal.UserLogonData;
 import com.photolude.mob.user.domain.UserAccountDomain;
@@ -68,7 +68,7 @@ public class UserAccountDomainGetLogonDetailsUnitTests {
 	
 	private UserAccountDomain domain;
 	private IUserAccessLayer testUserAccessLayer;
-	private ICeemAccessLayer testCeemAccessLayer;
+	private ILogonAccessLayer testLogonAccessLayer;
 	private String userId;
 	private boolean loggedInResult;
 
@@ -92,11 +92,11 @@ public class UserAccountDomainGetLogonDetailsUnitTests {
 			Mockito.when(this.testUserAccessLayer.getLogonData(userId)).thenReturn(null);
 		}
 		
-		this.testCeemAccessLayer = mock(ICeemAccessLayer.class);
+		this.testLogonAccessLayer = mock(ILogonAccessLayer.class);
 		
 		this.domain = new UserAccountDomain()
 						.setUserAccessLayer((IUserAccessLayer) this.testUserAccessLayer)
-						.setCeemAccessLayer((ICeemAccessLayer) this.testCeemAccessLayer);
+						.setLogonAccessLayer((ILogonAccessLayer) this.testLogonAccessLayer);
 	}
 	
 	@Test

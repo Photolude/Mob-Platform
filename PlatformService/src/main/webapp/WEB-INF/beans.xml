@@ -25,9 +25,9 @@
 				<property name="password"><value>password</value></property>
 			</bean>
 		</property>
-		<property name="ceemAccessLayer">
-			<bean class="com.photolude.mob.user.dal.CeemAccessLayer">
-				<property name="connectionString"><value>jdbc:jtds:sqlserver://localhost;databaseName=ProductsAndTechnologies_CEEM;user=serviceuser;password=password;</value></property>
+		<property name="logonAccessLayer">
+			<bean class="com.photolude.mob.user.dal.DefaultLogonAccessLayer">
+				<property name="endpoint"><value>http://localhost:13051/ceem</value></property>
 			</bean>
 		</property>
 	</bean>

@@ -12,12 +12,13 @@ import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
+import com.photolude.mob.commons.plugins.servicemodel.PluginDefinition;
+import com.photolude.mob.commons.plugins.servicemodel.PluginPage;
+import com.photolude.mob.commons.plugins.servicemodel.PluginScript;
+import com.photolude.mob.commons.plugins.servicemodel.ServiceAlias;
 import com.photolude.mob.plugin.dal.IPluginAccessLayer;
 import com.photolude.mob.plugin.domain.PluginDomain;
 import com.photolude.mob.user.domain.IUserAccountDomain;
-import com.photolude.mob.plugins.commons.servicemodel.PluginDefinition;
-import com.photolude.mob.plugins.commons.servicemodel.PluginPage;
-import com.photolude.mob.plugins.commons.servicemodel.PluginScript;
 
 @RunWith(Parameterized.class)
 public class PluginDomain_getPagePlugins_UnitTests {
@@ -31,11 +32,13 @@ public class PluginDomain_getPagePlugins_UnitTests {
 	private static final String USER_VALID = "This is a token";
 	private static final Long USER_STATIC_ID_VALID = 1L;
 	
-	public static final PluginScript[] SCRIPT_1_VALID =  new PluginScript[] { new PluginScript().setScript(JAVASCRIPT_VALUE).setType(JAVASCRIPT_TYPE) };
-	public static final PluginScript[] SCRIPT_2_VALID =  new PluginScript[] { new PluginScript().setScript(JAVASCRIPT_VALUE).setType(JAVASCRIPT_TYPE), new PluginScript().setScript(HTML_VALUE).setType(HTML_TYPE) };
+	public static final ServiceAlias[] SERVICE_ALIAS_VALID = new ServiceAlias[]{new ServiceAlias().setName("Test").setEndpoint("http://test/test")};
+	
+	public static final PluginScript[] SCRIPT_1_VALID =  new PluginScript[] { new PluginScript().setScript(JAVASCRIPT_VALUE).setType(JAVASCRIPT_TYPE).setPage("Page") };
+	public static final PluginScript[] SCRIPT_2_VALID =  new PluginScript[] { new PluginScript().setScript(JAVASCRIPT_VALUE).setType(JAVASCRIPT_TYPE).setPage("Page"), new PluginScript().setScript(HTML_VALUE).setType(HTML_TYPE).setPage("Page") };
 	public static final PluginScript[] SCRIPT_RESULT_FAILED = null;
 	
-	public static final PluginDefinition[] PLUGINS_VALID = new PluginDefinition[]{new PluginDefinition().setCompany("Company X").setId(1).setName("Plugin").setRawExternalResources("Test External").setRole("Role") };
+	public static final PluginDefinition[] PLUGINS_VALID = new PluginDefinition[]{new PluginDefinition().setCompany("Company X").setId(1).setName("Plugin").setServiceAliases(SERVICE_ALIAS_VALID).setRole("Role") };
 	public static final PluginDefinition[] PLUGINS_RESULT_FAILED = new PluginDefinition[0];
 	
 	public static final PluginPage PAGE_RESULT_VALID = new PluginPage().setScripts(SCRIPT_1_VALID).setPlugins(PLUGINS_VALID);
@@ -118,7 +121,16 @@ public class PluginDomain_getPagePlugins_UnitTests {
     			PAGE_VALID,
     			null,
     			PLUGINS_VALID,
-    			new PluginPage().setScripts(new PluginScript[0]).setPlugins(PLUGINS_VALID)
+    			new PluginPage().setScripts(new PluginScript[0]).setPlugins(new PluginDefinition[0])
+    		},
+    		{
+    			// 8. All generic scripts
+    			USER_VALID,
+    			USER_STATIC_ID_VALID,
+    			PAGE_VALID,
+    			new PluginScript[]{new PluginScript().setPage("*")},
+    			PLUGINS_VALID,
+    			new PluginPage().setScripts(new PluginScript[0]).setPlugins(new PluginDefinition[0])
     		},
 		});
 	}

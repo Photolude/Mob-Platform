@@ -8,13 +8,13 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import com.photolude.mob.commons.plugins.ppl.Ppl;
+import com.photolude.mob.commons.plugins.servicemodel.MainMenuItem;
+import com.photolude.mob.commons.plugins.servicemodel.PluginCatalog;
+import com.photolude.mob.commons.plugins.servicemodel.PluginPage;
+import com.photolude.mob.commons.plugins.servicemodel.WebPage;
 import com.photolude.mob.plugin.domain.IDevelopmentDomain;
 import com.photolude.mob.plugin.domain.IPluginDomain;
-import com.photolude.mob.plugins.commons.ppl.Ppl;
-import com.photolude.mob.plugins.commons.servicemodel.MainMenuItem;
-import com.photolude.mob.plugins.commons.servicemodel.PluginCatalog;
-import com.photolude.mob.plugins.commons.servicemodel.PluginPage;
-import com.photolude.mob.plugins.commons.servicemodel.WebPage;
 
 @Path("/Plugins")
 public class PluginManagementSvc {
@@ -87,9 +87,23 @@ public class PluginManagementSvc {
 	@Path("/user/{UserToken}/deploy")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response DeployPluginForDebugging(@PathParam("UserToken") String userToken, Ppl pluginRequeset)
+	public Response DeployPluginForDebugging(@PathParam("UserToken") String userToken, Ppl pluginRequest)
 	{
-		if(this.developmentDomain.DeployPluginForDebugging(userToken, pluginRequeset))
+		if(this.developmentDomain.DeployPluginForDebugging(userToken, pluginRequest))
+		{
+			return Response.ok().build();
+		}
+		
+		return Response.serverError().build();
+	}
+	
+	@PUT
+	@Path("/publish")
+	@Consumes("application/json")
+	@Produces("application/json")
+	public Response publishPlugin(Ppl pluginRequest)
+	{
+		if(this.developmentDomain.publishPlugin(pluginRequest))
 		{
 			return Response.ok().build();
 		}
@@ -110,6 +124,28 @@ public class PluginManagementSvc {
 		}
 		
 		return Response.ok(catalog).build();
+	}
+	
+	@GET
+	@Path("/user/{UserToken}/plugin/{PluginId}/install")
+	public Response installPluginForUser(@PathParam("PluginId") int pluginId, @PathParam("UserToken") String userToken)
+	{
+		if(this.domain.installPluginForUser(pluginId, userToken))
+		{
+			return Response.ok().build();
+		}
+		return Response.serverError().build();
+	}
+	
+	@GET
+	@Path("/user/{UserToken}/plugin/{PluginId}/uninstall")
+	public Response uninstallPluginForUser(@PathParam("PluginId") int pluginId, @PathParam("UserToken") String userToken)
+	{
+		if(this.domain.uninstallPluginForUser(pluginId, userToken))
+		{
+			return Response.ok().build();
+		}
+		return Response.serverError().build();
 	}
 	
 	@GET

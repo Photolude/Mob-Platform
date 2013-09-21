@@ -12,10 +12,10 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
-import com.photolude.plugins.commons.ppl.MainMenuItemType;
-import com.photolude.plugins.commons.ppl.PageDefinitionType;
-import com.photolude.plugins.commons.ppl.PluginType;
-import com.photolude.plugins.commons.ppl.Ppl;
+import com.photolude.mob.commons.plugins.ppl.MainMenuItemType;
+import com.photolude.mob.commons.plugins.ppl.PageDefinitionType;
+import com.photolude.mob.commons.plugins.ppl.PluginType;
+import com.photolude.mob.commons.plugins.ppl.Ppl;
 
 public class PplJsonTransformService implements IPplTransformService {
 
@@ -32,15 +32,18 @@ public class PplJsonTransformService implements IPplTransformService {
 				plugin.setIcon(ConvertImageToData(plugin.getIcon()));
 			}
 			
-			for(MainMenuItemType item : plugin.getMainMenu().getItem())
+			if(plugin.getMainMenu() != null)
 			{
-				if(!item.getImage().startsWith("data:"))
+				for(MainMenuItemType item : plugin.getMainMenu().getItem())
 				{
-					item.setImage(ConvertImageToData(item.getImage()));
-					
-					if(item.getImage() == null)
+					if(!item.getImage().startsWith("data:"))
 					{
-						return false;
+						item.setImage(ConvertImageToData(item.getImage()));
+						
+						if(item.getImage() == null)
+						{
+							return false;
+						}
 					}
 				}
 			}
@@ -70,7 +73,7 @@ public class PplJsonTransformService implements IPplTransformService {
 						
 						page.getScript().set(i, contents);
 					} catch (IOException e) {
-						logger.error("An error occured while trying to read " + page.getHtml().get(i));
+						logger.error("An error occured while trying to read " + page.getScript().get(i));
 						logger.error(e);
 						return false;
 					} 

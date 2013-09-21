@@ -46,4 +46,18 @@ public class UserManagementSvc {
 		this.userDomain.logoff(userToken);
 		return Response.ok().build();
 	}
+	
+	@GET
+	@Path("/{usertoken}/staticid")
+	public Response getStaticUserId(@PathParam("usertoken") String userToken)
+	{
+		Long staticId = this.userDomain.getStaticIdFromToken(userToken);
+		
+		if(staticId == null)
+		{
+			return Response.serverError().build();
+		}
+		
+		return Response.ok(staticId).build();
+	}
 }

@@ -7,9 +7,8 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import com.photolude.plugins.commons.ppl.Ppl;
-import com.photolude.plugins.commons.utils.PplUtils;
-
+import com.photolude.mob.commons.plugins.ppl.Ppl;
+import com.photolude.mob.commons.plugins.utils.PplUtils;
 import com.photolude.sdk.ppl.domain.PhotoludePluginDomain;
 
 public class EntryPoint {

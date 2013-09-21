@@ -16,10 +16,10 @@ import org.mockito.Mockito;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.photolude.mob.www.platform.controller.PlatformController;
-import com.photolude.mob.www.platform.services.IPluginService;
 import com.photolude.mob.www.platform.services.IServiceContracts;
-import com.photolude.mob.plugins.commons.servicemodel.PluginPage;
-import com.photolude.mob.plugins.commons.servicemodel.PluginScript;
+import com.photolude.mob.commons.plugins.servicemodel.PluginPage;
+import com.photolude.mob.commons.plugins.servicemodel.PluginScript;
+import com.photolude.mob.commons.service.clients.IPluginService;
 
 import static org.mockito.Mockito.*;
 
@@ -99,6 +99,7 @@ public class PlatformController_pluginApp_UnitTests {
 		
 		this.request = mock(HttpServletRequest.class);
 		Mockito.when(this.request.getSession()).thenReturn(session);
+		Mockito.when(this.request.getRequestURI()).thenReturn("/test");
 		
 		//
 		// Create services

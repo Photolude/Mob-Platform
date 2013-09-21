@@ -15,9 +15,9 @@ import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
+import com.photolude.mob.commons.plugins.servicemodel.PluginCatalog;
 import com.photolude.mob.plugin.domain.IPluginDomain;
 import com.photolude.mob.services.PluginManagementSvc;
-import com.photolude.mob.plugins.commons.servicemodel.PluginCatalog;
 
 @RunWith(Parameterized.class)
 public class PluginManagementSvc_getCatalog_UnitTests {

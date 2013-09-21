@@ -27,12 +27,6 @@ public class ServiceIntegrationIT {
 	}
 	
 	@Test
-	public void LogonTest() throws Exception
-	{
-		this.callEndpoint(this.urlEndpoint + "user/logon/testuser@photolude.com/password");
-	}
-	
-	@Test
 	public void LogonOff() throws Exception
 	{
 		this.callEndpoint(this.urlEndpoint + "user/tokendata/logoff");

@@ -7,10 +7,10 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
+import com.photolude.mob.commons.plugins.servicemodel.PluginDefinition;
 import com.photolude.mob.plugin.dal.IPluginAccessLayer;
 import com.photolude.mob.plugin.domain.PluginDomain;
 import com.photolude.mob.user.domain.IUserAccountDomain;
-import com.photolude.mob.plugins.commons.servicemodel.PluginDefinition;
 
 public abstract class PluginDomain_getUserPagePlugins_LogicBase {
 	protected static final String INVALID_USER_ID = "This is invalid..............................................................................................";

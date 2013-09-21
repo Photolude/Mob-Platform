@@ -2,14 +2,15 @@ package com.photolude.mob.plugin.domain;
 
 import org.apache.log4j.Logger;
 
+import com.photolude.mob.commons.plugins.servicemodel.MainMenuItem;
+import com.photolude.mob.commons.plugins.servicemodel.PluginCatalog;
+import com.photolude.mob.commons.plugins.servicemodel.PluginDataCall;
+import com.photolude.mob.commons.plugins.servicemodel.PluginDefinition;
+import com.photolude.mob.commons.plugins.servicemodel.PluginPage;
+import com.photolude.mob.commons.plugins.servicemodel.PluginScript;
+import com.photolude.mob.commons.plugins.servicemodel.WebPage;
 import com.photolude.mob.plugin.dal.IPluginAccessLayer;
 import com.photolude.mob.user.domain.IUserAccountDomain;
-import com.photolude.mob.plugins.commons.servicemodel.MainMenuItem;
-import com.photolude.mob.plugins.commons.servicemodel.PluginCatalog;
-import com.photolude.mob.plugins.commons.servicemodel.PluginDefinition;
-import com.photolude.mob.plugins.commons.servicemodel.PluginPage;
-import com.photolude.mob.plugins.commons.servicemodel.PluginScript;
-import com.photolude.mob.plugins.commons.servicemodel.WebPage;
 
 public class PluginDomain implements IPluginDomain {
 	private static final int MAX_USER_ID_LENGTH = 100;
@@ -131,6 +132,14 @@ public class PluginDomain implements IPluginDomain {
 			retval = new PluginDefinition[0];
 		}
 		
+		for(PluginDefinition plugin : retval)
+		{
+			if(plugin != null)
+			{
+				plugin.setInstalled(true);
+			}
+		}
+		
 		return retval;
 	}
 	
@@ -148,19 +157,44 @@ public class PluginDomain implements IPluginDomain {
 			return null;
 		}
 		
+		boolean allItemsAreGeneric = true;
 		PluginScript[] scripts = this.dataAccessLayer.getPageScripts(staticUserId, page);
+		
 		if(scripts == null)
 		{
 			scripts = new PluginScript[0];
 		}
+		else
+		{
+			//
+			// Validate that we actually have a real page
+			//
+			for(PluginScript script : scripts)
+			{
+				if(script != null && script.getPage() != null && !script.getPage().equals("*"))
+				{
+					allItemsAreGeneric = false;
+					break;
+				}
+			}
+		}
+		
+		PluginDataCall[] dataCalls = this.dataAccessLayer.getPageDataCalls(staticUserId, page);
+		if(dataCalls == null)
+		{
+			dataCalls = new PluginDataCall[0];
+		}
 		
 		PluginDefinition[] plugins = this.dataAccessLayer.getPagePlugins(staticUserId, page);
-		if(plugins == null)
+		if(plugins == null || allItemsAreGeneric)
 		{
+			scripts = new PluginScript[0];
 			plugins = new PluginDefinition[0];
 		}
 		
-		return new PluginPage().setPlugins(plugins).setScripts(scripts);
+		return new PluginPage().setPlugins(plugins)
+								.setScripts(scripts)
+								.setDataCalls(dataCalls);
 	}
 	
 	@Override
@@ -226,6 +260,7 @@ public class PluginDomain implements IPluginDomain {
 			}
 		}
 	}
+	
 	@Override
 	public PluginCatalog getCatalog(String token) {
 		Long staticUserId = this.userAccountService.getStaticIdFromToken(token);
@@ -235,8 +270,57 @@ public class PluginDomain implements IPluginDomain {
 			return null;
 		}
 		
+		PluginDefinition[] plugins = this.dataAccessLayer.getPlugins(token); 
+		PluginDefinition[] userPlugins = this.dataAccessLayer.getUserPlugins(staticUserId);
+		
+		if(plugins != null && userPlugins != null)
+		{
+			for(PluginDefinition plugin : plugins)
+			{
+				for(PluginDefinition userPlugin : userPlugins)
+				{
+					if(plugin.getId() == userPlugin.getId())
+					{
+						plugin.setInstalled(true);
+						userPlugin.setInstalled(true);
+						break;
+					}
+				}
+			}
+		}
+		
 		return new PluginCatalog()
-					.setPlugins(this.dataAccessLayer.getPlugins())
-					.setUserPlugins(this.dataAccessLayer.getUserPlugins(staticUserId));
+					.setPlugins(plugins)
+					.setUserPlugins(userPlugins);
+	}
+	@Override
+	public boolean installPluginForUser(int pluginId, String userToken) {
+		if(pluginId <= 0 || userToken == null || userToken.length() == 0)
+		{
+			return false;
+		}
+		
+		Long staticId = this.userAccountService.getStaticIdFromToken(userToken);
+		if(staticId == null)
+		{
+			return false;
+		}
+		
+		return this.dataAccessLayer.addPluginToUser(staticId, pluginId);
+	}
+	@Override
+	public boolean uninstallPluginForUser(int pluginId, String userToken) {
+		if(pluginId <= 0 || userToken == null || userToken.length() == 0)
+		{
+			return false;
+		}
+		
+		Long staticId = this.userAccountService.getStaticIdFromToken(userToken);
+		if(staticId == null)
+		{
+			return false;
+		}
+		
+		return this.dataAccessLayer.removePluginFromUser(staticId, pluginId);
 	}
 }

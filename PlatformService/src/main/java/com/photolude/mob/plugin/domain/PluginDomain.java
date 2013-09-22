@@ -308,6 +308,7 @@ public class PluginDomain implements IPluginDomain {
 		
 		return this.dataAccessLayer.addPluginToUser(staticId, pluginId);
 	}
+	
 	@Override
 	public boolean uninstallPluginForUser(int pluginId, String userToken) {
 		if(pluginId <= 0 || userToken == null || userToken.length() == 0)
@@ -321,6 +322,30 @@ public class PluginDomain implements IPluginDomain {
 			return false;
 		}
 		
+		PluginDefinition definition = this.dataAccessLayer.getPluginById(pluginId);
+		if(definition == null)
+		{
+			return false;
+		}
+		
+		String[] requiredRoles = this.dataAccessLayer.getRequiredRoles();
+		
+		if(requiredRoles != null)
+		{
+			for(String role : requiredRoles)
+			{
+				if(role.equals(definition.getRole()))
+				{
+					return false;
+				}
+			}
+		}
+		
 		return this.dataAccessLayer.removePluginFromUser(staticId, pluginId);
+	}
+	
+	public String[] getRequiredRoles()
+	{
+		return this.dataAccessLayer.getRequiredRoles();
 	}
 }

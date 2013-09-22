@@ -100,6 +100,14 @@ public class PluginDefinition {
 		return this;
 	}
 	
+	private String externalServices;
+	public String getExternalServices(){ return this.externalServices; }
+	public PluginDefinition setExternalServices(String value)
+	{
+		this.externalServices = value;
+		return this;
+	}
+	
 	@Override
 	public boolean equals(Object otherObject)
 	{

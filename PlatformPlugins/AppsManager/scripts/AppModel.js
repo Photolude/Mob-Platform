@@ -26,30 +26,16 @@ function AppModel(plugin)
 		var newObject = $("#appTemplate").clone();
 		newObject.css("display", "");
 		newObject.attr("id", "");
-		//
-		// Need to get the full element including the outer element tags
-		//
-		var newParent = $("<div></div>");
-		newParent.append(newObject);
-		var newObjectText = newParent.html();
 		
-		//
-		// Do find and replace for tag elements
-		//
-		newObjectText = replaceAll(newObjectText, "${id}", this.plugin.id);
-		newObjectText = replaceAll(newObjectText, "${name}", this.plugin.name);
-		newObjectText = replaceAll(newObjectText, "${company}", this.plugin.company);
-		newObjectText = replaceAll(newObjectText, "${version}", this.plugin.version);
-		newObjectText = replaceAll(newObjectText, "${role}", this.plugin.role);
-		newObjectText = replaceAll(newObjectText, "${description}", this.plugin.description);
-		newObjectText = replaceAll(newObjectText, "${rawExternalResources}", this.plugin.rawExternalResources);
-		newObjectText = replaceAll(newObjectText, "${icon}", this.plugin.icon);
+		newObject.find("#appName").text(this.plugin.name);
+		newObject.find("#appVersion").text(this.plugin.version);
+		
 		var self = this;
 
 		//
 		// Get the jquery element
 		//
-		this.appElement = $(newObjectText);
+		this.appElement = newObject;
 
 		this.details = $(this.appElement.find("#appDetails_" + this.plugin.id));
 		this.installed = $(this.appElement.find("#installedBanner"));

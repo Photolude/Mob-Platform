@@ -126,7 +126,7 @@ public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
 		}
 		
 		this.dal = mock(IPluginAccessLayer.class);
-		Mockito.when(this.dal.addPlugin(any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(ServiceAlias[].class), any(String.class), any(String.class), anyInt(), any(ExternalAttribution[].class))).thenReturn(1);
+		Mockito.when(this.dal.addPlugin(any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(ServiceAlias[].class), any(String.class), any(String.class), anyInt(), any(ExternalAttribution[].class))).thenReturn(1);
 		Mockito.when(this.dal.addScript(anyInt(), anyInt(), any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(2);
 		Mockito.when(this.dal.getCompanyName(any(String.class))).thenReturn("Company X");
 		Mockito.when(this.dal.getPluginByCompanyNameVersionToken(any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(previousId);

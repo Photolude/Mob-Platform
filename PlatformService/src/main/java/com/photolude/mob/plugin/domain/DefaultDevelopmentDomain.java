@@ -154,12 +154,15 @@ public class DefaultDevelopmentDomain implements IDevelopmentDomain {
 			}
 			
 			ServiceAlias[] serviceAliases = null;
+			StringBuilder externalServices = new StringBuilder();
 			if(plugin.getExternal() != null && plugin.getExternal().getService() != null)
 			{
 				List<ServiceAlias> aliasList = new LinkedList<ServiceAlias>();
 				StringBuilder serviceUrl = new StringBuilder();
 				for(Service service : plugin.getExternal().getService())
 				{
+					externalServices.append(service.getRoot());
+					externalServices.append("\n");
 					for(Alias alias : service.getAlias())
 					{
 						serviceUrl.delete(0, serviceUrl.length());
@@ -205,12 +208,12 @@ public class DefaultDevelopmentDomain implements IDevelopmentDomain {
 			if(pluginId == null || userToken != null)
 			{
 				// Plugin does not exist, so create it
-				pluginId = this.dataAccessLayer.addPlugin(plugin.getPluginName(), companyName, plugin.getVersion(), plugin.getRole(), plugin.getTags(), userToken, serviceAliases, plugin.getDescription(), plugin.getIcon(), plugin.getPriority(), attributions);
+				pluginId = this.dataAccessLayer.addPlugin(plugin.getPluginName(), companyName, plugin.getVersion(), plugin.getRole(), plugin.getTags(), userToken, externalServices.toString(), serviceAliases, plugin.getDescription(), plugin.getIcon(), plugin.getPriority(), attributions);
 				newPluginId = pluginId;
 			}
 			else
 			{
-				this.dataAccessLayer.updatePluginData(pluginId, plugin.getRole(), serviceAliases, plugin.getDescription(), plugin.getIcon(), plugin.getTags(), plugin.getPriority(), attributions);
+				this.dataAccessLayer.updatePluginData(pluginId, plugin.getRole(), externalServices.toString(), serviceAliases, plugin.getDescription(), plugin.getIcon(), plugin.getTags(), plugin.getPriority(), attributions);
 			}
 			
 			if(pluginId != null)

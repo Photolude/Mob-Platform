@@ -15,6 +15,7 @@ public interface IPluginDomain {
 	PluginCatalog getCatalog(String token);
 	boolean installPluginForUser(int pluginId, String userToken);
 	boolean uninstallPluginForUser(int pluginId, String userToken);
+	String[] getRequiredRoles();
 	
 	boolean isHealthy();
 }

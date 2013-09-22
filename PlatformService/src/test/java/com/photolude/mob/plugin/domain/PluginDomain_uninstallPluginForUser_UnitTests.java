@@ -12,11 +12,15 @@ import org.junit.runners.Parameterized.Parameters;
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
+import com.photolude.mob.commons.plugins.servicemodel.PluginDefinition;
 import com.photolude.mob.plugin.dal.IPluginAccessLayer;
 import com.photolude.mob.user.domain.IUserAccountDomain;
 
 @RunWith(Parameterized.class)
 public class PluginDomain_uninstallPluginForUser_UnitTests {
+
+	private static final String[] REQUIRED_ROLES_NONE = new String[0];
+	private static final PluginDefinition PLUGIN_VALID = new PluginDefinition().setRole("A Role");
 	
 	@SuppressWarnings("rawtypes")
 	@Parameters
@@ -28,6 +32,8 @@ public class PluginDomain_uninstallPluginForUser_UnitTests {
     			ValueConstants.PLUGIN_ID_VALID,
     			ValueConstants.USERTOKEN_VALID,
     			ValueConstants.STATIC_ID_VALID,
+    			PLUGIN_VALID,
+    			REQUIRED_ROLES_NONE,
     			true,
     			true
     		},
@@ -36,6 +42,8 @@ public class PluginDomain_uninstallPluginForUser_UnitTests {
     			ValueConstants.PLUGIN_ID_INVALID,
     			ValueConstants.USERTOKEN_VALID,
     			ValueConstants.STATIC_ID_VALID,
+    			PLUGIN_VALID,
+    			REQUIRED_ROLES_NONE,
     			true,
     			false
     		},
@@ -44,6 +52,8 @@ public class PluginDomain_uninstallPluginForUser_UnitTests {
     			ValueConstants.PLUGIN_ID_VALID,
     			ValueConstants.USERTOKEN_INVALID,
     			ValueConstants.STATIC_ID_VALID,
+    			PLUGIN_VALID,
+    			REQUIRED_ROLES_NONE,
     			true,
     			false
     		},
@@ -52,6 +62,8 @@ public class PluginDomain_uninstallPluginForUser_UnitTests {
     			ValueConstants.PLUGIN_ID_VALID,
     			null,
     			ValueConstants.STATIC_ID_VALID,
+    			PLUGIN_VALID,
+    			REQUIRED_ROLES_NONE,
     			true,
     			false
     		},
@@ -60,15 +72,39 @@ public class PluginDomain_uninstallPluginForUser_UnitTests {
     			ValueConstants.PLUGIN_ID_VALID,
     			ValueConstants.USERTOKEN_VALID,
     			ValueConstants.STATIC_ID_INVALID,
+    			PLUGIN_VALID,
+    			REQUIRED_ROLES_NONE,
     			true,
     			false
     		},
     		{
-    			// 5. Valid case
+    			// 5. Failed call to uninstall plugin
     			ValueConstants.PLUGIN_ID_VALID,
     			ValueConstants.USERTOKEN_VALID,
     			ValueConstants.STATIC_ID_VALID,
+    			PLUGIN_VALID,
+    			REQUIRED_ROLES_NONE,
     			false,
+    			false
+    		},
+			{
+    			// 6. Plugin on list of required roles
+    			ValueConstants.PLUGIN_ID_VALID,
+    			ValueConstants.USERTOKEN_VALID,
+    			ValueConstants.STATIC_ID_VALID,
+    			PLUGIN_VALID,
+    			new String[]{ PLUGIN_VALID.getRole() },
+    			true,
+    			false
+    		},
+    		{
+    			// 7. Null plugin
+    			ValueConstants.PLUGIN_ID_VALID,
+    			ValueConstants.USERTOKEN_VALID,
+    			ValueConstants.STATIC_ID_VALID,
+    			null,
+    			new String[]{ PLUGIN_VALID.getRole() },
+    			true,
     			false
     		},
 		});
@@ -79,7 +115,7 @@ public class PluginDomain_uninstallPluginForUser_UnitTests {
 	private int pluginId;
 	private boolean expectedResult;
 	
-	public PluginDomain_uninstallPluginForUser_UnitTests(int pluginId, String userToken, Long staticUserId, boolean addPluginRetval, boolean expectedResult)
+	public PluginDomain_uninstallPluginForUser_UnitTests(int pluginId, String userToken, Long staticUserId, PluginDefinition plugin, String[] requiredRoles, boolean addPluginRetval, boolean expectedResult)
 	{
 		this.pluginId = pluginId;
 		this.userToken = userToken;
@@ -87,10 +123,12 @@ public class PluginDomain_uninstallPluginForUser_UnitTests {
 		
 		IPluginAccessLayer dal = mock(IPluginAccessLayer.class);
 		Mockito.when(dal.removePluginFromUser(anyInt(), eq(pluginId))).thenReturn(addPluginRetval);
-		
+		Mockito.when(dal.getRequiredRoles()).thenReturn(requiredRoles);
+		Mockito.when(dal.getPluginById(pluginId)).thenReturn(plugin);
+
 		IUserAccountDomain uas = mock(IUserAccountDomain.class);
 		Mockito.when(uas.getStaticIdFromToken(userToken)).thenReturn(staticUserId);
-		
+
 		this.domain.setDataAccessLayer(dal);
 		this.domain.setUserAccountService(uas);
 	}

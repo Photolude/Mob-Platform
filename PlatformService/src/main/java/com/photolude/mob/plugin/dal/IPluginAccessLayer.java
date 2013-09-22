@@ -18,9 +18,9 @@ public interface IPluginAccessLayer {
 	public boolean canConnect();
 	public PluginScript[] getPageScripts(Long userId, String page);
 	
-	Integer addPlugin(String pluginName, String company, String version, String role, String tags, String deployIdentity, ServiceAlias[]  serviceAliases, String description, String icon, Integer priority, ExternalAttribution[] attributes);
+	Integer addPlugin(String pluginName, String company, String version, String role, String tags, String deployIdentity, String externalServices, ServiceAlias[]  serviceAliases, String description, String icon, Integer priority, ExternalAttribution[] attributes);
 	void deletePlugin(int pluginId);
-	void updatePluginData(int pluginId, String role, ServiceAlias[] serviceAliases, String description, String icon, String tags, Integer priority, ExternalAttribution[] attributeBlob);
+	void updatePluginData(int pluginId, String role, String externalServices, ServiceAlias[] serviceAliases, String description, String icon, String tags, Integer priority, ExternalAttribution[] attributeBlob);
 	
 	Integer addPage(int pluginId, String id);
 	void deletePage(int pageId);
@@ -45,4 +45,8 @@ public interface IPluginAccessLayer {
 	PluginDefinition[] getPagePlugins(Long staticUserId, String page);
 	PluginDefinition[] getPlugins(String token);
 	PluginDataCall[] getPageDataCalls(long staticUserId, String page);
+	
+	PluginDefinition getPluginById(int pluginId);
+	String[] getRequiredRoles();
+	
 }

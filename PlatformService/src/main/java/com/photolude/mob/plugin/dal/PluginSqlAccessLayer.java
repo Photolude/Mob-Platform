@@ -80,7 +80,7 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 		return retval.toArray(new PluginScript[retval.size()]);
 	}
 	
-	public Integer addPlugin(String pluginName, String company, String version, String role, String tags, String deployIdentity, ServiceAlias[] serviceAliases, String description, String icon, Integer priority, ExternalAttribution[] attributions)
+	public Integer addPlugin(String pluginName, String company, String version, String role, String tags, String deployIdentity, String externalServices, ServiceAlias[] serviceAliases, String description, String icon, Integer priority, ExternalAttribution[] attributions)
 	{
 		Integer retval = INVALID_PLUGIN_ID;
 		
@@ -92,18 +92,19 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 		{
 			try {
 				
-				CallableStatement statement = connection.prepareCall("call addPlugin(?,?,?,?,?,?,?,?,?,?,?)");
+				CallableStatement statement = connection.prepareCall("call addPlugin(?,?,?,?,?,?,?,?,?,?,?,?)");
 				statement.setString(1, pluginName);
 				statement.setString(2, company);
 				statement.setString(3, version);
 				statement.setString(4, role);
 				statement.setString(5, tags);
 				statement.setString(6,  deployIdentity);
-				statement.setString(7, servicesBlob);
-				statement.setString(8, description);
-				statement.setString(9, icon);
-				statement.setInt(10, priority);
-				statement.setString(11, attributeBlob);
+				statement.setString(7, externalServices);
+				statement.setString(8, servicesBlob);
+				statement.setString(9, description);
+				statement.setString(10, icon);
+				statement.setInt(11, priority);
+				statement.setString(12, attributeBlob);
 				
 				ResultSet results = statement.executeQuery();
 				if(results != null)
@@ -125,7 +126,7 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 	}
 	
 	@Override
-	public void updatePluginData(int pluginId, String role, ServiceAlias[] serviceAliases, String description, String icon, String tags, Integer priority, ExternalAttribution[] attributions)
+	public void updatePluginData(int pluginId, String role, String externalServices, ServiceAlias[] serviceAliases, String description, String icon, String tags, Integer priority, ExternalAttribution[] attributions)
 	{
 		String attributeBlob = getObjectBlob(attributions, "attributions");
 		String servicesBlob = getObjectBlob(serviceAliases, "service aliases");
@@ -135,15 +136,16 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 		{
 			try {
 				
-				CallableStatement statement = connection.prepareCall("call updatePlugin(?,?,?,?,?,?,?,?)");
+				CallableStatement statement = connection.prepareCall("call updatePlugin(?,?,?,?,?,?,?,?,?)");
 				statement.setInt(1, pluginId);
 				statement.setString(2, role);
-				statement.setString(3, servicesBlob);
-				statement.setString(4, description);
-				statement.setString(5, icon);
-				statement.setString(6, tags);
-				statement.setInt(7, priority);
-				statement.setString(8, attributeBlob);
+				statement.setString(3, externalServices);
+				statement.setString(4, servicesBlob);
+				statement.setString(5, description);
+				statement.setString(6, icon);
+				statement.setString(7, tags);
+				statement.setInt(8, priority);
+				statement.setString(9, attributeBlob);
 				
 				statement.execute();
 			} catch (SQLException e) {
@@ -812,45 +814,11 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 									.setDescription(results.getString("description"))
 									.setIcon(results.getString("icon"))
 									.setTags(results.getString("tags"))
-									.setPriority(results.getInt("priority"));
+									.setPriority(results.getInt("priority"))
+									.setExternalServices(results.getString("externalservices"))
+									.setServiceAliases(readBlob(results.getString("serviceCalls"), ServiceAlias[].class))
+									.setAttributions(readBlob(results.getString("attributeBlob"), ExternalAttribution[].class));
 
-		String attributeBlob = results.getString("attributeBlob");
-		
-		if(!StringUtils.isNullOrEmpty(attributeBlob))
-		{
-			ObjectMapper mapper = new ObjectMapper();
-			try {
-				retval.setAttributions(mapper.readValue(attributeBlob.getBytes(), ExternalAttribution[].class));
-			} catch (JsonParseException e) {
-				Logger.getLogger(this.getClass()).error("There was an error parsing the attribution, this tends to indicate there was a problem with deployment");
-				Logger.getLogger(this.getClass()).debug(e);
-			} catch (JsonMappingException e) {
-				Logger.getLogger(this.getClass()).error("There was an error parsing the attribution, this tends to indicate there was a problem with deployment");
-				Logger.getLogger(this.getClass()).debug(e);
-			} catch (IOException e) {
-				Logger.getLogger(this.getClass()).error("There was an error parsing the attribution, this tends to indicate there was a problem with deployment");
-				Logger.getLogger(this.getClass()).debug(e);
-			}
-		}
-		
-		String servicesBlob = results.getString("externalservices");
-		if(!StringUtils.isNullOrEmpty(servicesBlob))
-		{
-			ObjectMapper mapper = new ObjectMapper();
-			try {
-				retval.setServiceAliases(mapper.readValue(servicesBlob.getBytes(), ServiceAlias[].class));
-			} catch (JsonParseException e) {
-				Logger.getLogger(this.getClass()).error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
-				Logger.getLogger(this.getClass()).debug(e);
-			} catch (JsonMappingException e) {
-				Logger.getLogger(this.getClass()).error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
-				Logger.getLogger(this.getClass()).debug(e);
-			} catch (IOException e) {
-				Logger.getLogger(this.getClass()).error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
-				Logger.getLogger(this.getClass()).debug(e);
-			}
-		}
-		
 		return retval;
 	}
 	
@@ -897,5 +865,83 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 			Logger.getLogger(this.getClass()).debug(e);
 		}
 		return new String(stream.toByteArray());
+	}
+	
+	private <T> T readBlob(String serializedObject, Class<T> typeClass)
+	{
+		T retval = null;
+		if(!StringUtils.isNullOrEmpty(serializedObject) && typeClass != null)
+		{
+			ObjectMapper mapper = new ObjectMapper();
+			try {
+				retval = mapper.readValue(serializedObject.getBytes(), typeClass);
+			} catch (JsonParseException e) {
+				Logger.getLogger(this.getClass()).error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
+				Logger.getLogger(this.getClass()).debug(e);
+			} catch (JsonMappingException e) {
+				Logger.getLogger(this.getClass()).error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
+				Logger.getLogger(this.getClass()).debug(e);
+			} catch (IOException e) {
+				Logger.getLogger(this.getClass()).error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
+				Logger.getLogger(this.getClass()).debug(e);
+			}
+		}
+		
+		return retval;
+	}
+
+	@Override
+	public PluginDefinition getPluginById(int pluginId) {
+		PluginDefinition retval = null;
+		Connection connection = this.openConnection();
+		
+		if(connection != null)
+		{
+			try {
+				CallableStatement statement = connection.prepareCall("call getPluginById(?)");
+				statement.setInt(1, pluginId);
+				
+				ResultSet results = statement.executeQuery();
+				if(results != null && results.next())
+				{
+					retval = readPluginDefinition(results);
+					results.close();
+				}
+				
+			} catch (SQLException e) {
+				Logger logger = Logger.getLogger(this.getClass());
+				logger.error(e.getMessage());
+			}
+		}
+		
+		this.closeConnection(connection);
+		return retval;
+	}
+
+	@Override
+	public String[] getRequiredRoles() {
+		List<String> retval = new ArrayList<String>();
+		
+		Connection connection = this.openConnection();
+		if(connection != null)
+		{
+			try {
+				CallableStatement statement = connection.prepareCall("call getRequiredRoles()");
+				
+				ResultSet results = statement.executeQuery();
+				
+				while(results.next())
+				{
+					retval.add(results.getString(1));
+				}
+				results.close();
+			} catch (SQLException e) {
+				Logger logger = Logger.getLogger(this.getClass());
+				logger.error(e.getMessage());
+			}
+		}
+		
+		this.closeConnection(connection);
+		return retval.toArray(new String[retval.size()]);
 	}
 }

@@ -10,6 +10,12 @@ function detailsDialogModel()
 	this.role = null;
 	this.accessTo = null;
 	this.description = null;
+	this.requiredRoles = new Array();
+	
+	if(requiredRoles != null && requiredRoles != "")
+	{
+		this.requiredRoles = eval("(" + requiredRoles + ")");
+	}
 	
 	this.installCallback;
 	this.uninstallCallback;
@@ -27,11 +33,28 @@ function detailsDialogModel()
 		}
 		else
 		{
-			callExternalServiceGet("AppManager/pluginAction/" + this.plugin.id + "/uninstall" , function(contents){
-				self.installButton.val("install");
-				self.plugin.installed = false;
-				self.appCard.updateStatus();
-			});
+			var roleFound = false;
+			for(var i = 0; i < this.requiredRoles.length; i++)
+			{
+				if(this.requiredRoles[i] == this.plugin.role)
+				{
+					roleFound = true;
+					break;
+				}
+			}
+			
+			if(!roleFound)
+			{
+				callExternalServiceGet("AppManager/pluginAction/" + this.plugin.id + "/uninstall" , function(contents){
+					self.installButton.val("install");
+					self.plugin.installed = false;
+					self.appCard.updateStatus();
+				});
+			}
+			else
+			{
+				alert("You must have at least one " + this.plugin.role + ".\nTo uninstall this plugin please install another " + this.plugin.role + ", at which point this one will be uninstalled.");
+			}
 	
 		}
 	};
@@ -46,10 +69,10 @@ function detailsDialogModel()
 		this.appImage.attr("src", this.plugin.icon);
 		this.appVersion.text(this.plugin.version);
 		this.role.text(this.plugin.role);
-		this.accessTo.text(this.plugin.rawExternalResources);
+		this.accessTo.text(this.plugin.externalServices);
 		this.description.text(this.plugin.description);
-		
-		if(this.plugin.rawExternalResources == "" || this.plugin.rawExternalResources == null)
+
+		if(this.plugin.externalServices == "" || this.plugin.externalServices == null)
 		{
 			this.accessToRow.hide();
 		}

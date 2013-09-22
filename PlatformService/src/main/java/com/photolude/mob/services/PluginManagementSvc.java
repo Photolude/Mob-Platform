@@ -149,6 +149,21 @@ public class PluginManagementSvc {
 	}
 	
 	@GET
+	@Path("/roles/required")
+	@Produces("application/json")
+	public Response getRequiredRoles()
+	{
+		String[] roles = this.domain.getRequiredRoles();
+		
+		if(roles != null)
+		{
+			return Response.ok(roles).build();
+		}
+		
+		return Response.serverError().build();
+	}
+	
+	@GET
 	@Path("/Status/Health")
 	public Response HealthStatus()
 	{

@@ -10,6 +10,8 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import org.mockito.Mockito;
+
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 import com.photolude.mob.commons.plugins.ppl.Ppl;
@@ -188,12 +190,12 @@ public class DefaultDevelopmentDomain_PublishPlugin_UnitTests {
 		Mockito.when(this.pluginAccessLayer.getPluginMenuItems(anyInt())).thenReturn(previousMenuItems);
 		Mockito.when(this.pluginAccessLayer.getPluginScripts(anyInt())).thenReturn(previousScripts);
 		Mockito.when(this.pluginAccessLayer.getPluginDataCalls(anyInt())).thenReturn(this.previousDataCalls);
-		
-		Mockito.when(this.pluginAccessLayer.addPlugin(any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(ServiceAlias[].class), any(String.class), any(String.class), anyInt(), any(ExternalAttribution[].class))).thenReturn(newPluginId);
+
+		Mockito.when(this.pluginAccessLayer.addPlugin(any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(ServiceAlias[].class), any(String.class), any(String.class), anyInt(), any(ExternalAttribution[].class))).thenReturn(newPluginId);
 		Mockito.when(this.pluginAccessLayer.addMenuItem(anyInt(), any(String.class), any(String.class), any(String.class), anyInt())).thenReturn(addMenuItemRetval);
 		Mockito.when(this.pluginAccessLayer.addScript(anyInt(), anyInt(), any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(addScriptRetval);
 		Mockito.when(this.pluginAccessLayer.addDataCall(anyInt(), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(addDataCallRetval);
-		
+
 		IUserAccountDomain accountDomain = mock(IUserAccountDomain.class);
 		
 		this.domain.setDataAccessLayer(this.pluginAccessLayer)

@@ -76,6 +76,24 @@ function ManagePluginDomain()
 		this.onPage = page;
 	}
 	
+	this.newAppInstalled = function(plugin)
+	{
+		for(var i = 0; i < this.catalog.plugins.length; i++)
+		{
+			var catalogPlugin = this.catalog.plugins[i];
+			if(catalogPlugin.installed && plugin.role == catalogPlugin.role)
+			{
+				catalogPlugin.installed = false;
+			}
+		}
+		
+		
+		for(var i = 0; i < this.appRows.length; i++)
+		{
+			this.appRows[i].updateStatus();
+		}
+	};
+	
 	this.load = function()
 	{
 		var self = this;
@@ -83,6 +101,8 @@ function ManagePluginDomain()
 		
 		this.tabArea = $("#appsManagerTabBar");
 		this.tabArea.find("a").click(function(){self.tabClicked($(this));});
+		
+		mob.registerCallback("new-app-installed", function(object){ self.newAppInstalled(object); });
 	};
 	
 	var self = this;

@@ -26,6 +26,7 @@ function detailsDialogModel()
 		if(!this.plugin.installed)
 		{
 			callExternalServiceGet("AppManager/pluginAction/" + this.plugin.id + "/install", function(contents){
+				mob.fireCallback("new-app-installed", self.plugin);
 				self.installButton.val("uninstall");
 				self.plugin.installed = true;
 				self.appCard.updateStatus();

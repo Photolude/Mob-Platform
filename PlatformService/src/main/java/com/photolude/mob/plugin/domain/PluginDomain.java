@@ -306,6 +306,24 @@ public class PluginDomain implements IPluginDomain {
 			return false;
 		}
 		
+		PluginDefinition plugin = this.dataAccessLayer.getPluginById(pluginId);
+		if(plugin == null)
+		{
+			return false;
+		}
+		
+		PluginDefinition[] userPlugins = this.dataAccessLayer.getUserPlugins(staticId);
+		if(userPlugins != null)
+		{
+			for(PluginDefinition userPlugin : userPlugins)
+			{
+				if(plugin.getRole().equals(userPlugin.getRole()))
+				{
+					this.dataAccessLayer.removePluginFromUser(staticId, userPlugin.getId());
+				}
+			}
+		}
+		
 		return this.dataAccessLayer.addPluginToUser(staticId, pluginId);
 	}
 	

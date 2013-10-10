@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.photolude.services</groupId>
+    <groupId>com.mob.platform</groupId>
     <artifactId>mob-platform-service</artifactId>
     <version>1.0.1</version>
     <packaging>war</packaging>
-    <name>Photolude Onsite Service</name>
-    <description>This artifact contains services which are deployed at the Photolude Data Site.</description>
+    <name>Mob Platform Service</name>
+    <description>This artifact contains services which provide the service layer to the mob platform.</description>
     <properties>
         <maven.compiler>1.7</maven.compiler>
         <jackson.version>1.8.6</jackson.version>
@@ -14,11 +14,11 @@
     </properties>
     <repositories>
         <repository>
-            <id>com.photolude</id>
+            <id>com.mob</id>
             <name>Photolude Local Repo</name>
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>true</enabled></snapshots>
-            <url>http://localhost:8081/nexus/content/repositories</url>
+            <url>http://localhost:9081/nexus/content/repositories</url>
         </repository>
     </repositories>
     <dependencies>
@@ -92,7 +92,7 @@
 		
 		<!-- Photolude -->
 		<dependency>
-		  <groupId>com.photolude.mob</groupId>
+		  <groupId>com.mob</groupId>
 		  <artifactId>mob-platform-commons</artifactId>
 		  <version>0.0.1-SNAPSHOT</version>
 		</dependency>

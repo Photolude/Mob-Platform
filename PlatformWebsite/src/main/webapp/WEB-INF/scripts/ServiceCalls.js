@@ -39,9 +39,10 @@ function callExternalServicePost(serviceCall, body, dataType, callbackSuccess, c
 function callExternalServicePut(serviceCall, body, dataType, callbackSuccess, callbackError)
 {
 	$.ajax({
-		type: "PUT",
+		type: "POST",
 		url: "/externalrequest/put",
-		data: { data: JSON.stringify(body), request: serviceCall, requestDataType: dataType },
+		data : { data: JSON.stringify(body), request: serviceCall, requestDataType: dataType },
+		dataType: "application/json",
 		success: function(data){
 			if(callbackSuccess != null)
 			{
@@ -52,7 +53,27 @@ function callExternalServicePut(serviceCall, body, dataType, callbackSuccess, ca
 				callbackSuccess(data);
 			}
 		},
-		fail: callbackError,
-		dataType: "application/json"
+		error: callbackError
+	});
+}
+
+function callExternalServiceDelete(serviceCall, body, dataType, callbackSuccess, callbackError)
+{
+	$.ajax({
+		type: "POST",
+		url: "/externalrequest/delete",
+		data : { data: JSON.stringify(body), request: serviceCall, requestDataType: dataType },
+		dataType: "application/json",
+		success: function(data){
+			if(callbackSuccess != null)
+			{
+				if(dataType == "application/json" && data != "")
+				{
+					data = eval("(" + data + ")");
+				}
+				callbackSuccess(data);
+			}
+		},
+		error: callbackError
 	});
 }

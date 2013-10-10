@@ -27,6 +27,14 @@
 			<script>this is javascript content</script>
 			<html>this is html content</html>
 		</pageDefinition>
+		
+		<art>
+		    <image>
+		        <path>gear_32.png</path>
+		        <data>data:gear_32.png</data>
+		    </image>
+		</art>
+		
 		<attribute>
 		    <link>http://www.photolude.com</link>
 		    <reason>To test out attribution</reason>

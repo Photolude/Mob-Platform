@@ -15,6 +15,7 @@ function MobInfrastructure()
 	
 	this.fireCallback = function(callbackName, object)
 	{
+		var retval = null;
 		if(this.callbackMap[callbackName] != null)
 		{
 			var callBacks = this.callbackMap[callbackName];
@@ -23,10 +24,17 @@ function MobInfrastructure()
 			{
 				if(callBacks[i] != null)
 				{
-					callBacks[i](object);
+					var callbackValue = callBacks[i](object);
+					
+					if(callbackValue != null)
+					{
+						retval = callbackValue;
+					}
 				}
 			}
 		}
+		
+		return retval;
 	}
 	
 	this.load = function()

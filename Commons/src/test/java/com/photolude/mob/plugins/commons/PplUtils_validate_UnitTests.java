@@ -11,8 +11,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.photolude.mob.commons.plugins.ppl.Ppl;
-import com.photolude.mob.commons.plugins.utils.PplUtils;
+import com.mob.commons.plugins.ppl.Ppl;
+import com.mob.commons.plugins.utils.PplUtils;
 
 @RunWith(Parameterized.class)
 public class PplUtils_validate_UnitTests {

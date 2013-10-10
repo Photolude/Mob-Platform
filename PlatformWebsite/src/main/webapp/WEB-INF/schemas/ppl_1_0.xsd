@@ -23,7 +23,22 @@
 			
 			<xs:element name="mainMenu" type="mainMenuType" minOccurs="0" maxOccurs="1" />
 			<xs:element name="pageDefinition" type="pageDefinitionType" minOccurs="0" maxOccurs="unbounded" />
+			<xs:element name="art" type="artType" minOccurs="0" />
 			<xs:element name="attribute" type="attributeType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="artType">
+		<xs:sequence>
+			<xs:element name="imageRoot" type="xs:string" minOccurs="0" />
+			<xs:element name="image" type="imageType" minOccurs="0" maxOccurs="unbounded" />
+		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="imageType">
+		<xs:sequence>
+			<xs:element name="path" type="xs:string" />
+			<xs:element name="data" type="xs:string" minOccurs="0"/>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -53,15 +68,17 @@
 			<xs:element name="reason" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
-	
+
 	<xs:complexType name="pageDefinitionType">
 		<xs:sequence>
 			<xs:element name="id" type="xs:string" />
 			<xs:element name="datacall" type="dataCallType" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="html" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 			<xs:element name="script" type="xs:string" minOccurs="0" maxOccurs="unbounded"  />
+			<xs:element name="style" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
+	
 	<xs:complexType name="dataCallType">
 		<xs:sequence>
 			<xs:element name="method" type="xs:string" />
@@ -71,11 +88,13 @@
 			<xs:element name="pageVariable" type="xs:string" />
 		</xs:sequence>
 	</xs:complexType>
+	
 	<xs:complexType name="mainMenuType">
 		<xs:sequence>
 			<xs:element name="item" type="mainMenuItemType" minOccurs="1" maxOccurs="unbounded" />
 		</xs:sequence>
 	</xs:complexType>
+	
 	<xs:complexType name="mainMenuItemType">
 		<xs:sequence>
 			<xs:element name="displayName" type="xs:string" />

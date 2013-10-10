@@ -10,7 +10,7 @@
 		
 		<external>
 		    <service>
-		        <root>http://localhost:13050/</root>
+		        <root>http://localhost:8080/mob-platform-service/</root>
 		        <alias>
 		            <name>pluginAction</name>
 		            <uri>Plugins/user/${usertoken}/plugin</uri>

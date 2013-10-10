@@ -1,0 +1,185 @@
+package com.mob.www.platform.controller;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.mob.commons.plugins.servicemodel.MainMenuItem;
+import com.mob.commons.service.clients.IPluginService;
+import com.mob.commons.service.clients.IUserServiceClient;
+import com.mob.www.platform.model.LogonRequest;
+import com.mob.www.platform.services.IAnonymousAccess;
+import com.mob.www.platform.services.IServiceContracts;
+
+@Controller
+@RequestMapping("/")
+public class PlatformController 
+{
+	public static final String SESSION_USER_TOKEN = "userToken";
+	public static final String SESSION_MENU = "menu";
+	
+	public static final String MODEL_PLUGINS = "plugins"; 
+	public static final String MODEL_API_BODY = "contents";
+	public static final String MODEL_DATA_CALLS = "datacalls";
+	public static final String MODEL_ATTRIBUTIONS = "attributions";
+	
+	public static final String REQUEST_HEADER_REFERER = "referer";
+	
+	public static final String REDIRECT_TO_HOME = "redirect:/";
+	
+	public static final String API_RESPONSE_VIEW = "apiResponse";
+	public static final String API_REQUEST_PARAM = "request";
+	
+	public static final String ACTIVE_SCRIPTS = "activeScripts";
+	
+	private IUserServiceClient userServiceClient;
+	public IUserServiceClient getUserServiceClient(){ return this.userServiceClient; }
+	public PlatformController setUserServiceClient(IUserServiceClient value)
+	{
+		this.userServiceClient = value;
+		return this;
+	}
+	
+	private IPluginService pluginService;
+	public IPluginService getPluginService(){ return this.pluginService; }
+	public PlatformController setPluginService(IPluginService value)
+	{
+		this.pluginService = value;
+		return this;
+	}
+	
+	private IServiceContracts contractService;
+	public IServiceContracts getContractService(){ return this.contractService; }
+	public PlatformController setContractService(IServiceContracts value)
+	{
+		this.contractService = value;
+		return this;
+	}
+	
+	private IAnonymousAccess anonymousAccess;
+	public IAnonymousAccess getAnonymousAccess(){ return this.anonymousAccess; }
+	public PlatformController setAnonymousAccess(IAnonymousAccess value)
+	{
+		this.anonymousAccess = value;
+		return this;
+	}
+	
+	@RequestMapping(value = "/logon", method = RequestMethod.POST)
+	public ModelAndView logon(LogonRequest logonData, HttpServletRequest request)
+	{
+		if(logonData.getEmail() != null && logonData.getEmail().length() != 0 &&
+				logonData.getPassword() != null && logonData.getPassword().length() != 0 &&
+				(this.anonymousAccess == null || !this.anonymousAccess.isAnonymousUsername(logonData.getEmail())))
+		{
+			String userToken = this.userServiceClient.logon(logonData.getEmail(), logonData.getPassword());
+			
+			if(userToken != null && userToken.length() > 0)
+			{
+				loadUserData(request, userToken);
+			}
+			else
+			{
+				//
+				// Logon failed
+				//
+				return new ModelAndView("redirect:" + request.getHeader(REQUEST_HEADER_REFERER) + "?error=logon");
+			}
+		}
+		else
+		{
+			//
+			// Logon failed
+			//
+			return new ModelAndView("redirect:" + request.getHeader(REQUEST_HEADER_REFERER) + "?error=logon");
+		}
+		
+		return new ModelAndView(REDIRECT_TO_HOME);
+	}
+	
+	@RequestMapping(value = "/logon/anonymous", method = RequestMethod.GET)
+	public ModelAndView logonAnonymous(HttpServletRequest request)
+	{
+		String userToken = this.anonymousAccess.getDefaultIdentity();
+		
+		if(userToken != null && userToken.length() > 0)
+		{
+			loadUserData(request, userToken);
+			
+			return new ModelAndView(REDIRECT_TO_HOME);
+		}
+		else
+		{
+			//
+			// Logon failed
+			//
+			return new ModelAndView("redirect:" + request.getHeader(REQUEST_HEADER_REFERER) + "?error=logon");
+		}
+	}
+	
+	private void loadUserData(HttpServletRequest request, String userToken)
+	{
+		//
+		// Logon succeeded
+		//
+		HttpSession session = request.getSession();
+		session.setAttribute(SESSION_USER_TOKEN, userToken);
+		
+		MainMenuItem[] menuItems = this.pluginService.getUserMenu(userToken);
+		session.setAttribute(SESSION_MENU, menuItems);
+		ObjectMapper mapper = new ObjectMapper();
+		try {
+			session.setAttribute("menuData", mapper.writeValueAsString(menuItems).replace("\\", "\\\\").replace("\"", "\\\""));
+		} catch (JsonGenerationException e) {
+			Logger.getLogger(this.getClass()).error("Could not load the user menu for client comsumption.");
+		} catch (JsonMappingException e) {
+			Logger.getLogger(this.getClass()).error("Could not load the user menu for client comsumption.");
+		} catch (IOException e) {
+			Logger.getLogger(this.getClass()).error("Could not load the user menu for client comsumption.");
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.GET)
+	public ModelAndView homePage(HttpServletRequest request)
+	{
+		HttpSession session = request.getSession(false);
+		if(session != null)
+		{
+			MainMenuItem[] menuItems = (MainMenuItem[])session.getAttribute(SESSION_MENU);
+			if(menuItems != null && menuItems.length > 0)
+			{
+				return new ModelAndView("redirect:" + "/apps/" + menuItems[0].getTarget());
+			}
+		}
+		
+		return new ModelAndView("index");
+	}
+	
+	@RequestMapping(value = "/status/health", method = RequestMethod.GET)
+	public ModelAndView healthPage(ModelMap model)
+	{
+		return new ModelAndView("index");
+	}
+	
+	@RequestMapping(value = "/session/refresh", method = RequestMethod.GET)
+	public ModelAndView refreshSession(HttpServletRequest request)
+	{
+		HttpSession session = request.getSession();
+		String userToken = (String)session.getAttribute(SESSION_USER_TOKEN);
+		
+		MainMenuItem[] menuItems = this.pluginService.getUserMenu(userToken);
+		session.setAttribute(SESSION_MENU, menuItems);
+		
+		return new ModelAndView(REDIRECT_TO_HOME);
+	}
+}

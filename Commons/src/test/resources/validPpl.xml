@@ -30,5 +30,10 @@
 			<script>target/test-classes/pageLogic.js</script>
 			<html>target/test-classes/body.html</html>
 		</pageDefinition>
+		
+		<art>
+		    <imageRoot>target/test-classes/images</imageRoot>
+		    <image><path>gear_32.png</path></image>
+		</art>
 	</plugin>
 </ppl>

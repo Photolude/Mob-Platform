@@ -9,11 +9,11 @@
 
     <repositories>
         <repository>
-            <id>com.photolude</id>
-            <name>Photolude Local Repo</name>
+            <id>com.mob</id>
+            <name>Local Repo</name>
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>true</enabled></snapshots>
-            <url>http://localhost:8081/nexus/content/repositories</url>
+            <url>http://localhost:9081/nexus/content/repositories</url>
         </repository>
     </repositories>
     
@@ -69,7 +69,7 @@
 
         <!-- Photolude -->
         <dependency>
-		  <groupId>com.photolude.mob</groupId>
+		  <groupId>com.mob</groupId>
 		  <artifactId>mob-platform-commons</artifactId>
 		  <version>0.0.1-SNAPSHOT</version>
 		</dependency>
@@ -146,7 +146,7 @@
 	                        <outfile>${project.build.directory}/ppl.exe</outfile>
 	                        <errTitle>App Error</errTitle>
 	                        <classPath>
-	                            <mainClass>com.photolude.sdk.ppl.EntryPoint</mainClass>
+	                            <mainClass>com.mob.sdk.ppl.EntryPoint</mainClass>
 	                            <addDependencies>true</addDependencies>
 	                        </classPath>
 	                        <!-- <icon>application.ico</icon> -->

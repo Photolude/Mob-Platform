@@ -11,8 +11,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
-import com.photolude.mob.plugins.commons.ppl.Ppl;
-import com.photolude.mob.plugins.commons.utils.PplUtils;
+import com.mob.commons.plugins.ppl.Ppl;
+import com.mob.commons.plugins.utils.PplUtils;
 
 @RunWith(Parameterized.class)
 public class PplUtils_validate_UnitTests {
@@ -22,27 +22,29 @@ public class PplUtils_validate_UnitTests {
     public static Collection data() {
         return Arrays.asList(new Object[][] 
 		{
-    		{"/validPpl.xml", false, true},
-    		{"/MismatchPpl.xml", false, false},
-    		{"/InvalidHtmlPathPpl.xml", false, false},
-    		{"/InvalidScriptPathPpl.xml", false, false},
-    		{"/InvalidScriptPathPpl.xml", false, false},
-    		{"/missingIconPpl.xml", false, false},
+    		{"/validPpl.xml", false, true, true},
+    		{"/MismatchPpl.xml", false, false, false},
+    		{"/InvalidHtmlPathPpl.xml", false, false, false},
+    		{"/InvalidScriptPathPpl.xml", false, false, false},
+    		{"/InvalidScriptPathPpl.xml", false, false, false},
+    		{"/missingIconPpl.xml", false, false, false},
     		
-    		{"/validServerPpl.xml", true, true},
-    		{"/validPpl.xml", true, false},
+    		{"/validServerPpl.xml", true, false, true},
+    		{"/validPpl.xml", true, false, false},
 		});
 	}
 	
 	private String resource;
 	private boolean serverCriteria;
 	private boolean expectedResult;
+	private boolean expectTags;
 	
-	public PplUtils_validate_UnitTests(String resource, boolean serverCriteria, boolean expectedResult)
+	public PplUtils_validate_UnitTests(String resource, boolean serverCriteria, boolean expectTags, boolean expectedResult)
 	{
 		this.resource = resource;
 		this.serverCriteria = serverCriteria;
 		this.expectedResult = expectedResult;
+		this.expectTags = expectTags;
 	}
 	
 	@Test
@@ -56,5 +58,10 @@ public class PplUtils_validate_UnitTests {
 		Assert.assertNotNull(ppl);
 		
 		Assert.assertEquals(this.expectedResult, PplUtils.validate(ppl, this.serverCriteria));
+		
+		if(this.expectTags)
+		{
+			Assert.assertNotNull(ppl.getPlugin().get(0).getTags());
+		}
 	}
 }

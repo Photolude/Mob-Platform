@@ -1,0 +1,42 @@
+<ppl>
+	<companykey>856a50bf-4735-4e1c-9e77-d05fa983c5b5</companykey>
+	<plugin>
+		<pluginName>Main Menu</pluginName>
+		<version>1.0.0</version>
+		<role>MainMenu</role>
+		<description>
+		    This app provides a menu system which allows you to use menu items to get to pages.
+	    </description>
+		<icon>menu.png</icon>
+		<tags>#menu</tags>
+		
+		<pageDefinition>
+		    <!-- leverage this plugin on all the pages -->
+			<id>*</id>
+			<datacall>
+			    <method>GET</method>
+			    <uri>MainMenu/getMainMenuData</uri>
+			    <contentType>plain/text</contentType>
+			    <pageVariable>mainMenuData</pageVariable>
+			</datacall>
+			
+			<script>scripts/MenuLogic.js</script>
+			<html>html/menu.html</html>
+		</pageDefinition>
+		
+		<external>
+		    <service>
+		        <root>http://localhost:8080/mob-platform-service/Plugins/</root>
+		        <alias>
+			        <name>getMainMenuData</name>
+			    	<uri>user/${usertoken}/menu</uri>
+				</alias>
+	        </service>
+		</external>
+	</plugin>
+	<attribute>
+	    <link>http://www.javier-aroche.com/</link>
+	    <reason>the menu icon used was obtained from Javier Aroche</reason>
+	</attribute>
+	
+</ppl>

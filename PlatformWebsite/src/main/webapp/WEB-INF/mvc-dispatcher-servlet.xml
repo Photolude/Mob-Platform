@@ -21,26 +21,69 @@
     <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
 	
     <mvc:interceptors>
-	    <bean class="com.photolude.mob.www.platform.controller.SecurityInterceptor">
-	        <property name="loggedOutPage"><value>https://localhost:13433</value></property>
+	    <bean class="com.mob.www.platform.controller.SecurityInterceptor">
+	        <property name="loggedOutPage"><value>http://localhost:8080/public/</value></property>
 	    </bean>
 	</mvc:interceptors>
-	    
-    <bean id="userService" class="com.photolude.mob.www.platform.services.DefaultUserService">
-        <property name="endpoint"><value>http://localhost:13050/user</value></property>
+
+    <bean id="userService" class="com.mob.commons.service.clients.DefaultUserServiceClient">
+        <property name="endpoint"><value>http://localhost:8080/mob-platform-service/user</value></property>
     </bean>
     
-	<bean class="com.photolude.mob.www.platform.controller.PlatformController">
+    <bean id="pluginService" class="com.mob.commons.service.clients.DefaultPluginServiceClient">
+        <property name="endpoint"><value>http://localhost:8080/mob-platform-service/Plugins</value></property>
+    </bean>
+    
+    <bean id="anonymousAccess" class="com.mob.www.platform.services.AnonymousAccess">
+        <property name="defaultIdentity"><value>35b2a314-8168-4745-98da-fd9a2fdf3618</value></property>
+        <property name="availableIdentities">
+            <value>35b2a314-8168-4745-98da-fd9a2fdf3618</value>
+        </property>
+		<property name="userNames">
+			<value>testuser@photolude.com</value>
+		</property>
+    </bean>
+    
+    <bean id="externalServiceContract" class="com.mob.www.platform.services.ExternalServiceContract" />
+    
+    <bean id="artCache" class="com.mob.www.platform.services.EhArtCache" />
+    
+	<bean class="com.mob.www.platform.controller.PlatformController">
 	    <property name="userServiceClient">
-            <ref bean="userService"/>
+            <ref bean="userService" />
         </property>
         <property name="pluginService">
-            <bean class="com.photolude.mob.www.platform.services.DefaultPluginService">
-                <property name="endpoint"><value>http://localhost:13050/Plugins</value></property>
-            </bean>
+            <ref bean="pluginService" />
         </property>
         <property name="contractService">
-            <bean class="com.photolude.mob.www.platform.services.ExternalServiceContract"/>
+            <ref bean="externalServiceContract" />
+        </property>
+        <property name="anonymousAccess">
+            <ref bean="anonymousAccess" />
+        </property>
+	</bean>
+	
+	<bean class="com.mob.www.platform.controller.ArtController">
+	    <property name="pluginService">
+            <ref bean="pluginService" />
+        </property>
+	    <property name="cache">
+	        <ref bean="artCache"/>
+        </property>
+	</bean>
+	
+	<bean class="com.mob.www.platform.controller.AppsController">
+        <property name="pluginService">
+            <ref bean="pluginService" />
+        </property>
+        <property name="contractService">
+            <ref bean="externalServiceContract" />
+        </property>
+	</bean>
+	
+	<bean class="com.mob.www.platform.controller.ExternalRequestController">
+        <property name="contractService">
+            <ref bean="externalServiceContract" />
         </property>
 	</bean>
 	

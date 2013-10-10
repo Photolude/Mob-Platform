@@ -17,30 +17,30 @@
 	<bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer"/>
 	<bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer"/>
 
-	<bean id="userDomain" class="com.photolude.mob.user.domain.UserAccountDomain">
+	<bean id="userDomain" class="com.mob.user.domain.UserAccountDomain">
 		<property name="userAccessLayer">
-			<bean class="com.photolude.mob.user.dal.UserAccessLayer">
+			<bean class="com.mob.user.dal.UserAccessLayer">
 				<property name="databaseUrl"><value>jdbc:mysql://localhost/photolude</value></property>
 				<property name="userName"><value>serviceuser</value></property>
 				<property name="password"><value>password</value></property>
 			</bean>
 		</property>
-		<property name="ceemAccessLayer">
-			<bean class="com.photolude.mob.user.dal.CeemAccessLayer">
-				<property name="connectionString"><value>jdbc:jtds:sqlserver://localhost;databaseName=ProductsAndTechnologies_CEEM;user=serviceuser;password=password;</value></property>
+		<property name="logonAccessLayer">
+			<bean class="com.mob.user.dal.DefaultLogonAccessLayer">
+				<property name="endpoint"><value>http://localhost:13051/ceem</value></property>
 			</bean>
 		</property>
 	</bean>
-	<bean id="pluginAccessLayer" class="com.photolude.mob.plugin.dal.PluginSqlAccessLayer">
+	<bean id="pluginAccessLayer" class="com.mob.plugin.dal.PluginSqlAccessLayer">
 		<property name="databaseUrl"><value>jdbc:mysql://localhost/photolude</value></property>
 		<property name="userName"><value>serviceuser</value></property>
 		<property name="password"><value>password</value></property>
 	</bean>
 	<jaxrs:server id="services" address="/">
 		<jaxrs:serviceBeans>
-			<bean class="com.photolude.mob.services.PluginManagementSvc">
+			<bean class="com.mob.services.PluginManagementSvc">
 				<property name="domain">
-					<bean class="com.photolude.mob.plugin.domain.PluginDomain">
+					<bean class="com.mob.plugin.domain.PluginDomain">
 						<property name="dataAccessLayer">
 							<ref bean="pluginAccessLayer"/>
 						</property>
@@ -51,7 +51,7 @@
 					</bean>
 				</property>
 				<property name="developmentDomain">
-					<bean class="com.photolude.mob.plugin.domain.DefaultDevelopmentDomain">
+					<bean class="com.mob.plugin.domain.DefaultDevelopmentDomain">
 						<property name="dataAccessLayer">
 							<ref bean="pluginAccessLayer"/>
 						</property>
@@ -61,7 +61,7 @@
 					</bean>
 				</property>
 			</bean>
-			<bean class="com.photolude.mob.services.UserManagementSvc">
+			<bean class="com.mob.services.UserManagementSvc">
 				<property name="userDomain">
 					<ref bean="userDomain"/>
 				</property>

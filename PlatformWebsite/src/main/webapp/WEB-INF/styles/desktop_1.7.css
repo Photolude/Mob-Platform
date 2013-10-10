@@ -48,29 +48,31 @@
 		height:400px;
 	}
 	
-	.fancyTextPlaceholder
+	.developmentDialog
 	{
-	    z-index:100;
-	    position:absolute;
-	    display:inline-block;
-	    
-	    font-family:Arial;
-	    font-size:14pt;
-	    color:#AAAAAA;
-	    padding:5px 5px 5px 5px;
-	    margin:5px 5px 5px 5px;
-	    letter-spacing:1px;
-	    
-	    vertical-align:middle;
+		position:fixed;
+		right:5px;
+		bottom:5px;
 	}
 	
-	.fancyTextInput
+	.dialog
 	{
-	    z-index:99;
-	    font-family:Arial;
-	    font-size:14pt;
-	    padding:5px 5px 5px 5px;
-	    margin:5px 5px 5px 5px;
+		display:inline-block;
+		z-index:200;
+		
+		border-style:solid;
+		border-width:1px;
+		border-top-left-radius:5px;
+		border-top-right-radius:5px;
+		
+		text-align:left;
+		
+		background-color:#FFF;
+	}
+	
+	.dialogBody
+	{
+		padding:5px;
 	}
 	
 	.header
@@ -145,5 +147,10 @@
 	    text-align:left;
 	    padding: 0px 20px 0px 20px;
 	    min-width:500px;
+	}
+	
+	.pageFooterCredits
+	{
+		display:inline-block;
 	}
 }

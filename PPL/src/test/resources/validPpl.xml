@@ -5,7 +5,7 @@
 		<version>1.0.0</version>
 		<role>AppManager</role>
 		<icon>target/test-classes/gear_32.png</icon>
-		
+		<tags>#browsing</tags>
 		<mainMenu>
 			<item>
 				<displayName>displayName</displayName>
@@ -19,5 +19,10 @@
 			<script>target/test-classes/pageLogic.js</script>
 			<html>target/test-classes/body.html</html>
 		</pageDefinition>
+		
+		<art>
+		    <imageRoot>target/test-classes/image/</imageRoot>
+		    <image><path>gear_32.png</path></image>
+		</art>
 	</plugin>
 </ppl>

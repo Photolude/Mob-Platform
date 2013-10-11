@@ -141,4 +141,18 @@ As part of a plugin you can define public navigation items which point to a spec
 
 **Writing Mob Html:**
 
-Unlike a typical webpage, the mob approach to generating a webpage is unstructured during development time, and even during download time.  Only once the data is brought down to the client
+Unlike a typical webpage the decentralized approach to generating a webpage is unstructured during development time, with bits and peices of the full webpage being developed and deployed seperately. The html and javascript stay in a state of being unorganized on the server and even during download time.  Only once the data is on the client is it organized and rendered.
+
+In order to get the html to self organize two things must happen.  First you must define camps in the html.
+
+```
+<div camp="general-content">
+</div>
+```
+A camp defines an area which can be filled by other components called supporters.  
+```
+<div supporter="general-content">
+   ... some content here ...
+</div>
+```
+This is simular to a templates in MVC and other template technologies, except that many items can fill the camp, meaning there can be multiple supporters all of which will be appended to the camp area.

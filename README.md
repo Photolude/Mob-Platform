@@ -91,25 +91,25 @@ The example above supplies access to specific url endpoints for service calls to
 Defining a page:
 The following can be found in this repository in the subpath: PlatformPlugins/AppsManager/ppl.xml
 
+```
 <pageDefinition>
-	<pageDefinition>
-		<id>AppsManager</id>
-		
-		<datacall>
-			<method>GET</method>
-			<uri>AppManager/requiredRoles</uri>
-			<pageVariable>requiredRoles</pageVariable>
-		</datacall>
-		
-		<script>scripts/AppModel.js</script>
-		<script>scripts/pageLogic.js</script>
-		<script>scripts/detailsDialogModel.js</script>
-		
-		<html>html/body.html</html>
-		<html>html/detailsDialog.html</html>
-		
-	</pageDefinition>
+	<id>AppsManager</id>
+	
+	<datacall>
+		<method>GET</method>
+		<uri>AppManager/requiredRoles</uri>
+		<pageVariable>requiredRoles</pageVariable>
+	</datacall>
+	
+	<script>scripts/AppModel.js</script>
+	<script>scripts/pageLogic.js</script>
+	<script>scripts/detailsDialogModel.js</script>
+	
+	<html>html/body.html</html>
+	<html>html/detailsDialog.html</html>
+	
 </pageDefinition>
+```
 
 Here you can see that a ppl plugin can define a page.  A page is a simple id, which shouldn't be unique, as it defines what the web content contributes to.  If multiple ppl plugins all define a page with the same name it means that their web content will all be placed on the page when it renders.  This allows multiple ppl plugins to contribute content and functionality in a non-centralized way to the same page.  If the id for the page is "*", then the plugin will contribute the contents specified to all pages.  This can be seen in the development tools at "PlatformPlugins/DevelopmentTools", where a development dialog is specified to show on all pages if installed.
 

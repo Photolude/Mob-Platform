@@ -47,7 +47,7 @@ Creating a component
 --------------------
 Web components are called ppl, which combine to make up the Mob ;-).  PPL are comprised of a definition as to what the specific ppl definition is, defines what navigation is publicly discoverable, what pages it contributes to and what images are to be made available.  A single ppl file can contain many plugins which in turn contain the plugin definition, but does not need to contain any of the rest of the aspects which are optional.
 
-Defining a a plugin:
+**Defining a a plugin:**
 The following can be found in this repository in the subpath: PlatformPlugins/AppsManager/ppl.xml
 
 ```
@@ -68,7 +68,7 @@ The company key is leveraged by the ppl.exe in its packaging to communicate to t
 
 Defining a plugin is fairly simple.  You must define a plugin name, a version, a role, a description, an icon which is to be used when browsing plugins (this is required, but only displayed if the user has access to an app which displays the mob catalog).  Tags can be supplied for the plugin, which allows any app manager system to be able to filter on specific categories.  An example of this can be found in the App Manager itself.
 
-Defining service calls:
+**Defining service calls:**
 The following can be found in this repository in the subpath: PlatformPlugins/AppsManager/ppl.xml
 
 ```
@@ -93,7 +93,7 @@ The following can be found in this repository in the subpath: PlatformPlugins/Ap
 
 The example above supplies access to specific url endpoints for service calls to be made either as part of the page construction or as part of ajax queries being made to the server.  The "service" element defines a scope of aliasing where a root url is provided then sub urls can be aliased.  Aliased calls can be referenced leveraging the role name and the alias as seen below in the "Defining a page" section.  All other ajax calls will be rejected by the server.  One big reason for this capability is to provide ajax access to services when the site is operating in a secure https environment, where ajax calls may not be possible to external services.
 
-Defining a page:
+**Defining a page:**
 The following can be found in this repository in the subpath: PlatformPlugins/AppsManager/ppl.xml
 
 ```
@@ -122,7 +122,7 @@ Data calls can be use to stage information from a service.  By leveraging existi
 
 The script tag point to javascript files, while the html tag points to html files.  A peice which isn't here is the style tage which is used to point at css files.
 
-Defining public navigation:
+**Defining public navigation:**
 
 ```
 <mainMenu>
@@ -136,5 +136,5 @@ Defining public navigation:
 
 As part of a plugin you can define public navigation items which point to a specific page definition.  In order to define a menu item you must have a page definition with the same name.  This information will be made available to the page at download time, and plugins like "PlatformPlugins/Menu" will turn this information into a menu system.  App priority is based off of assending order.  If a priority tag is not specified the default priority for a menu item is 50. A caution if you don't specify an order is that you cannot guarentee an order if multiple menu items are present.
 
-Writing Mob Html:
+**Writing Mob Html:**
 Unlike a typical webpage, the mob approach to generating a webpage is unstructured during development time, and even during download time.  Only once the data is brought down to the client

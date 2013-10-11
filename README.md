@@ -49,6 +49,8 @@ Web components are called ppl, which combine to make up the Mob ;-).  PPL are co
 
 Defining a a plugin:
 The following can be found in this repository in the subpath: PlatformPlugins/AppsManager/ppl.xml
+
+```
 <ppl>
 	<companykey>856a50bf-4735-4e1c-9e77-d05fa983c5b5</companykey>
 	<plugin>
@@ -60,6 +62,7 @@ The following can be found in this repository in the subpath: PlatformPlugins/Ap
 		<tags>#appmanagement</tags>
 	<plugin>
 </ppl>
+```
 
 The company key is leveraged by the ppl.exe in its packaging to communicate to the server who is actually doing the deployment.  This value is cross checked with company keys which the mob server knows about, and only those with valid company keys can publish to the mob system.  This feature also allows idenfitication of the creator when looking at the catalog of available plugins in the mob system.
 
@@ -68,6 +71,7 @@ Defining a plugin is fairly simple.  You must define a plugin name, a version, a
 Defining service calls:
 The following can be found in this repository in the subpath: PlatformPlugins/AppsManager/ppl.xml
 
+```
 <external>
 	<service>
 		<root>http://localhost:8080/mob-platform-service/</root>
@@ -85,6 +89,7 @@ The following can be found in this repository in the subpath: PlatformPlugins/Ap
 		</alias>
 	</service>
 </external>
+```
 
 The example above supplies access to specific url endpoints for service calls to be made either as part of the page construction or as part of ajax queries being made to the server.  The "service" element defines a scope of aliasing where a root url is provided then sub urls can be aliased.  Aliased calls can be referenced leveraging the role name and the alias as seen below in the "Defining a page" section.  All other ajax calls will be rejected by the server.  One big reason for this capability is to provide ajax access to services when the site is operating in a secure https environment, where ajax calls may not be possible to external services.
 
@@ -119,6 +124,7 @@ The script tag point to javascript files, while the html tag points to html file
 
 Defining public navigation:
 
+```
 <mainMenu>
 	<item>
 		<displayName>Apps</displayName>
@@ -126,6 +132,7 @@ Defining public navigation:
 		<target>AppsManager</target>
 	</item>
 </mainMenu>
+```
 
 As part of a plugin you can define public navigation items which point to a specific page definition.  In order to define a menu item you must have a page definition with the same name.  This information will be made available to the page at download time, and plugins like "PlatformPlugins/Menu" will turn this information into a menu system.  App priority is based off of assending order.  If a priority tag is not specified the default priority for a menu item is 50. A caution if you don't specify an order is that you cannot guarentee an order if multiple menu items are present.
 

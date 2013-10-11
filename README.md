@@ -67,6 +67,7 @@ Defining a plugin is fairly simple.  You must define a plugin name, a version, a
 
 Defining service calls:
 The following can be found in this repository in the subpath: PlatformPlugins/AppsManager/ppl.xml
+
 <external>
 	<service>
 		<root>http://localhost:8080/mob-platform-service/</root>
@@ -89,6 +90,7 @@ The example above supplies access to specific url endpoints for service calls to
 
 Defining a page:
 The following can be found in this repository in the subpath: PlatformPlugins/AppsManager/ppl.xml
+
 <pageDefinition>
 	<id>AppsManager</id>
 	
@@ -114,6 +116,7 @@ Data calls can be use to stage information from a service.  By leveraging existi
 The script tag point to javascript files, while the html tag points to html files.  A peice which isn't here is the style tage which is used to point at css files.
 
 Defining public navigation:
+
 <mainMenu>
 	<item>
 		<displayName>Apps</displayName>

@@ -1,5 +1,9 @@
 package com.mob.www.platform.model;
 
+import java.util.concurrent.Future;
+
+import org.apache.http.HttpResponse;
+
 import com.mob.commons.plugins.servicemodel.PluginDataCall;
 
 public class DataCallResponse {
@@ -23,6 +27,14 @@ public class DataCallResponse {
 	public DataCallResponse setData(String value)
 	{
 		this.data = value;
+		return this;
+	}
+	
+	private Future<HttpResponse> response;
+	public Future<HttpResponse> getResponse(){ return this.response; }
+	public DataCallResponse setResponse(Future<HttpResponse> value)
+	{
+		this.response = value;
 		return this;
 	}
 	

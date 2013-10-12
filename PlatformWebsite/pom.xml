@@ -29,6 +29,8 @@
 		<tiles.version>2.2.2</tiles.version>
 		<javax.version>2.5</javax.version>
 		<jackson.version>1.8.6</jackson.version>
+	    <httpcore.version>4.3</httpcore.version>
+	    <httpclient.version>4.3</httpclient.version>
 	</properties>
 
 	<dependencies>
@@ -57,12 +59,6 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-			<version>4.0-alpha4</version>
-		</dependency>
-		
-		<dependency>
 		  <groupId>taglibs</groupId>
 		  <artifactId>standard</artifactId>
 		  <version>1.1.2</version>
@@ -77,11 +73,6 @@
 		
 		<!-- Http Components -->
 		<dependency>
-	      <groupId>org.apache.httpcomponents</groupId>
-	      <artifactId>httpcore</artifactId>
-	      <version>4.1</version>
-	    </dependency>
-		<dependency>
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
@@ -90,6 +81,11 @@
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpasyncclient</artifactId>
+			<version>4.0-alpha3</version>
 		</dependency>
 		
 		<!-- Tiles dependencies -->

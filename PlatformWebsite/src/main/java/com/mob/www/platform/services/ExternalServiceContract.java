@@ -61,6 +61,11 @@ public class ExternalServiceContract implements IServiceContracts {
 	
 	public boolean isCallAllowed(HttpSession session, String serviceCall)
 	{
+		if(serviceCall == null)
+		{
+			return false;
+		}
+		
 		String alias = serviceCall;
 		int firstSlash = serviceCall.indexOf('/');
 		if(firstSlash >= 0 && serviceCall.indexOf('/', firstSlash + 1) > 0)
@@ -387,6 +392,5 @@ public class ExternalServiceContract implements IServiceContracts {
 				}
 			}
 		}
-		
 	}
 }

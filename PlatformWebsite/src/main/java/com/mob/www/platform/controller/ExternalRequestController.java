@@ -13,8 +13,10 @@ import org.apache.http.HttpResponse;
 import org.apache.log4j.Logger;
 import org.apache.log4j.lf5.util.StreamUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.HandlerMapping;
 
 import com.mob.www.platform.model.ExternalPostRequest;
 import com.mob.www.platform.services.IServiceContracts;
@@ -30,11 +32,11 @@ public class ExternalRequestController {
 		return this;
 	}
 	
-	@RequestMapping(value = "/get", method = RequestMethod.GET)
+	@RequestMapping(value = "/get/**", method = RequestMethod.GET)
 	public void get(HttpServletRequest request, HttpServletResponse response)
 	{
+		String serviceCall = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
 		HttpSession session = request.getSession();
-		String serviceCall = request.getParameter(PlatformController.API_REQUEST_PARAM);
 		
 		if(this.contractService.isCallAllowed(session, serviceCall))
 		{
@@ -113,6 +115,7 @@ public class ExternalRequestController {
 				}
 				for(Header header : serviceResponse.getAllHeaders())
 				{
+					String headerValue = header.getValue();
 					response.setHeader(header.getName(), header.getValue());
 				}
 			}

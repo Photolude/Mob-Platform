@@ -1,6 +1,6 @@
 function getExternalServiceCallPath(serviceCall)
 {
-	return "/externalrequest/get?request=" + encodeURIComponent(serviceCall);
+	return "/externalrequest/get/" + serviceCall;
 }
 
 function callExternalServiceGet(serviceCall, callback)

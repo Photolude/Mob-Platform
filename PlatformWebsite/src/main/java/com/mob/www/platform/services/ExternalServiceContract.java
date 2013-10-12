@@ -33,7 +33,7 @@ import com.mob.www.platform.controller.PlatformController;
 import com.mob.www.platform.model.DataCallResponse;
 
 public class ExternalServiceContract implements IServiceContracts {
-	private static final String SESSION_EXTERNALS = "externalservices";
+	public static final String SESSION_EXTERNALS = "externalservices";
 	private static final int STATUS_OK = 200;
 	private DefaultHttpAsyncClient httpClient = null;
 	
@@ -106,27 +106,11 @@ public class ExternalServiceContract implements IServiceContracts {
 	public Future<HttpResponse> callServiceWithGetAsync(HttpSession session, String serviceCall) {
 		Logger logger = Logger.getLogger(this.getClass());
 		
-		String alias = serviceCall;
-		String params = null;
-		int firstSlash = serviceCall.indexOf('/');
-		if(firstSlash >= 0 && serviceCall.indexOf('/', firstSlash + 1) > 0)
-		{
-			int secondSlash = serviceCall.indexOf('/', firstSlash + 1);
-			alias = serviceCall.substring(0, secondSlash);
-			params = serviceCall.substring(secondSlash, serviceCall.length());
-		}
-		
-		
-		String endpoint = getEndpointFromAlias(session, alias);
+		String endpoint = getEndpointFromAlias(session, serviceCall);
 		if(endpoint == null)
 		{
-			logger.error("Could not find the specified alias " + alias);
+			logger.error("Could not find the specified alias " + serviceCall);
 			return null;
-		}
-		
-		if(params != null)
-		{
-			endpoint += params;
 		}
 		
 		this.getConnection();
@@ -341,7 +325,7 @@ public class ExternalServiceContract implements IServiceContracts {
 		return retval.toArray(new DataCallResponse[retval.size()]);
 	}
 	
-	private String getEndpointFromAlias(HttpSession session, String alias)
+	private String getEndpointFromAlias(HttpSession session, String serviceCall)
 	{
 		Object sessionObject = session.getAttribute(SESSION_EXTERNALS);
 		if(!(sessionObject instanceof Map))
@@ -350,18 +334,26 @@ public class ExternalServiceContract implements IServiceContracts {
 		}
 		@SuppressWarnings("unchecked")
 		Map<String,String> externalServices = (Map<String,String>)sessionObject;
+		ServiceCallParts parts = new ServiceCallParts(serviceCall);
 		
-		if(externalServices == null || !externalServices.containsKey(alias))
+		if(externalServices == null || !externalServices.containsKey(parts.getAlias()))
 		{
 			return null;
 		}
 		
-		String retval = externalServices.get(alias);
+		String retval = externalServices.get(parts.getAlias());
 		
-		if(retval != null)
+		if(retval == null)
 		{
-			String token = (String)session.getAttribute(PlatformController.SESSION_USER_TOKEN);
-			retval = retval.replace("${usertoken}", token);
+			return null;
+		}
+		
+		String token = (String)session.getAttribute(PlatformController.SESSION_USER_TOKEN);
+		retval = retval.replace("${usertoken}", token);
+		
+		if(parts.getPathParams() != null)
+		{
+			retval += parts.getPathParams();
 		}
 		
 		return retval;

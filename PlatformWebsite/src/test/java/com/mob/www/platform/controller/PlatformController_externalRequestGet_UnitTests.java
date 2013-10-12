@@ -13,11 +13,12 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 import org.mockito.Mockito;
+import org.springframework.web.servlet.HandlerMapping;
+
 import static org.mockito.Mockito.*;
 
 import com.mob.www.platform.constants.TestConstants;
 import com.mob.www.platform.controller.ExternalRequestController;
-import com.mob.www.platform.controller.PlatformController;
 import com.mob.www.platform.services.IServiceContracts;
 
 @RunWith(Parameterized.class)
@@ -62,7 +63,7 @@ public class PlatformController_externalRequestGet_UnitTests {
 		});
 	}
 	
-	private ExternalRequestController domain = new ExternalRequestController();
+	private ExternalRequestController controller = new ExternalRequestController();
 	private IServiceContracts contractService = mock(IServiceContracts.class);
 	private boolean isCallAllowed; 
 	private String serviceCall;
@@ -73,7 +74,7 @@ public class PlatformController_externalRequestGet_UnitTests {
 		this.isCallAllowed = isCallAllowed;
 		
 		Mockito.when(this.contractService.isCallAllowed(any(HttpSession.class), eq(serviceCall))).thenReturn(isCallAllowed);
-		domain.setContractService(this.contractService);
+		controller.setContractService(this.contractService);
 	}
 	
 	@Test
@@ -82,11 +83,11 @@ public class PlatformController_externalRequestGet_UnitTests {
 		HttpSession session = mock(HttpSession.class);
 		HttpServletRequest request = mock(HttpServletRequest.class);
 		Mockito.when(request.getSession()).thenReturn(session);
-		Mockito.when(request.getParameter(PlatformController.API_REQUEST_PARAM)).thenReturn(this.serviceCall);
+		Mockito.when(request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).thenReturn(this.serviceCall);
 		
 		HttpServletResponse response = mock(HttpServletResponse.class);
 		
-		this.domain.get(request, response);
+		this.controller.get(request, response);
 		
 		verify(this.contractService, times(this.isCallAllowed? 1 : 0)).callServiceWithGet(session, this.serviceCall);
 	}

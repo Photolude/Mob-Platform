@@ -36,30 +36,33 @@
 		<property name="userName"><value>serviceuser</value></property>
 		<property name="password"><value>password</value></property>
 	</bean>
+	
+	<bean id="pluginDomain" class="com.mob.plugin.domain.PluginDomain">
+		<property name="dataAccessLayer">
+			<ref bean="pluginAccessLayer"/>
+		</property>
+		<property name="userAccountService">
+			<ref bean="userDomain"/>
+		</property>
+		<property name="defaultPluginUser"><value>PluginDefaultUser</value></property>
+	</bean>
+	
+	<bean id="developmentDomain" class="com.mob.plugin.domain.DefaultDevelopmentDomain">
+		<property name="dataAccessLayer">
+			<ref bean="pluginAccessLayer"/>
+		</property>
+		<property name="userAccountService">
+			<ref bean="userDomain"/>
+		</property>
+	</bean>
+	
 	<jaxrs:server id="services" address="/">
 		<jaxrs:serviceBeans>
 			<bean class="com.mob.services.PluginManagementSvc">
-				<property name="domain">
-					<bean class="com.mob.plugin.domain.PluginDomain">
-						<property name="dataAccessLayer">
-							<ref bean="pluginAccessLayer"/>
-						</property>
-						<property name="userAccountService">
-							<ref bean="userDomain"/>
-						</property>
-						<property name="defaultPluginUser"><value>PluginDefaultUser</value></property>
-					</bean>
-				</property>
-				<property name="developmentDomain">
-					<bean class="com.mob.plugin.domain.DefaultDevelopmentDomain">
-						<property name="dataAccessLayer">
-							<ref bean="pluginAccessLayer"/>
-						</property>
-						<property name="userAccountService">
-							<ref bean="userDomain"/>
-						</property>
-					</bean>
-				</property>
+				<property name="domain"><ref bean="pluginDomain"/></property>
+			</bean>
+			<bean class="com.mob.services.DeploymentService">
+			    <property name="developmentDomain"><ref bean="developmentDomain"/></property>
 			</bean>
 			<bean class="com.mob.services.UserManagementSvc">
 				<property name="userDomain">

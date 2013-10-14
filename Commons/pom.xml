@@ -7,8 +7,8 @@
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>Photolude Plugins Commons</name>
-    <description>This is a library which contains common definitions between the photolude plugin service and the plugin clients.</description>
+    <name>Mob Plugins Commons</name>
+    <description>This is a library which contains common definitions between the mob plugin service and the plugin clients.</description>
     
     <properties>
         <spring.version>3.0.4.RELEASE</spring.version>

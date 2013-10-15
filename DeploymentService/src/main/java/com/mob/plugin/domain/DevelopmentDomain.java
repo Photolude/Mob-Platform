@@ -23,30 +23,30 @@ import com.mob.commons.plugins.servicemodel.PluginDataCall;
 import com.mob.commons.plugins.servicemodel.PluginScript;
 import com.mob.commons.plugins.servicemodel.ServiceAlias;
 import com.mob.commons.plugins.utils.PplUtils;
-import com.mob.plugin.dal.IPluginAccessLayer;
-import com.mob.user.domain.IUserAccountDomain;
+import com.mob.commons.service.clients.IUserServiceClient;
+import com.mob.plugin.dal.IPluginDeploymentAccessLayer;
 
-public class DefaultDevelopmentDomain implements IDevelopmentDomain {
+public class DevelopmentDomain implements IDevelopmentDomain {
 	
 	private int defaultPluginPriority = 50;
 	public int getDefaultPluginPriority(){ return this.defaultPluginPriority; }
-	public DefaultDevelopmentDomain setDefaultPluginPriority(int value)
+	public DevelopmentDomain setDefaultPluginPriority(int value)
 	{
 		this.defaultPluginPriority = value;
 		return this;
 	}
 	
-	private IPluginAccessLayer dataAccessLayer = null;
-	public IPluginAccessLayer getDataAccessLayer() { return this.dataAccessLayer; }
-	public DefaultDevelopmentDomain setDataAccessLayer(IPluginAccessLayer value) 
+	private IPluginDeploymentAccessLayer dataAccessLayer = null;
+	public IPluginDeploymentAccessLayer getDataAccessLayer() { return this.dataAccessLayer; }
+	public DevelopmentDomain setDataAccessLayer(IPluginDeploymentAccessLayer value) 
 	{ 
 		this.dataAccessLayer = value;
 		return this;
 	}
 	
-	private IUserAccountDomain userAccountService;
-	public IUserAccountDomain getUserAccountService(){ return this.userAccountService; }
-	public DefaultDevelopmentDomain setUserAccountService(IUserAccountDomain value)
+	private IUserServiceClient userAccountService;
+	public IUserServiceClient getUserAccountService(){ return this.userAccountService; }
+	public DevelopmentDomain setUserAccountService(IUserServiceClient value)
 	{
 		this.userAccountService = value;
 		return this;

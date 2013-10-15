@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ppl>
+	<plugin>
+		<pluginName>Apps Manager</pluginName>
+		<version>1.0.0</version>
+		<role>AppManager</role>
+		<description>This is a test</description>
+		<icon>data:gear_32.png</icon>
+		
+		<mainMenu>
+			<item>
+				<displayName>displayName</displayName>
+				<image>data:gear_32.png</image>
+				<target>AppsManager</target>
+			</item>
+		</mainMenu>
+		
+		<pageDefinition>
+		    <id>AppsManager</id>
+		    <datacall>
+		        <method>POST</method>
+		        <uri>http://test/uri</uri>
+		        <content>This is content</content>
+		        <contentType>plain/text</contentType>
+		        <pageVariable>testContent</pageVariable>
+		    </datacall>
+			<script>this is javascript content</script>
+			<html>this is html content</html>
+		</pageDefinition>
+		
+		<art>
+		    <image>
+		        <path>gear_32.png</path>
+		        <data>data:gear_32.png</data>
+		    </image>
+		</art>
+		
+		<attribute>
+		    <link>http://www.photolude.com</link>
+		    <reason>To test out attribution</reason>
+		</attribute>
+	</plugin>
+</ppl>

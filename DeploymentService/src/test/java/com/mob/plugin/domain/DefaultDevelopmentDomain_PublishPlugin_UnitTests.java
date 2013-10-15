@@ -22,9 +22,9 @@ import com.mob.commons.plugins.servicemodel.PluginDataCall;
 import com.mob.commons.plugins.servicemodel.PluginScript;
 import com.mob.commons.plugins.servicemodel.ServiceAlias;
 import com.mob.commons.plugins.utils.PplUtils;
-import com.mob.plugin.dal.IPluginAccessLayer;
-import com.mob.plugin.domain.DefaultDevelopmentDomain;
-import com.mob.user.domain.IUserAccountDomain;
+import com.mob.commons.service.clients.IUserServiceClient;
+import com.mob.plugin.dal.IPluginDeploymentAccessLayer;
+import com.mob.plugin.domain.DevelopmentDomain;
 
 @RunWith(Parameterized.class)
 public class DefaultDevelopmentDomain_PublishPlugin_UnitTests {
@@ -187,8 +187,8 @@ public class DefaultDevelopmentDomain_PublishPlugin_UnitTests {
 		});
 	}
 	
-	private DefaultDevelopmentDomain domain = new DefaultDevelopmentDomain();
-	private IPluginAccessLayer pluginAccessLayer;
+	private DevelopmentDomain domain = new DevelopmentDomain();
+	private IPluginDeploymentAccessLayer pluginAccessLayer;
 	private Ppl ppl;
 	private boolean expectedResult;
 	private MainMenuItem[] previousMenu;
@@ -210,7 +210,7 @@ public class DefaultDevelopmentDomain_PublishPlugin_UnitTests {
 		
 		this.ppl = PplUtils.unmarshalPplFile(this.getClass().getResource(DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests.PPL_SOURCE_VALID));
 		
-		this.pluginAccessLayer = mock(IPluginAccessLayer.class);
+		this.pluginAccessLayer = mock(IPluginDeploymentAccessLayer.class);
 		Mockito.when(this.pluginAccessLayer.getCompanyName(any(String.class))).thenReturn(companyName);
 		Mockito.when(this.pluginAccessLayer.getPluginByCompanyNameVersionToken(any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(oldPluginId);
 		Mockito.when(this.pluginAccessLayer.getPluginMenuItems(anyInt())).thenReturn(previousMenuItems);
@@ -223,7 +223,7 @@ public class DefaultDevelopmentDomain_PublishPlugin_UnitTests {
 		Mockito.when(this.pluginAccessLayer.addDataCall(anyInt(), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(addDataCallRetval);
 		Mockito.when(this.pluginAccessLayer.addArt(anyInt(), any(String.class), any(String.class), any(String.class))).thenReturn(addArtRetval);
 
-		IUserAccountDomain accountDomain = mock(IUserAccountDomain.class);
+		IUserServiceClient accountDomain = mock(IUserServiceClient.class);
 		
 		this.domain.setDataAccessLayer(this.pluginAccessLayer)
 					.setUserAccountService(accountDomain);

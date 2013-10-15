@@ -12,6 +12,7 @@
   <modules>
     <module>commons</module>
     <module>PlatformService</module>
+	<module>DeploymentService</module>
 	<module>PlatformWebsite</module>
 	<module>PPL</module>
   </modules>

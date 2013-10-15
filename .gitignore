@@ -7,3 +7,7 @@
 /PlatformService/.project
 /PlatformPlugins/.project
 /PlatformPlugins/AppsManager/.project
+/DeploymentService/.classpath
+/DeploymentService/.project
+/DeploymentService/.settings
+/DeploymentService/target

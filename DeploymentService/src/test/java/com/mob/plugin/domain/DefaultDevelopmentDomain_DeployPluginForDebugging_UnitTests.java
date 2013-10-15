@@ -13,8 +13,8 @@ import com.mob.commons.plugins.ppl.Ppl;
 import com.mob.commons.plugins.servicemodel.ExternalAttribution;
 import com.mob.commons.plugins.servicemodel.ServiceAlias;
 import com.mob.commons.plugins.utils.PplUtils;
-import com.mob.plugin.dal.IPluginAccessLayer;
-import com.mob.plugin.domain.DefaultDevelopmentDomain;
+import com.mob.plugin.dal.IPluginDeploymentAccessLayer;
+import com.mob.plugin.domain.DevelopmentDomain;
 
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
@@ -106,8 +106,8 @@ public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
 		});
 	}
 	
-	private DefaultDevelopmentDomain domain = new DefaultDevelopmentDomain();
-	private IPluginAccessLayer dal;
+	private DevelopmentDomain domain = new DevelopmentDomain();
+	private IPluginDeploymentAccessLayer dal;
 	private String userToken;
 	private Ppl pluginRequest;
 	private boolean expectedResult;
@@ -125,7 +125,7 @@ public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
 			this.pluginRequest = PplUtils.unmarshalPplFile(this.getClass().getResource(pplSource));
 		}
 		
-		this.dal = mock(IPluginAccessLayer.class);
+		this.dal = mock(IPluginDeploymentAccessLayer.class);
 		Mockito.when(this.dal.addPlugin(any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(ServiceAlias[].class), any(String.class), any(String.class), anyInt(), any(ExternalAttribution[].class))).thenReturn(1);
 		Mockito.when(this.dal.addScript(anyInt(), anyInt(), any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(2);
 		Mockito.when(this.dal.getCompanyName(any(String.class))).thenReturn("Company X");

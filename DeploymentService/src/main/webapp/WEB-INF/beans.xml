@@ -17,45 +17,29 @@
 	<bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer"/>
 	<bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer"/>
 
-	<bean id="userDomain" class="com.mob.user.domain.UserAccountDomain">
-		<property name="userAccessLayer">
-			<bean class="com.mob.user.dal.UserAccessLayer">
-				<property name="databaseUrl"><value>jdbc:mysql://localhost/photolude</value></property>
-				<property name="userName"><value>serviceuser</value></property>
-				<property name="password"><value>password</value></property>
-			</bean>
-		</property>
-		<property name="logonAccessLayer">
-			<bean class="com.mob.user.dal.DefaultLogonAccessLayer">
-				<property name="endpoint"><value>http://localhost:13051/ceem</value></property>
-			</bean>
-		</property>
-	</bean>
-	<bean id="pluginAccessLayer" class="com.mob.plugin.dal.PluginSqlAccessLayer">
+	<bean id="userService" class="com.mob.commons.service.clients.DefaultUserServiceClient">
+        <property name="endpoint"><value>http://localhost:8080/mob-platform-service/user</value></property>
+    </bean>
+	
+	<bean id="pluginAccessLayer" class="com.mob.plugin.dal.PluginDeploymentSqlAccessLayer">
 		<property name="databaseUrl"><value>jdbc:mysql://localhost/photolude</value></property>
 		<property name="userName"><value>serviceuser</value></property>
 		<property name="password"><value>password</value></property>
 	</bean>
 	
-	<bean id="pluginDomain" class="com.mob.plugin.domain.PluginDomain">
+	<bean id="developmentDomain" class="com.mob.plugin.domain.DevelopmentDomain">
 		<property name="dataAccessLayer">
 			<ref bean="pluginAccessLayer"/>
 		</property>
 		<property name="userAccountService">
-			<ref bean="userDomain"/>
+			<ref bean="userService"/>
 		</property>
-		<property name="defaultPluginUser"><value>PluginDefaultUser</value></property>
 	</bean>
 	
 	<jaxrs:server id="services" address="/">
 		<jaxrs:serviceBeans>
-			<bean class="com.mob.services.PluginManagementSvc">
-				<property name="domain"><ref bean="pluginDomain"/></property>
-			</bean>
-			<bean class="com.mob.services.UserManagementSvc">
-				<property name="userDomain">
-					<ref bean="userDomain"/>
-				</property>
+			<bean class="com.mob.services.DeploymentService">
+			    <property name="developmentDomain"><ref bean="developmentDomain"/></property>
 			</bean>
 		</jaxrs:serviceBeans>
 		<jaxrs:providers>

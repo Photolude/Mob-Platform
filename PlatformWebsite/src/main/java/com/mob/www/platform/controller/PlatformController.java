@@ -3,7 +3,6 @@ package com.mob.www.platform.controller;
 import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonGenerationException;
@@ -21,27 +20,22 @@ import com.mob.commons.service.clients.IUserServiceClient;
 import com.mob.www.platform.model.LogonRequest;
 import com.mob.www.platform.services.IAnonymousAccess;
 import com.mob.www.platform.services.IServiceContracts;
+import com.mob.www.platform.services.ServiceCallContext;
 
 @Controller
 @RequestMapping("/")
 public class PlatformController 
 {
-	public static final String SESSION_USER_TOKEN = "userToken";
-	public static final String SESSION_MENU = "menu";
-	
 	public static final String MODEL_PLUGINS = "plugins"; 
 	public static final String MODEL_API_BODY = "contents";
 	public static final String MODEL_DATA_CALLS = "datacalls";
 	public static final String MODEL_ATTRIBUTIONS = "attributions";
-	
 	public static final String REQUEST_HEADER_REFERER = "referer";
-	
 	public static final String REDIRECT_TO_HOME = "redirect:/";
-	
 	public static final String API_RESPONSE_VIEW = "apiResponse";
 	public static final String API_REQUEST_PARAM = "request";
 	
-	public static final String ACTIVE_SCRIPTS = "activeScripts";
+	private static final Logger logger = Logger.getLogger(PlatformController.class);
 	
 	private IUserServiceClient userServiceClient;
 	public IUserServiceClient getUserServiceClient(){ return this.userServiceClient; }
@@ -132,30 +126,40 @@ public class PlatformController
 		//
 		// Logon succeeded
 		//
-		HttpSession session = request.getSession();
-		session.setAttribute(SESSION_USER_TOKEN, userToken);
+		request.getSession();
+		ServiceCallContext context = new ServiceCallContext(request);
+		context.setUserToken(userToken);
 		
 		MainMenuItem[] menuItems = this.pluginService.getUserMenu(userToken);
-		session.setAttribute(SESSION_MENU, menuItems);
+		context.setMenuItems(menuItems);
+		
 		ObjectMapper mapper = new ObjectMapper();
 		try {
-			session.setAttribute("menuData", mapper.writeValueAsString(menuItems).replace("\\", "\\\\").replace("\"", "\\\""));
+			context.setMenuData(mapper.writeValueAsString(menuItems).replace("\\", "\\\\").replace("\"", "\\\""));
 		} catch (JsonGenerationException e) {
-			Logger.getLogger(this.getClass()).error("Could not load the user menu for client comsumption.");
+			logger.error("Could not load the user menu for client comsumption.");
 		} catch (JsonMappingException e) {
-			Logger.getLogger(this.getClass()).error("Could not load the user menu for client comsumption.");
+			logger.error("Could not load the user menu for client comsumption.");
 		} catch (IOException e) {
-			Logger.getLogger(this.getClass()).error("Could not load the user menu for client comsumption.");
+			logger.error("Could not load the user menu for client comsumption.");
 		}
 	}
 	
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView homePage(HttpServletRequest request)
 	{
-		HttpSession session = request.getSession(false);
-		if(session != null)
+		ServiceCallContext context = null;
+		try
 		{
-			MainMenuItem[] menuItems = (MainMenuItem[])session.getAttribute(SESSION_MENU);
+			context = new ServiceCallContext(request);
+		}
+		catch(IllegalArgumentException e)
+		{
+		}
+		
+		if(context != null)
+		{
+			MainMenuItem[] menuItems = context.getMenuItems();
 			if(menuItems != null && menuItems.length > 0)
 			{
 				return new ModelAndView("redirect:" + "/apps/" + menuItems[0].getTarget());
@@ -174,11 +178,12 @@ public class PlatformController
 	@RequestMapping(value = "/session/refresh", method = RequestMethod.GET)
 	public ModelAndView refreshSession(HttpServletRequest request)
 	{
-		HttpSession session = request.getSession();
-		String userToken = (String)session.getAttribute(SESSION_USER_TOKEN);
+		ServiceCallContext context = new ServiceCallContext(request);
+		
+		String userToken = context.getUserToken();
 		
 		MainMenuItem[] menuItems = this.pluginService.getUserMenu(userToken);
-		session.setAttribute(SESSION_MENU, menuItems);
+		context.setMenuItems(menuItems);
 		
 		return new ModelAndView(REDIRECT_TO_HOME);
 	}

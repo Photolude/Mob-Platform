@@ -8,6 +8,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import com.mob.commons.service.clients.IUserServiceClient;
+import com.mob.www.platform.services.ServiceCallContext;
 
 public class SessionListener implements HttpSessionListener {
 	private IUserServiceClient userService;
@@ -43,8 +44,8 @@ public class SessionListener implements HttpSessionListener {
 			        this.userService = (IUserServiceClient) ctx.getBean("userService");
 		        }
 			}
-		
-			String userToken = (String)session.getAttribute(PlatformController.SESSION_USER_TOKEN);
+
+			String userToken = (String)session.getAttribute(ServiceCallContext.SESSION_USER_TOKEN);
 			if(this.userService != null && userToken != null && userToken.length() > 0)
 			{
 				this.userService.logout(userToken);

@@ -21,6 +21,7 @@ import com.mob.commons.service.clients.IPluginService;
 import com.mob.www.platform.constants.TestConstants;
 import com.mob.www.platform.controller.ArtController;
 import com.mob.www.platform.services.IArtCache;
+import com.mob.www.platform.services.ServiceCallContext;
 
 import static org.mockito.Mockito.*;
 
@@ -144,11 +145,11 @@ public class ArtController_getArt_UnitTests {
 		Mockito.when(response.getOutputStream()).thenReturn(stream);
 		
 		HttpSession session = mock(HttpSession.class);
-		Mockito.when(session.getAttribute(PlatformController.SESSION_USER_TOKEN)).thenReturn("token");
-		Mockito.when(session.getAttribute(ArtController.SESSION_ROLE_MAP)).thenReturn(null);
+		Mockito.when(session.getAttribute(ServiceCallContext.SESSION_USER_TOKEN)).thenReturn("token");
+		Mockito.when(session.getAttribute(ServiceCallContext.SESSION_ROLE_MAP)).thenReturn(null);
 		
 		HttpServletRequest request = mock(HttpServletRequest.class);
-		Mockito.when(request.getSession(false)).thenReturn(session);
+		Mockito.when(request.getSession()).thenReturn(session);
 		
 		this.controller.getArt(role, artPath, request, response);
 		verify(response, times(1)).setStatus(this.responseCode);

@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
@@ -25,7 +24,9 @@ import com.mob.commons.plugins.servicemodel.PluginPage;
 import com.mob.commons.plugins.servicemodel.PluginScript;
 import com.mob.commons.service.clients.IPluginService;
 import com.mob.www.platform.model.DataCallResponse;
+import com.mob.www.platform.services.IServiceCallManager;
 import com.mob.www.platform.services.IServiceContracts;
+import com.mob.www.platform.services.ServiceCallContext;
 
 @Controller
 @RequestMapping("/apps/")
@@ -46,29 +47,57 @@ public class AppsController {
 		return this;
 	}
 	
+	private IServiceCallManager callManager;
+	public IServiceCallManager getCallManager(){ return this.callManager; }
+	public AppsController setCallManager(IServiceCallManager value)
+	{
+		this.callManager = value;
+		return this;
+	}
+	
+	@RequestMapping(value="/{target}", method = RequestMethod.POST)
+	public ModelAndView pluginAppPost(@PathVariable String target, HttpServletRequest request)
+	{
+		return processPluginRequest(target, request);
+	}
+	
 	@RequestMapping(value = "/{target}", method = RequestMethod.GET)
-	public ModelAndView pluginApp(@PathVariable String target, HttpServletRequest request)
+	public ModelAndView pluginAppGet(@PathVariable String target, HttpServletRequest request)
+	{
+		return processPluginRequest(target, request);
+	}
+	
+	public ModelAndView processPluginRequest(@PathVariable String target, HttpServletRequest request)
 	{
 		if(target == null || target.length() == 0)
 		{
 			return new ModelAndView(PlatformController.REDIRECT_TO_HOME);
 		}
-		HttpSession session = request.getSession();
-		String userToken = (String)session.getAttribute(PlatformController.SESSION_USER_TOKEN);
 		
-		PluginPage page = this.pluginService.getPagePlugins(userToken, target);
+		ServiceCallContext context = null;
 		
+		try
+		{
+			context = new ServiceCallContext(request);
+		}
+		catch(IllegalArgumentException e)
+		{
+			return new ModelAndView(PlatformController.REDIRECT_TO_HOME);
+		}
+		
+		PluginPage page = this.pluginService.getPagePlugins(context.getUserToken(), target);
+
 		if(request.getRequestURI() != null && !request.getRequestURI().equals("/") && (page == null || page.getScripts() == null || page.getScripts().length == 0))
 		{
 			return new ModelAndView(PlatformController.REDIRECT_TO_HOME);
 		}
 		
-		this.contractService.setExternalServices(page, session);
-		
-		PluginDataCall[] dataCalls = page.getDataCalls();
-		DataCallResponse[] responses = this.contractService.callDataCalls(dataCalls, session, userToken);
+		this.contractService.setExternalServices(page, context);
 
-		session.setAttribute(PlatformController.ACTIVE_SCRIPTS, page.getScripts());
+		PluginDataCall[] dataCalls = page.getDataCalls();
+		DataCallResponse[] responses = this.callManager.callDataCalls(dataCalls, context);
+
+		context.setActiveScripts(page.getScripts());
 		
 		List<ExternalAttribution> attributionsList = new LinkedList<ExternalAttribution>();
 		if(page.getPlugins() != null)
@@ -84,7 +113,7 @@ public class AppsController {
 				}
 			}
 		}
-		
+
 		String attributionString = "[]";
 		if(attributionsList.size() > 0)
 		{
@@ -92,38 +121,36 @@ public class AppsController {
 			try {
 				attributionString = new String(mapper.writeValueAsBytes(attributionsList.toArray(new ExternalAttribution[attributionsList.size()])));
 			} catch (JsonGenerationException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (JsonMappingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
+
 		ModelAndView retval = new ModelAndView("index");
 		retval.addObject(PlatformController.MODEL_PLUGINS, page.getScripts());
 		retval.addObject(PlatformController.MODEL_DATA_CALLS, responses);
 		retval.addObject(PlatformController.MODEL_ATTRIBUTIONS, attributionString.replace("\\", "\\\\").replace("\"", "\\\""));
 		return retval;
 	}
-	
+
 	@RequestMapping(value = "/script/{scriptName:.+}", method = RequestMethod.GET)
 	@ResponseBody
 	public String getScript(@PathVariable String scriptName, HttpServletRequest request, HttpServletResponse response)
 	{
-		HttpSession session = request.getSession();
-		PluginScript[] scripts = (PluginScript[]) session.getAttribute(PlatformController.ACTIVE_SCRIPTS);
+		ServiceCallContext context = new ServiceCallContext(request);
 		
+		PluginScript[] scripts = context.getActiveScripts();
+
 		if(scripts == null)
 		{
 			return "";
 		}
-		
+
 		String retval = "";
-		
+
 		for(PluginScript script : scripts)
 		{
 			if(script.getName() != null && script.getName().equals(scriptName))
@@ -134,7 +161,7 @@ public class AppsController {
 				break;
 			}
 		}
-		
+
 		return retval;
 	}
 }

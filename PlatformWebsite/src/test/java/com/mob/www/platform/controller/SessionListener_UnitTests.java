@@ -15,8 +15,8 @@ import org.mockito.Mockito;
 import static org.mockito.Mockito.*;
 
 import com.mob.commons.service.clients.IUserServiceClient;
-import com.mob.www.platform.controller.PlatformController;
 import com.mob.www.platform.controller.SessionListener;
+import com.mob.www.platform.services.ServiceCallContext;
 
 @RunWith(Parameterized.class)
 public class SessionListener_UnitTests {
@@ -59,7 +59,7 @@ public class SessionListener_UnitTests {
 		HttpSession mockSession = mock(HttpSession.class);
 		
 		Mockito.when(eventObject.getSession()).thenReturn(mockSession);
-		Mockito.when(mockSession.getAttribute(PlatformController.SESSION_USER_TOKEN)).thenReturn(this.userToken);
+		Mockito.when(mockSession.getAttribute(ServiceCallContext.SESSION_USER_TOKEN)).thenReturn(this.userToken);
 		
 		SessionListener listener = new SessionListener();
 		listener.setUserService(userService);

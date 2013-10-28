@@ -2,9 +2,11 @@ package com.mob.www.platform.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+
+import com.mob.www.platform.services.ServiceCallContext;
+import com.mysql.jdbc.StringUtils;
 
 public class SecurityInterceptor extends HandlerInterceptorAdapter {
 	private String loggedOutPage = "";
@@ -22,9 +24,17 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
         }
         
         boolean succeeded = false;
-        HttpSession session = request.getSession(false);
+        ServiceCallContext context = null;
         
-        if(session != null && session.getAttribute(PlatformController.SESSION_USER_TOKEN) != null)
+        try
+        {
+        	context = new ServiceCallContext(request);
+        }
+        catch(IllegalArgumentException e)
+        {
+        }
+        
+        if(context != null && !StringUtils.isNullOrEmpty(context.getUserToken()))
         {
         	succeeded = true;
         }

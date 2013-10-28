@@ -2,12 +2,10 @@ package com.mob.www.platform.controller;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.log4j.Logger;
@@ -20,12 +18,13 @@ import com.mob.commons.plugins.servicemodel.PluginArt;
 import com.mob.commons.plugins.servicemodel.PluginDefinition;
 import com.mob.commons.service.clients.IPluginService;
 import com.mob.www.platform.services.IArtCache;
+import com.mob.www.platform.services.ServiceCallContext;
 import com.mysql.jdbc.StringUtils;
 
 @Controller
 @RequestMapping("/art/")
 public class ArtController {
-	public static final String SESSION_ROLE_MAP = "roleMap";
+	private final Logger logger = Logger.getLogger(this.getClass());
 	
 	private IPluginService pluginService;
 	public IPluginService getPluginService(){ return this.pluginService; }
@@ -46,32 +45,31 @@ public class ArtController {
 	@RequestMapping(value = "{role}/{artPath:.+}", method = RequestMethod.GET )
 	public void getArt(@PathVariable String role, @PathVariable String artPath, HttpServletRequest request, HttpServletResponse response)
 	{
-		HttpSession session = request.getSession(false);
-		if(StringUtils.isNullOrEmpty(role) || StringUtils.isNullOrEmpty(artPath) || session == null)
+		if(StringUtils.isNullOrEmpty(role) || StringUtils.isNullOrEmpty(artPath))
 		{
 			response.setStatus(500);
 			return;
 		}
 		
-		@SuppressWarnings("unchecked")
-		Map<String,PluginDefinition> definitions = (Map<String,PluginDefinition>)session.getAttribute(SESSION_ROLE_MAP);
-		
-		if(definitions == null)
+		ServiceCallContext context = null;
+		try
 		{
-			synchronized(this)
-			{
-				definitions = new HashMap<String, PluginDefinition>();
-				session.setAttribute(SESSION_ROLE_MAP, definitions);
-			}
+			context = new ServiceCallContext(request);
 		}
+		catch(IllegalArgumentException e)
+		{
+			response.setStatus(500);
+			return;
+		}
+		
+		Map<String,PluginDefinition> definitions = context.getRoleMap();
 		
 		if(!definitions.containsKey(role))
 		{
-			String userToken = (String)session.getAttribute(PlatformController.SESSION_USER_TOKEN);
+			String userToken = context.getUserToken();
 			PluginDefinition definition = this.pluginService.getPluginForUserRole(userToken, role);
 			if(definition == null)
 			{
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.warn("Couldn't get the plugin definition for the role " + role + " for user " + userToken);
 			}
 			else
@@ -92,7 +90,7 @@ public class ArtController {
 		
 		if(art == null)
 		{
-			String userToken = (String)session.getAttribute(PlatformController.SESSION_USER_TOKEN);
+			String userToken = context.getUserToken();
 			art = this.pluginService.getArt(userToken, role, artPath);
 			
 			if(art == null)

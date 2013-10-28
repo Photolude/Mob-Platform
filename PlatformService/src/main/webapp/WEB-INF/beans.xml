@@ -38,12 +38,8 @@
 	</bean>
 	
 	<bean id="pluginDomain" class="com.mob.plugin.domain.PluginDomain">
-		<property name="dataAccessLayer">
-			<ref bean="pluginAccessLayer"/>
-		</property>
-		<property name="userAccountService">
-			<ref bean="userDomain"/>
-		</property>
+		<property name="dataAccessLayer"><ref bean="pluginAccessLayer"/></property>
+		<property name="userAccountService"><ref bean="userDomain"/></property>
 		<property name="defaultPluginUser"><value>PluginDefaultUser</value></property>
 	</bean>
 	

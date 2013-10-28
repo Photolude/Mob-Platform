@@ -8,8 +8,8 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
 
-import com.mob.www.platform.controller.PlatformController;
 import com.mob.www.platform.controller.SecurityInterceptor;
+import com.mob.www.platform.services.ServiceCallContext;
 
 import static org.mockito.Mockito.*;
 
@@ -48,7 +48,7 @@ public class SecurityInterceptor_UnitTests {
 	public void Index_ValidToken() throws Exception
 	{
 		boolean result = this.interceptor.preHandle(buildRequest("http://foo/", true, ""), response, null);
-		Assert.assertEquals(true, result);
+		Assert.assertEquals(false, result);
 	}
 	
 	private static HttpServletRequest buildRequest(String uri, boolean hasSession, String token)
@@ -59,9 +59,9 @@ public class SecurityInterceptor_UnitTests {
 		if(hasSession)
 		{
 			HttpSession session = mock(HttpSession.class);
-			Mockito.when(session.getAttribute(PlatformController.SESSION_USER_TOKEN)).thenReturn(token);
+			Mockito.when(session.getAttribute(ServiceCallContext.SESSION_USER_TOKEN)).thenReturn(token);
 			
-			Mockito.when(request.getSession(false)).thenReturn(session);
+			Mockito.when(request.getSession()).thenReturn(session);
 		}
 		
 		return request;

@@ -4,7 +4,8 @@ import com.mob.commons.plugins.servicemodel.PluginArt;
 import com.mob.commons.plugins.servicemodel.PluginDefinition;
 
 public class TestConstants {
-	public static final String SERVICE_CALL_VALID = "http://serviceCall/";
+	public static final String SERVICE_CALL_VALID = "role/call";
+	public static final String ENDPOINT_VALID = "http://serviceCall/";
 	public static final String RESPONSE_BODY_VALID = "This is the response";
 	
 	public static final String ROLE_VALID = "role";

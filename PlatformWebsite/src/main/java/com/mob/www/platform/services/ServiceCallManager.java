@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 
 import com.mob.commons.plugins.servicemodel.PluginDataCall;
 import com.mob.www.platform.model.DataCallResponse;
+import com.mysql.jdbc.StringUtils;
 
 public class ServiceCallManager implements IServiceCallManager {
 	private static final int STATUS_OK = 200;
@@ -68,17 +69,17 @@ public class ServiceCallManager implements IServiceCallManager {
 		return retval;
 	}
 	
-	public Future<HttpResponse> callServiceWithGetAsync(String serviceCall, ServiceCallContext context) {
-		if(serviceCall == null || serviceCall.length() == 0)
+	public Future<HttpResponse> callServiceWithGetAsync(String alias, ServiceCallContext context) {
+		if(alias == null || alias.length() == 0)
 		{
 			logger.error("Service call was null or empty");
 			return null;
 		}
 		
-		String endpoint = getEndpointFromAlias(serviceCall, context);
-		if(endpoint == null)
+		String endpoint = getEndpointFromAlias(alias, context);
+		if(StringUtils.isNullOrEmpty(endpoint))
 		{
-			logger.error("Could not find the specified alias " + serviceCall);
+			logger.error("Could not find the specified alias " + alias);
 			return null;
 		}
 		
@@ -95,7 +96,12 @@ public class ServiceCallManager implements IServiceCallManager {
 		HttpResponse retval = null;
 		
 		try {
-			retval = this.callServiceWithPostAsync(alias, data, contentType, context).get();
+			Future<HttpResponse> response = this.callServiceWithPostAsync(alias, data, contentType, context);
+			
+			if(response != null)
+			{
+				retval = response.get();
+			}
 		} catch (InterruptedException e) {
 			logger.warn(e);
 		} catch (ExecutionException e) {
@@ -107,8 +113,14 @@ public class ServiceCallManager implements IServiceCallManager {
 	
 	public Future<HttpResponse> callServiceWithPostAsync(String alias, String data, String contentType, ServiceCallContext context)
 	{
+		if(alias == null || alias.length() == 0)
+		{
+			logger.error("Service call was null or empty");
+			return null;
+		}
+		
 		String endpoint = getEndpointFromAlias(alias, context);
-		if(endpoint == null)
+		if(StringUtils.isNullOrEmpty(endpoint))
 		{
 			logger.error("Could not find the specified alias " + alias);
 			return null;
@@ -125,9 +137,13 @@ public class ServiceCallManager implements IServiceCallManager {
 		Future<HttpResponse> response = null;
 		try {
 			HttpPost postCommand = new HttpPost(endpoint);
-			StringEntity entity = new StringEntity(data);
-			entity.setContentType(contentType);
-			postCommand.setEntity(entity);
+			if(!StringUtils.isNullOrEmpty(data))
+			{
+				StringEntity entity = new StringEntity(data);
+				entity.setContentType(contentType);
+				postCommand.setEntity(entity);
+			}
+			
 			response = this.httpClient.execute(postCommand, null);
 		} catch (IOException e) {
 			logger.warn(e);
@@ -142,7 +158,12 @@ public class ServiceCallManager implements IServiceCallManager {
 		HttpResponse retval = null;
 		
 		try {
-			retval = this.callServiceWithPutAsync(alias, data, contentType, context).get();
+			Future<HttpResponse> response = this.callServiceWithPutAsync(alias, data, contentType, context);
+			
+			if(response != null)
+			{
+				retval = response.get();
+			}
 		} catch (InterruptedException e) {
 			logger.warn(e);
 		} catch (ExecutionException e) {
@@ -154,8 +175,14 @@ public class ServiceCallManager implements IServiceCallManager {
 	
 	public Future<HttpResponse> callServiceWithPutAsync(String alias, String data, String contentType, ServiceCallContext context) 
 	{
+		if(alias == null || alias.length() == 0)
+		{
+			logger.error("Service call was null or empty");
+			return null;
+		}
+		
 		String endpoint = getEndpointFromAlias(alias, context);
-		if(endpoint == null)
+		if(StringUtils.isNullOrEmpty(endpoint))
 		{
 			logger.error("Not making the service call because it either could not be found or had parameters missing. " + alias);
 			return null;
@@ -172,9 +199,12 @@ public class ServiceCallManager implements IServiceCallManager {
 		Future<HttpResponse> response = null;
 		try {
 			HttpPut postCommand = new HttpPut(endpoint);
-			StringEntity entity = new StringEntity(data);
-			entity.setContentType(contentType);
-			postCommand.setEntity(entity);
+			if(!StringUtils.isNullOrEmpty(data))
+			{
+				StringEntity entity = new StringEntity(data);
+				entity.setContentType(contentType);
+				postCommand.setEntity(entity);
+			}
 			response = this.httpClient.execute(postCommand, null);
 		} catch (IOException e) {
 			logger.warn(e);
@@ -189,7 +219,12 @@ public class ServiceCallManager implements IServiceCallManager {
 		HttpResponse retval = null;
 		
 		try {
-			retval = this.callServiceWithDeleteAsync(alias, data, contentType, context).get();
+			Future<HttpResponse> response = this.callServiceWithDeleteAsync(alias, data, contentType, context);
+
+			if(response != null)
+			{
+				retval = response.get();
+			}
 		} catch (InterruptedException e) {
 			logger.warn(e);
 		} catch (ExecutionException e) {
@@ -201,8 +236,14 @@ public class ServiceCallManager implements IServiceCallManager {
 	
 	public Future<HttpResponse> callServiceWithDeleteAsync(String alias, String data, String contentType, ServiceCallContext context) 
 	{
+		if(alias == null || alias.length() == 0)
+		{
+			logger.error("Service call was null or empty");
+			return null;
+		}
+		
 		String endpoint = getEndpointFromAlias(alias, context);
-		if(endpoint == null)
+		if(StringUtils.isNullOrEmpty(endpoint))
 		{
 			logger.error("Could not find the specified alias " + alias);
 			return null;
@@ -218,7 +259,10 @@ public class ServiceCallManager implements IServiceCallManager {
 		this.getConnection();
 		Future<HttpResponse> response = null;
 		HttpDelete deleteCommand = new HttpDelete(endpoint);
-		deleteCommand.setHeader("data", data);
+		if(!StringUtils.isNullOrEmpty(data))
+		{
+			deleteCommand.setHeader("data", data);
+		}
 		response = this.httpClient.execute(deleteCommand, null);
 		
 		return response;
@@ -332,6 +376,11 @@ public class ServiceCallManager implements IServiceCallManager {
 	
 	private String constructData(String data, Map<String,String> tokenLookup)
 	{
+		if(StringUtils.isNullOrEmpty(data))
+		{
+			return data;
+		}
+		
 		Matcher matcher = this.tokenPattern.matcher(data);
 		
 		while(matcher.find())

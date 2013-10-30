@@ -15,6 +15,9 @@ public class TestConstants {
 	public static final int STATUS_CODE_OK = 200;
 	public static final int STATUS_CODE_FAIL = 500;
 	
+	public static final String DATA_VALID = "{test:\"1\"}";
+	public static final String DATA_WITH_INSERT_VALID = "{test:\"${otherdata}\"}";
+	
 	public static final PluginArt ART_VALID = new PluginArt().setId(1).setData(BODY_VALID).setContentType(CONTENT_TYPE_VALID);
 	public static final PluginDefinition PLUGIN_VALID = new PluginDefinition().setId(1);
 }

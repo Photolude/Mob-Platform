@@ -30,7 +30,7 @@ import com.mysql.jdbc.StringUtils;
 
 public class ServiceCallManager implements IServiceCallManager {
 	private static final int STATUS_OK = 200;
-	private final Logger logger = Logger.getLogger(ExternalServiceContract.class);
+	private final Logger logger = Logger.getLogger(ServiceCallManager.class);
 	private final Pattern tokenPattern = Pattern.compile("\\$\\{.*?\\}");
 
 	private DefaultHttpAsyncClient httpClient = null;
@@ -72,14 +72,14 @@ public class ServiceCallManager implements IServiceCallManager {
 	public Future<HttpResponse> callServiceWithGetAsync(String alias, ServiceCallContext context) {
 		if(alias == null || alias.length() == 0)
 		{
-			logger.error("Service call was null or empty");
+			logger.warn("Service call was null or empty");
 			return null;
 		}
 		
 		String endpoint = getEndpointFromAlias(alias, context);
 		if(StringUtils.isNullOrEmpty(endpoint))
 		{
-			logger.error("Could not find the specified alias " + alias);
+			logger.warn("Could not find the specified alias " + alias);
 			return null;
 		}
 		
@@ -115,21 +115,21 @@ public class ServiceCallManager implements IServiceCallManager {
 	{
 		if(alias == null || alias.length() == 0)
 		{
-			logger.error("Service call was null or empty");
+			logger.warn("Service call was null or empty");
 			return null;
 		}
 		
 		String endpoint = getEndpointFromAlias(alias, context);
 		if(StringUtils.isNullOrEmpty(endpoint))
 		{
-			logger.error("Could not find the specified alias " + alias);
+			logger.warn("Could not find the specified alias " + alias);
 			return null;
 		}
 		
 		String formattedData = constructData(data, context.getTokenLookup());
 		if(formattedData == null && data != null)
 		{
-			logger.error("Not making the service call because the data is invalid. " + alias);
+			logger.warn("Not making the service call because the data is invalid. " + alias);
 			return null;
 		}
 		
@@ -177,21 +177,21 @@ public class ServiceCallManager implements IServiceCallManager {
 	{
 		if(alias == null || alias.length() == 0)
 		{
-			logger.error("Service call was null or empty");
+			logger.warn("Service call was null or empty");
 			return null;
 		}
 		
 		String endpoint = getEndpointFromAlias(alias, context);
 		if(StringUtils.isNullOrEmpty(endpoint))
 		{
-			logger.error("Not making the service call because it either could not be found or had parameters missing. " + alias);
+			logger.warn("Not making the service call because it either could not be found or had parameters missing. " + alias);
 			return null;
 		}
 		
 		String formattedData = constructData(data, context.getTokenLookup());
 		if(formattedData == null && data != null)
 		{
-			logger.error("Not making the service call because the data is invalid. " + alias);
+			logger.warn("Not making the service call because the data is invalid. " + alias);
 			return null;
 		}
 		
@@ -238,21 +238,21 @@ public class ServiceCallManager implements IServiceCallManager {
 	{
 		if(alias == null || alias.length() == 0)
 		{
-			logger.error("Service call was null or empty");
+			logger.warn("Service call was null or empty");
 			return null;
 		}
 		
 		String endpoint = getEndpointFromAlias(alias, context);
 		if(StringUtils.isNullOrEmpty(endpoint))
 		{
-			logger.error("Could not find the specified alias " + alias);
+			logger.warn("Could not find the specified alias " + alias);
 			return null;
 		}
 
 		String formattedData = constructData(data, context.getTokenLookup());
 		if(formattedData == null && data != null)
 		{
-			logger.error("Not making the service call because the data is invalid. " + alias);
+			logger.warn("Not making the service call because the data is invalid. " + alias);
 			return null;
 		}
 		

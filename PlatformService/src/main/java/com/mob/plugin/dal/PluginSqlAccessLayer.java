@@ -27,6 +27,7 @@ import com.photolude.dal.*;
 public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAccessLayer> implements IPluginAccessLayer {
 	public static final Integer INVALID_PLUGIN_ID = null;
 	public static final Integer INVALID_SCRIPT_ID = null;
+	private static final Logger logger = Logger.getLogger(PluginSqlAccessLayer.class);
 	
 	@Override
 	public boolean canConnect() {
@@ -41,7 +42,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				statement.execute("Select 1;");
 				retval = true;
 			} catch (Exception e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error("Could not connect to the database");
 				logger.error(e.toString());
 			}
@@ -73,7 +73,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				}
 				results.close();
 			} catch (SQLException e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error(e.getMessage());
 			}
 		}
@@ -103,7 +102,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				}
 				results.close();
 			} catch (SQLException e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error(e.getMessage());
 			}
 		}
@@ -131,7 +129,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				}
 				results.close();
 			} catch (SQLException e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error(e.getMessage());
 			}
 		}
@@ -162,7 +159,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				}
 				
 			} catch (SQLException e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error(e.getMessage());
 			}
 		}
@@ -186,7 +182,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				statement.execute();
 				retval = true;
 			} catch (Exception e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error("Could not connect to the database");
 				logger.error(e.toString());
 			}
@@ -211,7 +206,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				statement.execute();
 				retval = true;
 			} catch (Exception e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error("Could not connect to the database");
 				logger.error(e.toString());
 			}
@@ -245,7 +239,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				}
 				
 			} catch (SQLException e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error(e.getMessage());
 			}
 		}
@@ -276,7 +269,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				}
 				
 			} catch (SQLException e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error(e.getMessage());
 			}
 		}
@@ -306,7 +298,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				}
 				results.close();
 			} catch (SQLException e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error(e.getMessage());
 			}
 		}
@@ -334,7 +325,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				}
 				
 			} catch (SQLException e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error(e.getMessage());
 			}
 		}
@@ -361,7 +351,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				}
 				results.close();
 			} catch (SQLException e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error(e.getMessage());
 			}
 		}
@@ -377,7 +366,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 		if(connection != null)
 		{
 			try {
-				
 				CallableStatement statement = connection.prepareCall("call getPluginArtByPath(?,?,?)");
 				statement.setString(1, userToken); 
 				statement.setString(2, role);
@@ -391,7 +379,6 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				}
 				results.close();
 			} catch (SQLException e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error(e.getMessage());
 			}
 		}
@@ -420,12 +407,10 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 				}
 				else
 				{
-					Logger logger = Logger.getLogger(this.getClass());
-					logger.error("No results for user " + userToken + " , role " + role);
+					logger.warn("No results for user " + userToken + " , role " + role);
 				}
 				
 			} catch (SQLException e) {
-				Logger logger = Logger.getLogger(this.getClass());
 				logger.error(e.getMessage());
 			}
 		}
@@ -492,6 +477,7 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 					.setContentType(results.getString("contentType"));
 	}
 
+	@SuppressWarnings("unused")
 	private String getObjectBlob(Object obj, String objectTypeName)
 	{
 		if(obj == null)
@@ -504,14 +490,14 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 		try {
 			mapper.writeValue(stream, obj);
 		} catch (JsonGenerationException e) {
-			Logger.getLogger(this.getClass()).error("There was an error serializing the " + objectTypeName + ".");
-			Logger.getLogger(this.getClass()).debug(e);
+			logger.error("There was an error serializing the " + objectTypeName + ".");
+			logger.debug(e);
 		} catch (JsonMappingException e) {
-			Logger.getLogger(this.getClass()).error("There was an error serializing the " + objectTypeName + ".");
-			Logger.getLogger(this.getClass()).debug(e);
+			logger.error("There was an error serializing the " + objectTypeName + ".");
+			logger.debug(e);
 		} catch (IOException e) {
-			Logger.getLogger(this.getClass()).error("There was an error serializing the " + objectTypeName + ".");
-			Logger.getLogger(this.getClass()).debug(e);
+			logger.error("There was an error serializing the " + objectTypeName + ".");
+			logger.debug(e);
 		}
 		return new String(stream.toByteArray());
 	}
@@ -525,14 +511,14 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 			try {
 				retval = mapper.readValue(serializedObject.getBytes(), typeClass);
 			} catch (JsonParseException e) {
-				Logger.getLogger(this.getClass()).error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
-				Logger.getLogger(this.getClass()).debug(e);
+				logger.error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
+				logger.debug(e);
 			} catch (JsonMappingException e) {
-				Logger.getLogger(this.getClass()).error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
-				Logger.getLogger(this.getClass()).debug(e);
+				logger.error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
+				logger.debug(e);
 			} catch (IOException e) {
-				Logger.getLogger(this.getClass()).error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
-				Logger.getLogger(this.getClass()).debug(e);
+				logger.error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
+				logger.debug(e);
 			}
 		}
 		

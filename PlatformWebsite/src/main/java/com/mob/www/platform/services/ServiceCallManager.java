@@ -368,6 +368,7 @@ public class ServiceCallManager implements IServiceCallManager {
 		
 		if(context.getExtendedPath() != null)
 		{
+			urlConstructor.append('/');
 			urlConstructor.append(context.getExtendedPath());
 		}
 		

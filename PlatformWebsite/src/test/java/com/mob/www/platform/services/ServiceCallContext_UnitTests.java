@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 
 import org.junit.Test;
+import org.springframework.web.servlet.HandlerMapping;
 
 import com.mob.commons.plugins.servicemodel.MainMenuItem;
 import com.mob.commons.plugins.servicemodel.PluginDefinition;
@@ -25,16 +26,16 @@ public class ServiceCallContext_UnitTests {
 	
 	public ServiceCallContext_UnitTests()
 	{
+		this.session = mock(HttpSession.class);
 		
+		this.request = mock(HttpServletRequest.class);
+		when(request.getSession()).thenReturn(this.session);
 	}
 	
 	@Before
 	public void Setup()
 	{
-		this.session = mock(HttpSession.class);
 		
-		this.request = mock(HttpServletRequest.class);
-		when(request.getSession()).thenReturn(this.session);
 	}
 	
 	@Test
@@ -152,5 +153,65 @@ public class ServiceCallContext_UnitTests {
 		Map<String,String> tokenLookup = this.context.getTokenLookup(); 
 		
 		Assert.assertEquals(null, tokenLookup.get("usertoken"));
+	}
+	
+	@Test
+	public void ServiceCallContextTest_ExtendedPath_WithValue()
+	{
+		when(this.request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).thenReturn("test/test/1");
+		this.context = new ServiceCallContext(this.request);
+		String result = this.context.getExtendedPath();
+		
+		Assert.assertEquals("1", result);
+	}
+	
+	@Test
+	public void ServiceCallContextTest_ExtendedPath_WithValueAndFrontSlash()
+	{
+		when(this.request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).thenReturn("/test/test/1");
+		this.context = new ServiceCallContext(this.request);
+		String result = this.context.getExtendedPath();
+		
+		Assert.assertEquals("1", result);
+	}
+	
+	@Test
+	public void ServiceCallContextTest_ExtendedPath_MultipleValues()
+	{
+		when(this.request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).thenReturn("test/test/1/2/3");
+		this.context = new ServiceCallContext(this.request);
+		String result = this.context.getExtendedPath();
+		
+		Assert.assertEquals("1/2/3", result);
+	}
+	
+	@Test
+	public void ServiceCallContextTest_ExtendedPath_NoValue()
+	{
+		when(this.request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).thenReturn("test/test");
+		this.context = new ServiceCallContext(this.request);
+		String result = this.context.getExtendedPath();
+		
+		Assert.assertEquals(null, result);
+	}
+	
+	@Test
+	public void ServiceCallContextTest_ExtendedPath_NullPath()
+	{
+		when(this.request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).thenReturn(null);
+		this.context = new ServiceCallContext(this.request);
+		String result = this.context.getExtendedPath();
+		
+		Assert.assertEquals(null, result);
+	}
+	
+	@Test
+	public void ServiceCallContextTest_ExtendedPath_IncompletePath()
+	{
+		when(this.request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).thenReturn("test");
+		this.context = new ServiceCallContext(this.request);
+		String result = this.context.getExtendedPath();
+		
+		Assert.assertEquals(null, result);
 	}
 }

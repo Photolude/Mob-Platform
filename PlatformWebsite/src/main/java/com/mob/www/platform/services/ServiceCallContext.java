@@ -6,6 +6,8 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.web.servlet.HandlerMapping;
+
 import com.mob.commons.plugins.servicemodel.MainMenuItem;
 import com.mob.commons.plugins.servicemodel.PluginDefinition;
 import com.mob.commons.plugins.servicemodel.PluginScript;
@@ -40,7 +42,41 @@ public class ServiceCallContext {
 		}
 	}
 	
-	public String getExtendedPath(){ return this.extendedPath; }
+	public String getExtendedPath()
+	{
+		if(this.extendedPath != null)
+		{
+			return this.extendedPath;
+		}
+		
+		String path = (String) this.request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
+		
+		if(path == null)
+		{
+			return null;
+		}
+		
+		int slashIndex = path.indexOf('/');
+		
+		if(slashIndex == 0)
+		{
+			slashIndex = path.indexOf('/', 1);
+		}
+		
+		if(slashIndex < 0)
+		{
+			return null;
+		}
+		
+		slashIndex = path.indexOf('/', slashIndex + 1);
+		if(slashIndex < 0)
+		{
+			return null;
+		}
+		
+		this.extendedPath = path.substring(slashIndex + 1);
+		return this.extendedPath; 
+	}
 	public ServiceCallContext setExtendedPath(String value)
 	{
 		this.extendedPath = value;

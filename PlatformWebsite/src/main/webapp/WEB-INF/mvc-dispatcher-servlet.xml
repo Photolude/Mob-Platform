@@ -45,6 +45,11 @@
     </bean>
     
     <bean id="externalServiceContract" class="com.mob.www.platform.services.ExternalServiceContract" />
+    <bean id="serviceCallManager" class="com.mob.www.platform.services.ServiceCallManager">
+        <property name="serviceContracts">
+            <ref bean="externalServiceContract"/>
+        </property>
+    </bean>
     
     <bean id="artCache" class="com.mob.www.platform.services.EhArtCache" />
     
@@ -79,11 +84,14 @@
         <property name="contractService">
             <ref bean="externalServiceContract" />
         </property>
+        <property name="callManager">
+            <ref bean="serviceCallManager"/>
+        </property>
 	</bean>
 	
 	<bean class="com.mob.www.platform.controller.ExternalRequestController">
-        <property name="contractService">
-            <ref bean="externalServiceContract" />
+        <property name="serviceCallManager">
+            <ref bean="serviceCallManager" />
         </property>
 	</bean>
 	

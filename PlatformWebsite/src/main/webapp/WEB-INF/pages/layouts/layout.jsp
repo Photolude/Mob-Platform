@@ -20,6 +20,10 @@
 		var attributions = eval("<%=request.getAttribute("attributions") %>");
 	</script>
 	
+	<c:forEach items="${datacalls}" var="call">
+		${call.script}
+	</c:forEach>
+	
 	<c:if test="${plugins != null}">
 		<c:forEach items="${plugins}" var="plugin">
 			<c:if test="${plugin.name == null || plugin.name == \"\" || plugin.type == \"html\"}">
@@ -50,10 +54,6 @@
 	<link rel="icon" type="image/ico" href="<c:url value="/images/favicon.ico"/>"/>
 </head>
 <body>
-	<c:forEach items="${datacalls}" var="call">
-		${call.script}
-	</c:forEach>
-
 	<c:if test="${plugins != null}">
 		<c:forEach items="${plugins}" var="plugin">
 			<c:if test="${plugin.name == null || plugin.name == \"\" || plugin.type == \"html\"}">

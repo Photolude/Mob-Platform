@@ -12,18 +12,15 @@
         <jackson.version>1.8.6</jackson.version>
         <spring.version>3.0.7.RELEASE</spring.version>
     </properties>
-    <distributionManagement>
-		<repository>
-		   <id>photolude.repo</id>
-		   <name>Internal Releases</name>
-		   <url>http://www.photolude.com:9081/nexus/content/repositories/releases/</url>
-		</repository>
-		<snapshotRepository>
-		   <id>photolude.repo</id>
-		   <name>Internal Releases</name>
-		   <url>http://www.photolude.com:9081/nexus/content/repositories/snapshots/</url>
-		</snapshotRepository>
-	</distributionManagement>
+    <repositories>
+    	<repository>
+            <id>com.mob</id>
+            <name>Photolude Local Repo</name>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+            <url>http://www.photolude.com:9081/nexus/content/repositories</url>
+        </repository>
+    </repositories>
     <dependencies>
         <dependency>
             <groupId>org.apache.cxf</groupId>

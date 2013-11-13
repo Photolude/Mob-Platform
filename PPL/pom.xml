@@ -13,7 +13,7 @@
             <name>Local Repo</name>
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>true</enabled></snapshots>
-            <url>http://localhost:9081/nexus/content/repositories</url>
+            <url>http://www.photolude.com:9081/nexus/content/repositories</url>
         </repository>
     </repositories>
     

@@ -16,6 +16,8 @@
     	<repository>
             <id>com.mob</id>
             <name>mob local repo snapshots</name>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
             <url>http://www.photolude.com:9081/nexus/content/repositories/snapshots</url>
         </repository>
     </repositories>

@@ -34,8 +34,8 @@ public class PluginDomain_getPagePlugins_UnitTests {
 	
 	public static final ServiceAlias[] SERVICE_ALIAS_VALID = new ServiceAlias[]{new ServiceAlias().setName("Test").setEndpoint("http://test/test")};
 	
-	public static final PluginScript[] SCRIPT_1_VALID =  new PluginScript[] { new PluginScript().setScript(JAVASCRIPT_VALUE).setType(JAVASCRIPT_TYPE).setPage("Page") };
-	public static final PluginScript[] SCRIPT_2_VALID =  new PluginScript[] { new PluginScript().setScript(JAVASCRIPT_VALUE).setType(JAVASCRIPT_TYPE).setPage("Page"), new PluginScript().setScript(HTML_VALUE).setType(HTML_TYPE).setPage("Page") };
+	public static final PluginScript[] SCRIPT_1_VALID =  new PluginScript[] { new PluginScript(0, null, JAVASCRIPT_VALUE, JAVASCRIPT_TYPE, "Page") };
+	public static final PluginScript[] SCRIPT_2_VALID =  new PluginScript[] { new PluginScript(0, null, JAVASCRIPT_VALUE, JAVASCRIPT_TYPE, "Page"), new PluginScript(0, null, HTML_VALUE, HTML_TYPE, "Page") };
 	public static final PluginScript[] SCRIPT_RESULT_FAILED = null;
 	
 	public static final PluginDefinition[] PLUGINS_VALID = new PluginDefinition[]{new PluginDefinition().setCompany("Company X").setId(1).setName("Plugin").setServiceAliases(SERVICE_ALIAS_VALID).setRole("Role") };
@@ -128,7 +128,7 @@ public class PluginDomain_getPagePlugins_UnitTests {
     			USER_VALID,
     			USER_STATIC_ID_VALID,
     			PAGE_VALID,
-    			new PluginScript[]{new PluginScript().setPage("*")},
+    			new PluginScript[]{new PluginScript(0, null, null, null, "*")},
     			PLUGINS_VALID,
     			new PluginPage().setScripts(new PluginScript[0]).setPlugins(new PluginDefinition[0])
     		},

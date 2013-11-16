@@ -21,6 +21,19 @@ public class PluginScript {
 	public String getPage(){ return this.page; }
 	public void setPage(String value){ this.page = value; }
 	
+	public PluginScript()
+	{
+	}
+	
+	public PluginScript(int id, String name, String script, String type, String page)
+	{
+		this.id = id;
+		this.name = name;
+		this.script = script;
+		this.type = type;
+		this.page = page;
+	}
+	
 	@Override
 	public boolean equals(Object otherObject)
 	{

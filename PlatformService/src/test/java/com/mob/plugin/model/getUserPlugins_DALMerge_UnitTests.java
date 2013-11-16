@@ -43,15 +43,15 @@ public class getUserPlugins_DALMerge_UnitTests extends ServiceLogicBase {
 					.setScripts(
 				new PluginScript[]
 				{
-					new PluginScript().setType("HTML").setScript("<div></div>"),
-					new PluginScript().setType("HTML").setScript("<div>2</div>")
+					new PluginScript(0, null, "<div></div>", "HTML", null),
+					new PluginScript(0, null, "<div>2</div>", "HTML", null)
 				}).setPlugins(PLUGINS_VALID),
 				new PluginPage()
 				.setScripts(
 				new PluginScript[]
 				{
-					new PluginScript().setType("HTML").setScript("<div></div>"),
-					new PluginScript().setType("HTML").setScript("<div>2</div>")
+					new PluginScript(0, null, "<div></div>", "HTML", null),
+					new PluginScript(0, null, "<div>2</div>", "HTML", null)
 				}).setPlugins(PLUGINS_VALID),
     			PluginManagementSvc.STATUS_SUCCEEDED 
 			},

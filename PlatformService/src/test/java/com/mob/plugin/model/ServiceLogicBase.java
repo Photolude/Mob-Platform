@@ -29,7 +29,8 @@ public abstract class ServiceLogicBase {
 	protected static final String DEFAULT_SCRIPT = "Script";
 	
 	protected static final PluginDefinition[] PLUGINS_VALID = new PluginDefinition[]{ new PluginDefinition().setCompany(COMPANY_DEFAULT).setVersion(VERSION_1_0).setRole("Test Role")};
-	protected static final PluginScript[] SCRIPTS_VALID = new PluginScript[]{ new PluginScript().setType("HTML").setScript("<div></div>") };
+	protected static final PluginScript[] SCRIPTS_VALID = new PluginScript[]
+			{ new PluginScript(0, null, "<div></div>", "HTML", null) };
 	
 	protected static final PluginPage PAGE_VALID = new PluginPage()
 													.setScripts(SCRIPTS_VALID)

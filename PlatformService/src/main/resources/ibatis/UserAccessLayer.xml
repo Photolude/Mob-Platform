@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="UserAccessLayer">
+    <parameterMap class="java.util.Map" id="setTemporaryUserIdParams">
+        <parameter property="staticId"/>
+        <parameter property="temporaryId"/>
+        <parameter property="expiration"/>
+    </parameterMap>
+    <procedure id="setTemporaryUserId" parameterMap="setTemporaryUserIdParams">
+        { call setTemporaryUserId (?,?,?) }
+    </procedure>
+	
+    <parameterMap class="java.util.Map" id="removeTemporaryUserIdParams">
+        <parameter property="temporaryId"/>
+    </parameterMap>
+	<procedure id="removeTemporaryUserId" parameterMap="removeTemporaryUserIdParams">
+	    { call removeTemporaryUserId (?) }
+	</procedure>
+	
+	<parameterMap class="java.util.Map" id="getLogonDataParams">
+        <parameter property="temporaryId"/>
+    </parameterMap>
+	<procedure id="getLogonData" parameterMap="getLogonDataParams" resultClass="com.mob.user.dal.UserLogonData">
+	    { call getLogonData (?) }
+    </procedure>
+    
+	<parameterMap class="java.util.Map" id="getUserIdFromTokenParams">
+        <parameter property="token"/>
+    </parameterMap>
+    <procedure id="getUserIdFromToken" parameterMap="getUserIdFromTokenParams" resultClass="Long">
+        { call getUserIdFromToken (?) }
+    </procedure>
+    
+    <parameterMap class="java.util.Map" id="getUserIdFromEmailParams">
+        <parameter property="email"/>
+    </parameterMap>
+    <procedure id="getUserIdFromEmail" parameterMap="getUserIdFromEmailParams" resultClass="Long">
+        { call getUserIdFromEmail (?) }
+    </procedure>
+</sqlMap>

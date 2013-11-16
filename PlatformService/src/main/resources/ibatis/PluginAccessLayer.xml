@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PluginAccessLayer">
+
+  <select id="canConnect" resultClass="Integer">
+    Select 1;
+  </select>
+
+  <parameterMap class="java.util.Map" id="getPagesParams">
+      <parameter property="user_staticId"/>
+  </parameterMap>
+  <procedure id="getPages" parameterMap="getPagesParams" resultClass="com.mob.commons.plugins.servicemodel.WebPage">
+      {call getPages(?)}
+  </procedure>
+  
+  <parameterMap class="map" id="getPageScriptsParams">
+      <parameter property="page" javaType="String"/>
+      <parameter property="staticUserId" javaType="long"/>
+  </parameterMap>
+  <resultMap class="com.mob.commons.plugins.servicemodel.PluginScript" id="pluginScriptResult">
+      <result property="id" column="idscript"/>
+      <result property="name" column="scriptName"/>
+      <result property="page" column="pageName"/>
+      <result property="script" column="script"/>
+      <result property="type" column="type"/>
+  </resultMap>
+  <resultMap class="com.mob.commons.plugins.servicemodel.PluginDataCall" id="dataCallResults">
+      <result property="content" column="content"/>
+      <result property="contentType" column="contentType"/>
+      <result property="id" column="iddatacall"/>
+      <result property="method" column="method"/>
+      <result property="pageVariable" column="pageVariable"/>
+      <result property="uri" column="uri"/>
+  </resultMap>
+  <resultMap class="com.mob.commons.plugins.servicemodel.PluginDefinition" id="pluginDefinitionResults">
+      <result property="attributeBlob" column="attributeBlob"/>
+      <result property="company" column="company"/>
+      <result property="externalServices" column="externalservices"/>
+      <result property="icon" column="icon"/>
+      <result property="id" column="idplugin"/>
+      <result property="name" column="name"/>
+      <result property="priority" column="priority"/>
+      <result property="role" column="role"/>
+      <result property="serviceCalls" column="serviceCalls"/>
+  </resultMap>
+  
+  <procedure id="getPageScripts" parameterMap="getPageScriptsParams" resultMap="pluginScriptResult">
+      {call getPageScripts(?,?)}
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getUserMenuItemsParams">
+      <parameter property="userStaticId"/>
+  </parameterMap>
+  <procedure id="getUserMenuItems" parameterMap="getUserMenuItemsParams" resultClass="com.mob.commons.plugins.servicemodel.MainMenuItem">
+      { call getUserMenuItems(?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getUserPluginsParams">
+      <parameter property="staticUserId"/>
+  </parameterMap>
+  <procedure id="getUserPlugins" parameterMap="getUserPluginsParams" resultMap="pluginDefinitionResults">
+      { call getUserPlugins(?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="addPluginToUserParams">
+      <parameter property="userStaticId"/>
+      <parameter property="pluginId"/>
+  </parameterMap>
+  <procedure id="addPluginToUser" parameterMap="addPluginToUserParams">
+      { call addPluginToUser(?,?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="removePluginFromUserParams">
+      <parameter property="userStaticId"/>
+      <parameter property="pluginId"/>
+  </parameterMap>
+  <procedure id="removePluginFromUser" parameterMap="removePluginFromUserParams">
+      { call removePluginFromUser(?,?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getPagePluginsParams">
+      <parameter property="staticUserId"/>
+      <parameter property="page"/>
+  </parameterMap>
+  <procedure id="getPagePlugins" parameterMap="getPagePluginsParams" resultMap="pluginDefinitionResults">
+      { call getPagePlugins(?,?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getPluginsParams">
+      <parameter property="userTempId"/>
+  </parameterMap>
+  <procedure id="getPlugins" parameterMap="getPluginsParams" resultMap="pluginDefinitionResults">
+      { call getPlugins(?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getDataCallParams">
+      <parameter property="staticUserId"/>
+      <parameter property="page"/>
+  </parameterMap>
+  <procedure id="getDataCall" parameterMap="getDataCallParams" resultMap="dataCallResults">
+      { call getDataCall(?, ?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getPluginByIdParams">
+      <parameter property="pluginId"/>
+  </parameterMap>
+  <procedure id="getPluginById" parameterMap="getPluginByIdParams" resultMap="pluginDefinitionResults">
+      { call getPluginById(?) }
+  </procedure>
+  
+  <procedure id="getRequiredRoles" resultClass="String">
+      { call getRequiredRoles() }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getPluginArtByPathParams">
+      <parameter property="userToken"/>
+      <parameter property="role"/>
+      <parameter property="path"/>
+  </parameterMap>
+  <procedure id="getPluginArtByPath" parameterMap="getPluginArtByPathParams" resultClass="com.mob.commons.plugins.servicemodel.PluginArt">
+      { call getPluginArtByPath(?,?,?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getPluginByUserAndRoleParams">
+      <parameter property="userToken"/>
+      <parameter property="role"/>
+  </parameterMap>
+  <procedure id="getPluginByUserAndRole" parameterMap="getPluginByUserAndRoleParams" resultMap="pluginDefinitionResults">
+      { call getPluginByUserAndRole(?,?) }
+  </procedure>
+</sqlMap>

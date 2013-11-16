@@ -27,10 +27,7 @@ public class UserAccessLayer_UnitTests {
 		Properties prop = new Properties();
 		prop.load(UserAccessLayer_UnitTests.class.getClassLoader().getResourceAsStream("config.properties"));
 		
-		this.dal = new UserAccessLayer()
-					.setDatabaseUrl(prop.getProperty("database"))
-					.setUserName(prop.getProperty("database.user"))
-					.setPassword(prop.getProperty("database.password"));
+		this.dal = new UserAccessLayer();
 		
 		Calendar calendar = Calendar.getInstance();
 		calendar.add(Calendar.MINUTE, 5);

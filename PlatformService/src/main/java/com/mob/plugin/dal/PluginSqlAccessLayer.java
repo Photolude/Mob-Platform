@@ -1,30 +1,22 @@
 package com.mob.plugin.dal;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.sql.*;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.codehaus.jackson.JsonGenerationException;
-import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
+import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
 
-import com.mob.commons.plugins.servicemodel.ExternalAttribution;
 import com.mob.commons.plugins.servicemodel.MainMenuItem;
 import com.mob.commons.plugins.servicemodel.PluginArt;
 import com.mob.commons.plugins.servicemodel.PluginDataCall;
 import com.mob.commons.plugins.servicemodel.PluginDefinition;
 import com.mob.commons.plugins.servicemodel.PluginScript;
-import com.mob.commons.plugins.servicemodel.ServiceAlias;
 import com.mob.commons.plugins.servicemodel.WebPage;
-import com.mysql.jdbc.StringUtils;
 
-import com.photolude.dal.*;
-
-public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAccessLayer> implements IPluginAccessLayer {
+@SuppressWarnings("unchecked")
+public class PluginSqlAccessLayer extends SqlMapClientDaoSupport  implements IPluginAccessLayer {
 	public static final Integer INVALID_PLUGIN_ID = null;
 	public static final Integer INVALID_SCRIPT_ID = null;
 	private static final Logger logger = Logger.getLogger(PluginSqlAccessLayer.class);
@@ -32,494 +24,178 @@ public class PluginSqlAccessLayer extends MySqlDataAccessLayerBase<PluginSqlAcce
 	@Override
 	public boolean canConnect() {
 		boolean retval = false;
-		
-		Connection connection = this.openConnection();
-		if(connection != null)
-		{
-			try {
-				Statement statement = connection.createStatement();
-				
-				statement.execute("Select 1;");
-				retval = true;
-			} catch (Exception e) {
-				logger.error("Could not connect to the database");
-				logger.error(e.toString());
-			}
+		try {
+			super.getSqlMapClient().queryForObject("canConnect");
+			retval = true;
+		} catch (Exception e) {
+			logger.error("Could not connect to the database");
+			logger.error(e.toString());
 		}
 		
-		this.closeConnection(connection);
 		return retval;
 	}
 
 	@Override
 	public WebPage[] getPages(long userStaticId)
 	{
-		List<WebPage> retval = new ArrayList<WebPage>();
-		
-		Connection connection = this.openConnection();
-		if(connection != null)
-		{
-			try {
-				CallableStatement statement = connection.prepareCall("call getPages(?)");
-				statement.setLong(1, userStaticId);
-				
-				ResultSet results = statement.executeQuery();
-				
-				while(results.next())
-				{
-					retval.add(new WebPage()
-									.setId(results.getInt("idpage"))
-									.setName(results.getString("name")));
-				}
-				results.close();
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
-		}
-		
-		this.closeConnection(connection);
-		return retval.toArray(new WebPage[retval.size()]);
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("user_staticId", userStaticId);
+
+		return queryForArray("getPages", params, Long.toString(userStaticId), WebPage.class);
 	}
 
 	@Override
-	public PluginScript[] getPageScripts(Long userId, String page)
+	public PluginScript[] getPageScripts(Long userStaticId, String page)
 	{
-		List<PluginScript> retval = new ArrayList<PluginScript>();
+		Map<Object,Object> params = new HashMap<Object,Object>();
+		params.put("staticUserId", userStaticId);
+		params.put("page", page);
 		
-		Connection connection = this.openConnection();
-		if(connection != null)
-		{
-			try {
-				CallableStatement statement = connection.prepareCall("call getPageScripts(?,?)");
-				statement.setString(1, page);
-				statement.setLong(2, userId);
-				
-				ResultSet results = statement.executeQuery();
-				
-				while(results.next())
-				{
-					retval.add(readPluginScript(results));
-				}
-				results.close();
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
-		}
-		
-		this.closeConnection(connection);
-		return retval.toArray(new PluginScript[retval.size()]);
+		return queryForArray("getPageScripts", params, Long.toString(userStaticId), PluginScript.class);
 	}
 	
 	@Override
-	public MainMenuItem[] getUserMenuItems(Long staticId) {
-		List<MainMenuItem> retval = new ArrayList<MainMenuItem>();
+	public MainMenuItem[] getUserMenuItems(Long userStaticId) {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("userStaticId", userStaticId);
 		
-		Connection connection = this.openConnection();
-		if(connection != null)
-		{
-			try {
-				CallableStatement statement = connection.prepareCall("call getUserMenuItems(?)");
-				statement.setLong(1, staticId);
-				
-				ResultSet results = statement.executeQuery();
-				
-				while(results.next())
-				{
-					retval.add(readMenuItem(results));
-				}
-				results.close();
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
-		}
-		
-		this.closeConnection(connection);
-		return retval.toArray(new MainMenuItem[retval.size()]);
+		return queryForArray("getUserMenuItems", params, Long.toString(userStaticId), MainMenuItem.class);
 	}
 
 	@Override
-	public PluginDefinition[] getUserPlugins(long staticUserId) {
-		List<PluginDefinition> retval = new ArrayList<PluginDefinition>();
+	public PluginDefinition[] getUserPlugins(long userStaticId) {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("staticUserId", userStaticId);
 		
-		Connection connection = this.openConnection();
-		if(connection != null)
-		{
-			try {
-				CallableStatement statement = connection.prepareCall("call getUserPlugins(?)");
-				statement.setLong(1, staticUserId);
-				ResultSet results = statement.executeQuery();
-				
-				if(results != null)
-				{
-					while(results.next())
-					{
-						retval.add(readPluginDefinition(results));
-					}
-					results.close();
-				}
-				
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
-		}
-		
-		this.closeConnection(connection);
-		return retval.toArray(new PluginDefinition[retval.size()]);
+		return queryForArray("getUserPlugins", params, Long.toString(userStaticId), PluginDefinition.class);
 	}
 
 	@Override
-	public boolean addPluginToUser(long staticUserId, int pluginId) {
-		boolean retval = false;
+	public boolean addPluginToUser(long userStaticId, int pluginId) {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("userStaticId", userStaticId);
+		params.put("pluginId", pluginId);
 		
-		Connection connection = this.openConnection();
-		if(connection != null)
-		{
-			try {
-				CallableStatement statement = connection.prepareCall("call addPluginToUser(?,?)");
-				statement.setInt(1, pluginId);
-				statement.setLong(2, staticUserId);
-				
-				statement.execute();
-				retval = true;
-			} catch (Exception e) {
-				logger.error("Could not connect to the database");
-				logger.error(e.toString());
-			}
-		}
-		
-		this.closeConnection(connection);
-		return retval;
+		return updateCall("addPluginToUser", params, Long.toString(userStaticId));
 	}
 	
 	@Override
-	public boolean removePluginFromUser(long staticUserId, int pluginId) {
-		boolean retval = false;
+	public boolean removePluginFromUser(long userStaticId, int pluginId) {
 		
-		Connection connection = this.openConnection();
-		if(connection != null)
-		{
-			try {
-				CallableStatement statement = connection.prepareCall("call removePluginFromUser(?,?)");
-				statement.setLong(1, staticUserId);
-				statement.setInt(2, pluginId);
-				
-				statement.execute();
-				retval = true;
-			} catch (Exception e) {
-				logger.error("Could not connect to the database");
-				logger.error(e.toString());
-			}
-		}
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("userStaticId", userStaticId);
+		params.put("pluginId", pluginId);
 		
-		this.closeConnection(connection);
-		return retval;
+		return updateCall("removePluginFromUser", params, Long.toString(userStaticId));
 	}
 	
 	@Override
-	public PluginDefinition[] getPagePlugins(Long staticUserId, String page) {
-		List<PluginDefinition> retval = new ArrayList<PluginDefinition>();
+	public PluginDefinition[] getPagePlugins(Long userStaticId, String page) {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("staticUserId", userStaticId);
+		params.put("page", page);
 		
-		Connection connection = this.openConnection();
-		if(connection != null)
-		{
-			try {
-				CallableStatement statement = connection.prepareCall("call getPagePlugins(?,?)");
-				statement.setLong(1, staticUserId);
-				statement.setString(2, page);
-				
-				ResultSet results = statement.executeQuery();
-				
-				if(results != null)
-				{
-					while(results.next())
-					{
-						retval.add(readPluginDefinition(results));
-					}
-					results.close();
-				}
-				
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
-		}
-		
-		this.closeConnection(connection);
-		return retval.toArray(new PluginDefinition[retval.size()]);
+		return queryForArray("getPagePlugins", params, Long.toString(userStaticId), PluginDefinition.class);
 	}
 	
 	@Override
 	public PluginDefinition[] getPlugins(String token) {
-		List<PluginDefinition> retval = new ArrayList<PluginDefinition>();
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("userTempId", token);
 		
-		Connection connection = this.openConnection();
-		if(connection != null)
-		{
-			try {
-				CallableStatement statement = connection.prepareCall("call getPlugins(?)");
-				statement.setString(1, token);
-				
-				ResultSet results = statement.executeQuery();
-				if(results != null)
-				{
-					while(results.next())
-					{
-						retval.add(readPluginDefinition(results));
-					}
-					results.close();
-				}
-				
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
-		}
-		
-		this.closeConnection(connection);
-		return retval.toArray(new PluginDefinition[retval.size()]);
+		return queryForArray("getPlugins", params, token, PluginDefinition.class);
 	}
 	
 	@Override
-	public PluginDataCall[] getPageDataCalls(long staticUserId, String page)
+	public PluginDataCall[] getPageDataCalls(long userStaticId, String page)
 	{
-		List<PluginDataCall> retval = new ArrayList<PluginDataCall>();
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("staticUserId", userStaticId);
+		params.put("page", page);
 		
-		Connection connection = this.openConnection();
-		if(connection != null)
-		{
-			try {
-				CallableStatement statement = connection.prepareCall("call getDataCall(?, ?)");
-				statement.setLong(1, staticUserId);
-				statement.setString(2, page);
-				
-				ResultSet results = statement.executeQuery();
-				
-				while(results.next())
-				{
-					retval.add(readDataCall(results));
-				}
-				results.close();
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
-		}
-		
-		this.closeConnection(connection);
-		return retval.toArray(new PluginDataCall[retval.size()]);
+		return queryForArray("getDataCall", params, Long.toString(userStaticId), PluginDataCall.class);
 	}
 		
 	@Override
 	public PluginDefinition getPluginById(int pluginId) {
-		PluginDefinition retval = null;
-		Connection connection = this.openConnection();
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("pluginId", pluginId);
 		
-		if(connection != null)
-		{
-			try {
-				CallableStatement statement = connection.prepareCall("call getPluginById(?)");
-				statement.setInt(1, pluginId);
-				
-				ResultSet results = statement.executeQuery();
-				if(results != null && results.next())
-				{
-					retval = readPluginDefinition(results);
-					results.close();
-				}
-				
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
-		}
-		
-		this.closeConnection(connection);
-		return retval;
+		return queryForObject("getPluginById", params, "");
 	}
 
 	@Override
 	public String[] getRequiredRoles() {
-		List<String> retval = new ArrayList<String>();
-		
-		Connection connection = this.openConnection();
-		if(connection != null)
-		{
-			try {
-				CallableStatement statement = connection.prepareCall("call getRequiredRoles()");
-				
-				ResultSet results = statement.executeQuery();
-				
-				while(results.next())
-				{
-					retval.add(results.getString(1));
-				}
-				results.close();
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
-		}
-		
-		this.closeConnection(connection);
-		return retval.toArray(new String[retval.size()]);
+		Map<String,Object> params = new HashMap<String,Object>();
+		return queryForArray("getRequiredRoles", params, "", String.class);
 	}
 	
 	@Override
 	public PluginArt getArt(String userToken, String role, String artPath) {
-		PluginArt retval = null;
-		Connection connection = this.openConnection();
-		if(connection != null)
-		{
-			try {
-				CallableStatement statement = connection.prepareCall("call getPluginArtByPath(?,?,?)");
-				statement.setString(1, userToken); 
-				statement.setString(2, role);
-				statement.setString(3, artPath);
-				
-				ResultSet results = statement.executeQuery();
-				
-				if(results.next())
-				{
-					retval = readArt(results);
-				}
-				results.close();
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
-		}
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("userToken", userToken);
+		params.put("role", role);
+		params.put("path", artPath);
 		
-		this.closeConnection(connection);
-		return retval;
+		return queryForObject("getPluginArtByPath", params, userToken);
 	}
 	
 	@Override
 	public PluginDefinition getPluginByUserAndRole(String userToken, String role) {
-		PluginDefinition retval = null;
-		Connection connection = this.openConnection();
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("userToken", userToken);
+		params.put("role", role);
 		
-		if(connection != null)
-		{
-			try {
-				CallableStatement statement = connection.prepareCall("call getPluginByUserAndRole(?,?)");
-				statement.setString(1, userToken);
-				statement.setString(2, role);
-				
-				ResultSet results = statement.executeQuery();
-				if(results != null && results.next())
-				{
-					retval = readPluginDefinition(results);
-					results.close();
-				}
-				else
-				{
-					logger.warn("No results for user " + userToken + " , role " + role);
-				}
-				
-			} catch (SQLException e) {
-				logger.error(e.getMessage());
-			}
+		return queryForObject("getPluginByUserAndRole", params, userToken);
+	}
+	
+	private <T> T queryForObject(String queryId, Object params, String userIdentifier)
+	{
+		T retval = null;
+		try {
+			retval = (T)super.getSqlMapClient().queryForObject(queryId, params);
+		} catch (SQLException e) {
+			final String warningFormat = "An exception occured while trying to %s for user %s"; 
+			logger.warn(String.format(warningFormat, queryId, userIdentifier));
+			logger.debug(e);
 		}
 		
-		this.closeConnection(connection);
 		return retval;
 	}
 	
-	private MainMenuItem readMenuItem(ResultSet results) throws SQLException
+	private <T> T[] queryForArray(String queryId, Object params, String userIdentifier, Class<T> resultClass)
 	{
-		return new MainMenuItem()
-					.setId(results.getInt("idmenu"))
-					.setDisplayName(results.getString("displayName"))
-					.setIconData(results.getString("icon"))
-					.setTarget(results.getString("reference"))
-					.setPriority(results.getInt("defaultPriority"));
-	}
-	
-	private PluginDefinition readPluginDefinition(ResultSet results) throws SQLException
-	{
-		PluginDefinition retval = new PluginDefinition()
-									.setId(results.getInt("idplugin"))
-									.setCompany(results.getString("company"))
-									.setName(results.getString("name"))
-									.setVersion(results.getString("version"))
-									.setRole(results.getString("role"))
-									.setDescription(results.getString("description"))
-									.setIcon(results.getString("icon"))
-									.setTags(results.getString("tags"))
-									.setPriority(results.getInt("priority"))
-									.setExternalServices(results.getString("externalservices"))
-									.setServiceAliases(readBlob(results.getString("serviceCalls"), ServiceAlias[].class))
-									.setAttributions(readBlob(results.getString("attributeBlob"), ExternalAttribution[].class));
-
-		return retval;
-	}
-	
-	private PluginScript readPluginScript(ResultSet results) throws SQLException
-	{
-		return new PluginScript()
-					.setId(results.getInt("idscript"))
-					.setScript(results.getString("script"))
-					.setType(results.getString("type"))
-					.setName(results.getString("scriptName"))
-					.setPage(results.getString("pageName"));
-	}
-	
-	private PluginDataCall readDataCall(ResultSet results) throws SQLException
-	{
-		return new PluginDataCall()
-					.setId(results.getInt("iddatacall"))
-					.setMethod(results.getString("method"))
-					.setUri(results.getString("uri"))
-					.setPageVariable(results.getString("pageVariable"))
-					.setContent(results.getString("content"))
-					.setContentType(results.getString("contentType"));
-	}
-	
-	private PluginArt readArt(ResultSet results) throws SQLException
-	{
-		return new PluginArt()
-					.setId(results.getInt("idart"))
-					.setData(results.getString("data"))
-					.setContentType(results.getString("contentType"));
-	}
-
-	@SuppressWarnings("unused")
-	private String getObjectBlob(Object obj, String objectTypeName)
-	{
-		if(obj == null)
+		List<T> retval = null;
+		try {
+			retval = (List<T>)super.getSqlMapClient().queryForList(queryId, params);
+		} catch (SQLException e) {
+			final String warningFormat = "An exception occured while trying to %s for user %s"; 
+			logger.warn(String.format(warningFormat, queryId, userIdentifier));
+			logger.debug(e);
+		}
+		
+		if(retval == null)
 		{
 			return null;
 		}
-		
-		ObjectMapper mapper = new ObjectMapper();
-		ByteArrayOutputStream stream = new ByteArrayOutputStream();
-		try {
-			mapper.writeValue(stream, obj);
-		} catch (JsonGenerationException e) {
-			logger.error("There was an error serializing the " + objectTypeName + ".");
-			logger.debug(e);
-		} catch (JsonMappingException e) {
-			logger.error("There was an error serializing the " + objectTypeName + ".");
-			logger.debug(e);
-		} catch (IOException e) {
-			logger.error("There was an error serializing the " + objectTypeName + ".");
-			logger.debug(e);
-		}
-		return new String(stream.toByteArray());
+
+		return retval.toArray((T[])java.lang.reflect.Array.newInstance(resultClass, retval.size()));
 	}
 	
-	private <T> T readBlob(String serializedObject, Class<T> typeClass)
+	private <T> boolean updateCall(String queryId, Map<String,Object> params, String userIdentifier)
 	{
-		T retval = null;
-		if(!StringUtils.isNullOrEmpty(serializedObject) && typeClass != null)
+		boolean retval = false;
+		
+		int updateResult = 0;
+		try {
+			updateResult = super.getSqlMapClient().update(queryId, params);
+		} catch (SQLException e) {
+			logger.warn(String.format("An error occured while trying to %s for user %s", queryId, userIdentifier));
+			logger.debug(e);
+		}
+		if(updateResult > 0)
 		{
-			ObjectMapper mapper = new ObjectMapper();
-			try {
-				retval = mapper.readValue(serializedObject.getBytes(), typeClass);
-			} catch (JsonParseException e) {
-				logger.error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
-				logger.debug(e);
-			} catch (JsonMappingException e) {
-				logger.error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
-				logger.debug(e);
-			} catch (IOException e) {
-				logger.error("There was an error parsing the service aliases, this tends to indicate there was a problem with deployment");
-				logger.debug(e);
-			}
+			retval = true;
 		}
 		
 		return retval;

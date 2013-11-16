@@ -27,11 +27,11 @@
 	</mvc:interceptors>
 
     <bean id="userService" class="com.mob.commons.service.clients.DefaultUserServiceClient">
-        <property name="endpoint"><value>http://localhost:8080/mob-platform-service/user</value></property>
+        <property name="endpoint"><value>http://localhost:13050/user</value></property>
     </bean>
     
     <bean id="pluginService" class="com.mob.commons.service.clients.DefaultPluginServiceClient">
-        <property name="endpoint"><value>http://localhost:8080/mob-platform-service/Plugins</value></property>
+        <property name="endpoint"><value>http://localhost:13050/Plugins</value></property>
     </bean>
     
     <bean id="anonymousAccess" class="com.mob.www.platform.services.AnonymousAccess">

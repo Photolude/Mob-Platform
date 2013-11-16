@@ -3,43 +3,23 @@ package com.mob.commons.plugins.servicemodel;
 public class PluginScript {
 	private int id;
 	public int getId(){ return this.id; }
-	public PluginScript setId(int value)
-	{
-		this.id = value;
-		return this;
-	}
+	public void setId(int value){ this.id = value; }
 	
 	private String name;
 	public String getName(){ return this.name; }
-	public PluginScript setName(String value)
-	{
-		this.name = value;
-		return this;
-	}
+	public void setName(String value){ this.name = value; }
 	
 	private String script;
 	public String getScript(){ return this.script; }
-	public PluginScript setScript(String value)
-	{
-		this.script = value;
-		return this;
-	}
+	public void setScript(String value){ this.script = value; }
 	
 	private String type;
 	public String getType(){ return this.type; }
-	public PluginScript setType(String value)
-	{
-		this.type = value;
-		return this;
-	}
+	public void setType(String value){ this.type = value; }
 	
 	private String page;
 	public String getPage(){ return this.page; }
-	public PluginScript setPage(String value)
-	{
-		this.page = value;
-		return this;
-	}
+	public void setPage(String value){ this.page = value; }
 	
 	@Override
 	public boolean equals(Object otherObject)

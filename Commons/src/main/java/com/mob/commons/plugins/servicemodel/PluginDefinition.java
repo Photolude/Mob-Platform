@@ -2,6 +2,8 @@ package com.mob.commons.plugins.servicemodel;
 
 import org.codehaus.jackson.annotate.JsonIgnoreProperties;
 
+import com.mob.commons.plugins.utils.BlobUtils;
+
 @JsonIgnoreProperties(ignoreUnknown=true)
 public class PluginDefinition {
 	private int id;
@@ -106,6 +108,24 @@ public class PluginDefinition {
 	{
 		this.externalServices = value;
 		return this;
+	}
+	
+	/**
+	 * Reads a blob and puts it into the service aliases
+	 * @param blob the blob to be de-serialized
+	 */
+	public void setServiceCalls(String blob)
+	{
+		this.setServiceAliases(BlobUtils.readBlob(blob, ServiceAlias[].class));
+	}
+	
+	/**
+	 * Reads a blob and puts it into the attributions
+	 * @param blob the blob to be de-serialized
+	 */
+	public void setAttributeBlob(String blob)
+	{
+		this.setAttributions(BlobUtils.readBlob(blob, ExternalAttribution[].class));
 	}
 	
 	@Override

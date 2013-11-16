@@ -1,6 +1,7 @@
 package com.mob.plugin.domain;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mob.commons.plugins.servicemodel.MainMenuItem;
 import com.mob.commons.plugins.servicemodel.PluginArt;
@@ -292,7 +293,9 @@ public class PluginDomain implements IPluginDomain {
 					.setPlugins(plugins)
 					.setUserPlugins(userPlugins);
 	}
+	
 	@Override
+	@Transactional
 	public boolean installPluginForUser(int pluginId, String userToken) {
 		if(pluginId <= 0 || userToken == null || userToken.length() == 0)
 		{

@@ -3,41 +3,21 @@ package com.mob.commons.plugins.servicemodel;
 public class MainMenuItem {
 	private int id;
 	public int getId(){return this.id; }
-	public MainMenuItem setId(int value)
-	{
-		this.id = value;
-		return this;
-	}
+	public void setId(int value){ this.id = value; }
 	
 	private String displayName;
 	public String getDisplayName(){ return this.displayName; }
-	public MainMenuItem setDisplayName(String value)
-	{
-		this.displayName = value;
-		return this;
-	}
+	public void setDisplayName(String value){ this.displayName = value; }
 	
 	private String iconData;
 	public String getIconData(){ return this.iconData; }
-	public MainMenuItem setIconData(String value)
-	{
-		this.iconData = value;
-		return this;
-	}
+	public void setIconData(String value){ this.iconData = value; }
 	
 	private String target;
 	public String getTarget(){ return this.target; }
-	public MainMenuItem setTarget(String value)
-	{
-		this.target = value;
-		return this;
-	}
+	public void setTarget(String value){ this.target = value; }
 	
 	private int priority;
 	public int getPriority(){ return this.priority; }
-	public MainMenuItem setPriority(int value)
-	{
-		this.priority = value;
-		return this;
-	}
+	public void setPriority(int value){ this.priority = value; }
 }

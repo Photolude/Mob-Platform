@@ -5,6 +5,34 @@
 
 <sqlMap namespace="PluginAccessLayer">
 
+    
+    <resultMap class="com.mob.commons.plugins.servicemodel.PluginScript" id="pluginScriptResult">
+	    <result property="id" column="idscript"/>
+	    <result property="name" column="scriptName"/>
+	    <result property="page" column="pageName"/>
+	    <result property="script" column="script"/>
+	    <result property="type" column="type"/>
+	</resultMap>
+	<resultMap class="com.mob.commons.plugins.servicemodel.PluginDataCall" id="dataCallResults">
+	    <result property="content" column="content"/>
+	    <result property="contentType" column="contentType"/>
+	    <result property="id" column="iddatacall"/>
+	    <result property="method" column="method"/>
+	    <result property="pageVariable" column="pageVariable"/>
+	    <result property="uri" column="uri"/>
+	</resultMap>
+	<resultMap class="com.mob.commons.plugins.servicemodel.PluginDefinition" id="pluginDefinitionResults">
+	    <result property="attributeBlob" column="attributeBlob"/>
+	    <result property="company" column="company"/>
+	    <result property="externalServices" column="externalservices"/>
+	    <result property="icon" column="icon"/>
+	    <result property="id" column="idplugin"/>
+	    <result property="name" column="name"/>
+	    <result property="priority" column="priority"/>
+	    <result property="role" column="role"/>
+	    <result property="serviceCalls" column="serviceCalls"/>
+	</resultMap>
+
   <select id="canConnect" resultClass="Integer">
     Select 1;
   </select>
@@ -20,32 +48,6 @@
       <parameter property="page" javaType="String"/>
       <parameter property="staticUserId" javaType="long"/>
   </parameterMap>
-  <resultMap class="com.mob.commons.plugins.servicemodel.PluginScript" id="pluginScriptResult">
-      <result property="id" column="idscript"/>
-      <result property="name" column="scriptName"/>
-      <result property="page" column="pageName"/>
-      <result property="script" column="script"/>
-      <result property="type" column="type"/>
-  </resultMap>
-  <resultMap class="com.mob.commons.plugins.servicemodel.PluginDataCall" id="dataCallResults">
-      <result property="content" column="content"/>
-      <result property="contentType" column="contentType"/>
-      <result property="id" column="iddatacall"/>
-      <result property="method" column="method"/>
-      <result property="pageVariable" column="pageVariable"/>
-      <result property="uri" column="uri"/>
-  </resultMap>
-  <resultMap class="com.mob.commons.plugins.servicemodel.PluginDefinition" id="pluginDefinitionResults">
-      <result property="attributeBlob" column="attributeBlob"/>
-      <result property="company" column="company"/>
-      <result property="externalServices" column="externalservices"/>
-      <result property="icon" column="icon"/>
-      <result property="id" column="idplugin"/>
-      <result property="name" column="name"/>
-      <result property="priority" column="priority"/>
-      <result property="role" column="role"/>
-      <result property="serviceCalls" column="serviceCalls"/>
-  </resultMap>
   
   <procedure id="getPageScripts" parameterMap="getPageScriptsParams" resultMap="pluginScriptResult">
       {call getPageScripts(?,?)}

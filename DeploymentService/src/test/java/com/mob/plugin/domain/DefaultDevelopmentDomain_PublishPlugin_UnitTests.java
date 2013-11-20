@@ -31,8 +31,8 @@ public class DefaultDevelopmentDomain_PublishPlugin_UnitTests {
 	private static final String COMPANY_NAME_VALID = "Company";
 	private static final Integer PLUGIN_ID_VALID = 1;
 	private static final Integer OLD_PLUGIN_ID_VALID = 12;
-	private static final MainMenuItem[] MENU_VALID = new MainMenuItem[]{new MainMenuItem().setId(1), new MainMenuItem().setId(4)};
-	private static final PluginScript[] SCRIPTS_VALID = new PluginScript[]{new PluginScript().setId(3), new PluginScript().setId(20)};
+	private static final MainMenuItem[] MENU_VALID = new MainMenuItem[]{new MainMenuItem(1, null, null, null, 0), new MainMenuItem(4, null, null, null, 0)};
+	private static final PluginScript[] SCRIPTS_VALID = new PluginScript[]{new PluginScript(3, null, null, null, null), new PluginScript(20, null, null, null, null)};
 	private static final PluginDataCall[] DATACALL_VALID = new PluginDataCall[]{new PluginDataCall().setId(5), new PluginDataCall().setId(6)};
 	
 	@SuppressWarnings("rawtypes")

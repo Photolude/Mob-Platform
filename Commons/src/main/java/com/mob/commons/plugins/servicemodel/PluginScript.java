@@ -3,23 +3,43 @@ package com.mob.commons.plugins.servicemodel;
 public class PluginScript {
 	private int id;
 	public int getId(){ return this.id; }
-	public void setId(int value){ this.id = value; }
+	public PluginScript setId(int value)
+	{ 
+		this.id = value;
+		return this;
+	}
 	
 	private String name;
 	public String getName(){ return this.name; }
-	public void setName(String value){ this.name = value; }
+	public PluginScript setName(String value)
+	{ 
+		this.name = value;
+		return this;
+	}
 	
 	private String script;
 	public String getScript(){ return this.script; }
-	public void setScript(String value){ this.script = value; }
+	public PluginScript setScript(String value)
+	{ 
+		this.script = value;
+		return this;
+	}
 	
 	private String type;
 	public String getType(){ return this.type; }
-	public void setType(String value){ this.type = value; }
+	public PluginScript setType(String value)
+	{
+		this.type = value;
+		return this;
+	}
 	
 	private String page;
 	public String getPage(){ return this.page; }
-	public void setPage(String value){ this.page = value; }
+	public PluginScript setPage(String value)
+	{
+		this.page = value;
+		return this;
+	}
 	
 	public PluginScript()
 	{

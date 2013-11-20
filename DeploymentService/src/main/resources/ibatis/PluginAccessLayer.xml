@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+	PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN"
+	"http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PluginAccessLayer">
+
+    <resultMap class="com.mob.commons.plugins.servicemodel.PluginScript" id="pluginScriptResult">
+	    <result property="id" column="idscript"/>
+	    <result property="name" column="scriptName"/>
+	    <result property="page" column="pageName"/>
+	    <result property="script" column="script"/>
+	    <result property="type" column="type"/>
+	</resultMap>
+	<resultMap id="webPageResults" class="com.mob.commons.plugins.servicemodel.WebPage">
+	    <result property="id" column="idpage"/>
+	    <result property="name" column="name"/>
+	</resultMap>
+	<resultMap id="pluginDataCallResults" class="com.mob.commons.plugins.servicemodel.PluginDataCall">
+	    <result property="content" column="content"/>
+	    <result property="contentType" column="contentType"/>
+	    <result property="id" column="iddatacall"/>
+	    <result property="method" column="method"/>
+	    <result property="pageVariable" column="pageVariable"/>
+	    <result property="uri" column="uri"/>
+	</resultMap>
+	<resultMap id="getPluginArtResults" class="com.mob.commons.plugins.servicemodel.PluginArt">
+	    <result property="contentType" column="contentType"/>
+	    <result property="data" column="data"/>
+	    <result property="id" column="idart"/>
+	</resultMap>
+  
+  	<select id="canConnect" resultClass="Integer">
+    	Select 1;
+  	</select>
+
+  <parameterMap class="java.util.Map" id="addPluginParams">
+      <parameter property="pluginName"/>
+      <parameter property="company"/>
+      <parameter property="version"/>
+      <parameter property="role"/>
+      <parameter property="tags"/>
+      <parameter property="deployIdentity"/>
+      <parameter property="externalServices"/>
+      <parameter property="serviceAliases"/>
+      <parameter property="description"/>
+      <parameter property="icon"/>
+      <parameter property="priority"/>
+      <parameter property="attributions"/>
+  </parameterMap>
+  <procedure id="addPlugin" parameterMap="addPluginParams" resultClass="int">
+      {call addPlugin(?,?,?,?,?,?,?,?,?,?,?,?)}
+  </procedure>
+
+    <parameterMap class="java.util.Map" id="deletePluginParams">
+      <parameter property="pluginId"/>
+  </parameterMap>
+  <procedure id="deletePlugin" parameterMap="deletePluginParams">
+      {call deletePlugin(?)}
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="updatePluginParams">
+      <parameter property="pluginId"/>
+      <parameter property="role"/>
+      <parameter property="externalServices"/>
+      <parameter property="serviceAliases"/>
+      <parameter property="description"/>
+      <parameter property="icon"/>
+      <parameter property="tags"/>
+      <parameter property="priority"/>
+      <parameter property="attributions"/>
+  </parameterMap>
+  <procedure id="updatePlugin" parameterMap="updatePluginParams">
+      {call updatePlugin(?,?,?,?,?,?,?,?,?)}
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="addScriptParams">
+      <parameter property="pluginId"/>
+      <parameter property="orderId"/>
+      <parameter property="script"/>
+      <parameter property="type"/>
+      <parameter property="pageName"/>
+      <parameter property="scriptName"/>
+  </parameterMap>
+  <procedure id="addScript" parameterMap="addScriptParams" resultClass="int">
+      { call addScript(?,?,?,?,?,?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="deleteScriptParams">
+      <parameter property="scriptId"/>
+  </parameterMap>
+  <procedure id="deleteScript" parameterMap="deleteScriptParams">
+      { call deleteScript(?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getPluginScriptsParams">
+      <parameter property="pluginId"/>
+  </parameterMap>
+  <procedure id="getPluginScripts" parameterMap="getPluginScriptsParams" resultMap="pluginScriptResult">
+      { call getPluginScripts(?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getCompanyNameParams">
+      <parameter property="companykey"/>
+  </parameterMap>
+  <procedure id="getCompanyName" parameterMap="getCompanyNameParams" resultClass="String">
+      { call getCompanyName(?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="addMenuItemParams">
+      <parameter property="displayName"/>
+      <parameter property="icon"/>
+      <parameter property="pluginId"/>
+      <parameter property="reference"/>
+      <parameter property="defaultPriority"/>
+  </parameterMap>
+  <procedure id="addMenuItem" parameterMap="addMenuItemParams" resultClass="int">
+      { call addMenuItem(?,?,?,?,?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="deleteMenuItemParams">
+      <parameter property="menuItemId"/>
+  </parameterMap>
+  <procedure id="deleteMenuItem" parameterMap="deleteMenuItemParams">
+      { call deleteMenuItem(?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getPluginMenuItemsParams">
+      <parameter property="pluginId"/>
+  </parameterMap>
+  <procedure id="getPluginMenuItems" parameterMap="getPluginMenuItemsParams" resultClass="com.mob.commons.plugins.servicemodel.MainMenuItem">
+      { call getPluginMenuItems(?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getPluginByCompanyNameVersionTokenParams">
+      <parameter property="companyName"/>
+      <parameter property="pluginName"/>
+      <parameter property="version"/>
+      <parameter property="userToken"/>
+  </parameterMap>
+  <procedure id="getPluginByCompanyNameVersionToken" parameterMap="getPluginByCompanyNameVersionTokenParams" resultClass="int">
+      { call getPluginByCompanyNameVersionToken(?,?,?,?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="addDataCallParams">
+      <parameter property="page"/>
+      <parameter property="method"/>
+      <parameter property="uri"/>
+      <parameter property="content"/>
+      <parameter property="contentType"/>
+      <parameter property="pageVariable"/>
+      <parameter property="pluginId"/>
+  </parameterMap>
+  <procedure id="addDataCall" parameterMap="addDataCallParams" resultClass="int">
+      { call addDataCall(?,?,?,?,?,?,?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getPluginDataCallParams">
+      <parameter property="pluginId"/>
+  </parameterMap>
+  <procedure id="getPluginDataCall" parameterMap="getPluginDataCallParams" resultMap="pluginDataCallResults">
+      { call getPluginDataCall(?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="deleteDataCallParams">
+      <parameter property="dataCallId"/>
+  </parameterMap>
+  <procedure id="deleteDataCall" parameterMap="deleteDataCallParams">
+      { call deleteDataCall(?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="addArtParams">
+      <parameter property="pluginId"/>
+      <parameter property="artPath"/>
+      <parameter property="artData"/>
+      <parameter property="contentType"/>
+  </parameterMap>
+  <procedure id="addArt" parameterMap="addArtParams" resultClass="int">
+      { call addArt(?,?,?,?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="getPluginArtParams">
+      <parameter property="pluginId"/>
+  </parameterMap>
+  <procedure id="getPluginArt" parameterMap="getPluginArtParams" resultMap="getPluginArtResults">
+      { call getPluginArt(?) }
+  </procedure>
+  
+  <parameterMap class="java.util.Map" id="deleteArtParams">
+      <parameter property="artId"/>
+  </parameterMap>
+  <procedure id="deleteArt" parameterMap="deleteArtParams">
+      { call deleteArt(?) }
+  </procedure>
+</sqlMap>

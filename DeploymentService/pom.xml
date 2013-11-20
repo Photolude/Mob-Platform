@@ -75,12 +75,20 @@
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
         </dependency>
-        
-        <!-- Database -->
         <dependency>
-		  <groupId>com.photolude</groupId>
-		  <artifactId>DatabaseAccessBase</artifactId>
-		  <version>0.0.1-SNAPSHOT</version>
+		   <groupId>org.springframework</groupId>
+		   <artifactId>spring-tx</artifactId>
+		   <version>${spring.version}</version>
+		 </dependency>
+		 <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-ibatis</artifactId>
+			<version>2.0.8</version>
 		</dependency>
      			
 		<!-- Logging -->

@@ -3,11 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mob.platform</groupId>
     <artifactId>mob-deployment-service</artifactId>
-    <version>1.0.1</version>
+    <version>${mob.version}</version>
     <packaging>war</packaging>
     <name>Mob Platform Plugin Deployment Service</name>
     <description>This artifact contains services which provide the service layer to the mob platform for deploying ppl files.</description>
     <properties>
+        <mob.version>1.0.1</mob.version>
         <maven.compiler>1.7</maven.compiler>
         <jackson.version>1.8.6</jackson.version>
         <spring.version>3.0.7.RELEASE</spring.version>
@@ -114,7 +115,7 @@
 		<dependency>
 		  <groupId>com.mob</groupId>
 		  <artifactId>mob-platform-commons</artifactId>
-		  <version>0.0.1-SNAPSHOT</version>
+		  <version>${mob.version}</version>
 		</dependency>
 		
 		<!-- Testing -->

@@ -16,16 +16,20 @@
 
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
 
+	<bean id="props" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	  <property name="locations" value="/WEB-INF/config.properties"/>
+	</bean>
+	
 	<context:property-placeholder/>
 	<context:annotation-config/>
 	<bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer"/>
 	<bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer"/>
 	
 	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
-	  <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-	  <property name="url" value="jdbc:mysql://localhost/photolude"/>
-	  <property name="username" value="serviceuser"/>
-	  <property name="password" value="password"/>
+	  <property name="driverClassName" value="${jdbc.driver}"/>
+	  <property name="url" value="${jdbc.url}"/>
+	  <property name="username" value="${jdbc.username}"/>
+	  <property name="password" value="${jdbc.password}"/>
 	</bean>
 	
 	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">

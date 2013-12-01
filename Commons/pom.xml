@@ -4,13 +4,14 @@
 
     <groupId>com.mob</groupId>
     <artifactId>mob-platform-commons</artifactId>
-    <version>1.0.1</version>
+    <version>${mob.version}</version>
     <packaging>jar</packaging>
 
     <name>Mob Plugins Commons</name>
     <description>This is a library which contains common definitions between the mob plugin service and the plugin clients.</description>
     
     <properties>
+		<mob.version>1.0.1</mob.version>
         <spring.version>3.0.4.RELEASE</spring.version>
         <jackson.version>1.8.6</jackson.version>
     </properties>

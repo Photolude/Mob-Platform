@@ -6,8 +6,15 @@
 #
 # All rights reserved - Do Not Redistribute
 #
+require 'chef/cookbook/metadata'
 
-cookbook_file "mob-platform-website-1.0.1.war" do
+metadata_file = ARGV.first || 'metadata.rb'
+
+# read in metadata
+metadata = Chef::Cookbook::Metadata.new
+metadata.from_file(metadata_file)
+
+cookbook_file "mob-platform-website-${metadata.version}.war" do
 	path node["tomcat"]["webapp_dir"] + "/mob-platform-website.war"
 	action :create
 end

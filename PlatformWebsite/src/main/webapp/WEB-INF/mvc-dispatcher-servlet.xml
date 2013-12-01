@@ -10,6 +10,10 @@
         http://www.springframework.org/schema/mvc
 		http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd">
 
+    <bean id="props" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	  <property name="locations" value="/WEB-INF/config.properties"/>
+	</bean>
+    
     <mvc:annotation-driven/>
     
     <mvc:resources mapping="/scripts/**" location="/WEB-INF/scripts/" />
@@ -22,16 +26,16 @@
 	
     <mvc:interceptors>
 	    <bean class="com.mob.www.platform.controller.SecurityInterceptor">
-	        <property name="loggedOutPage"><value>http://localhost:8080/public/</value></property>
+	        <property name="loggedOutPage"><value>${website.pages.loggedout}</value></property>
 	    </bean>
 	</mvc:interceptors>
 
     <bean id="userService" class="com.mob.commons.service.clients.DefaultUserServiceClient">
-        <property name="endpoint"><value>http://localhost:13050/user</value></property>
+        <property name="endpoint"><value>${mob.services.user}</value></property>
     </bean>
     
     <bean id="pluginService" class="com.mob.commons.service.clients.DefaultPluginServiceClient">
-        <property name="endpoint"><value>http://localhost:13050/Plugins</value></property>
+        <property name="endpoint"><value>${mob.services.plugins}</value></property>
     </bean>
     
     <bean id="anonymousAccess" class="com.mob.www.platform.services.AnonymousAccess">
@@ -40,7 +44,7 @@
             <value>35b2a314-8168-4745-98da-fd9a2fdf3618</value>
         </property>
 		<property name="userNames">
-			<value>testuser@photolude.com</value>
+			<value>${mob.access.anonymous}</value>
 		</property>
     </bean>
     

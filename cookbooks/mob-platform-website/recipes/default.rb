@@ -6,7 +6,8 @@
 #
 # All rights reserved - Do Not Redistribute
 #
-service tomcat do
+
+service "tomcat7" do
 	case node["platform"]
 	when "centos","redhat","fedora","amazon"
 	service_name "tomcat#{node["tomcat"]["base_version"]}"

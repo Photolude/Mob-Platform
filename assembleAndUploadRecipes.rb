@@ -14,11 +14,8 @@ def copyFiles(srcMask, dest)
 	end
 
 	Dir.glob(srcMask) do |filePath|
-		outdata = File.read(filePath)
-
-		File.open(dest, 'w') do |out|
-			out << outdata
-		end
+		system "echo #{filePath}"
+		FileUtils.cp(filePath, dest);
 	end
 end
 

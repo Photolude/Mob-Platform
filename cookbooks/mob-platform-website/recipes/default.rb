@@ -7,9 +7,21 @@
 # All rights reserved - Do Not Redistribute
 #
 
+service "Tomcat7" do
+	retries 4
+	retry_delay 30
+	action :stop
+end
+
 cookbook_file "mob-platform-website.war" do
 	path node["tomcat"]["webapp_dir"] + "/mob-platform-website.war"
 	action :create
+end
+
+service "Tomcat7" do
+	retries 4
+	retry_delay 30
+	action :start
 end
 
 template "config.properties" do

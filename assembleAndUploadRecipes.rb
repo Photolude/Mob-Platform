@@ -4,9 +4,10 @@
 # Copyright 2013, Photolude, LLC
 #
 require 'pathname'
+require 'FileUtils'
 
 def copyFiles(srcMask, dest)
-	FileUtils.mkdir_p(dest)
+	FileUtils.mkpath(dest)
 	
 	Dir.glob(srcMask) do |filePath|
 		fileName = File.basename(filePath)
@@ -15,12 +16,6 @@ def copyFiles(srcMask, dest)
 		File.open(dest + fileName, 'w') do |out|
 			out << outdata
 		end
-	end
-end
-
-def deleteAllFiles(mask)
-	Dir.glob(mask) do |filePath|
-		File.delete(filePath)
 	end
 end
 

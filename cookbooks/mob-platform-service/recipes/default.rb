@@ -16,6 +16,5 @@ template "config.properties" do
 	path node["tomcat"]["webapp_dir"] + "/mob-platform-service/WEB-INF/config.properties"
 	source "config.properties"
 	action :create
-	notifies :restart, "service[tomcat]"
 end
 

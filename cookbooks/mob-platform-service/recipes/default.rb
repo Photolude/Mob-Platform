@@ -15,7 +15,7 @@ metadata_file = ARGV.first || 'metadata.rb'
 metadata = Chef::Cookbook::Metadata.new
 metadata.from_file(metadata_file)
 
-cookbook_file "mob-platform-service-${metadata.version}.war" do
+cookbook_file "mob-platform-service.war" do
 	path node["tomcat"]["webapp_dir"] + "/mob-platform-service.war"
 	action :create_if_missing
 end

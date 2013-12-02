@@ -7,8 +7,12 @@ require 'pathname'
 require 'FileUtils'
 
 def copyFiles(srcMask, dest)
-	FileUtils.mkpath(dest)
-	
+	dir = File.dirname(dest)
+
+	unless File.directory?(dir)
+		FileUtils.mkdir_p(dir)
+	end
+
 	Dir.glob(srcMask) do |filePath|
 		outdata = File.read(filePath)
 

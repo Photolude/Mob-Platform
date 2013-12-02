@@ -6,6 +6,8 @@
 require 'pathname'
 
 def copyFiles(srcMask, dest)
+	FileUtils.mkdir_p(dest)
+	
 	Dir.glob(srcMask) do |filePath|
 		fileName = File.basename(filePath)
 		outdata = File.read(filePath)
@@ -21,9 +23,6 @@ def deleteAllFiles(mask)
 		File.delete(filePath)
 	end
 end
-
-deleteAllFiles("cookbooks/mob-platform-service/files/default/")
-deleteAllFiles("cookbooks/mob-platform-website/files/default/")
 
 copyFiles("PlatformService/target/mob-platform-service-*.war", "cookbooks/mob-platform-service/files/default/")
 copyFiles("PlatformWebsite/target/mob-platform-website-*.war", "cookbooks/mob-platform-website/files/default/")

@@ -6,10 +6,31 @@
 #
 # All rights reserved - Do Not Redistribute
 #
+service tomcat do
+	case node["platform"]
+	when "centos","redhat","fedora","amazon"
+	service_name "tomcat#{node["tomcat"]["base_version"]}"
+	supports :restart => true, :status => true
+	when "debian","ubuntu"
+	service_name "tomcat#{node["tomcat"]["base_version"]}"
+	supports :restart => true, :reload => false, :status => true
+	when "windows"
+	service_name "tomcat#{node["tomcat"]["base_version"]}"
+	supports :restart => true, :reload => false, :status => true
+	when "smartos"
+	service_name "tomcat"
+	supports :restart => true, :reload => false, :status => true
+	else
+	service_name "tomcat#{node["tomcat"]["base_version"]}"
+	end
+	retries 4
+	retry_delay 30
+end
 
 cookbook_file "mob-platform-website.war" do
 	path node["tomcat"]["webapp_dir"] + "/mob-platform-website.war"
 	action :create
+	notifies :restart, "service[tomcat]"
 end
 
 template "config.properties" do

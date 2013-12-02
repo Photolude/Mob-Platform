@@ -12,23 +12,7 @@ cookbook_file "mob-platform-website.war" do
 	action :create
 end
 
-service "tomcat7" do
-	case node["platform"]
-	when "centos","redhat","fedora","amazon"
-	service_name "tomcat#{node["tomcat"]["base_version"]}"
-	supports :restart => true, :status => true
-	when "debian","ubuntu"
-	service_name "tomcat#{node["tomcat"]["base_version"]}"
-	supports :restart => true, :reload => false, :status => true
-	when "windows"
-	service_name "tomcat#{node["tomcat"]["base_version"]}"
-	supports :restart => true, :reload => false, :status => true
-	when "smartos"
-	service_name "tomcat"
-	supports :restart => true, :reload => false, :status => true
-	else
-	service_name "tomcat#{node["tomcat"]["base_version"]}"
-	end
+service "Tomcat7" do
 	retries 4
 	retry_delay 30
 	action :restart

@@ -7,6 +7,11 @@
 # All rights reserved - Do Not Redistribute
 #
 
+cookbook_file "mob-platform-website.war" do
+	path node["tomcat"]["webapp_dir"] + "/mob-platform-website.war"
+	action :create
+end
+
 service "tomcat7" do
 	case node["platform"]
 	when "centos","redhat","fedora","amazon"
@@ -26,12 +31,7 @@ service "tomcat7" do
 	end
 	retries 4
 	retry_delay 30
-end
-
-cookbook_file "mob-platform-website.war" do
-	path node["tomcat"]["webapp_dir"] + "/mob-platform-website.war"
-	action :create
-	notifies :restart, "service[tomcat]"
+	action :restart
 end
 
 template "config.properties" do

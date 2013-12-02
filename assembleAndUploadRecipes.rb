@@ -16,6 +16,15 @@ def copyFiles(srcMask, dest)
 	end
 end
 
+def deleteAllFiles(mask)
+	Dir.glob(mask) do |filePath|
+		File.delete(filePath)
+	end
+end
+
+deleteAllFiles("cookbooks/mob-platform-service/files/default/")
+deleteAllFiles("cookbooks/mob-platform-website/files/default/")
+
 copyFiles("PlatformService/target/mob-platform-service-*.war", "cookbooks/mob-platform-service/files/default/")
 copyFiles("PlatformWebsite/target/mob-platform-website-*.war", "cookbooks/mob-platform-website/files/default/")
 

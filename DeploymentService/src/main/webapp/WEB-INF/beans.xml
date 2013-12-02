@@ -3,28 +3,49 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns:jaxrs="http://cxf.apache.org/jaxrs"
   xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
   xsi:schemaLocation="
 		http://www.springframework.org/schema/beans 
 		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
-		http://cxf.apache.org/jaxrs
-		http://cxf.apache.org/schemas/jaxrs.xsd">
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://cxf.apache.org/jaxrs http://cxf.apache.org/schemas/jaxrs.xsd">
 
 	<import resource="classpath:META-INF/cxf/cxf.xml" />
+	
+	<bean id="props" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	  <property name="locations" value="/WEB-INF/config.properties"/>
+	</bean>
 
 	<context:property-placeholder/>
 	<context:annotation-config/>
 	<bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer"/>
 	<bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer"/>
 
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close">
+	  <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+	  <property name="url" value="${jdbc.url}"/>
+	  <property name="username" value="${jdbc.username}"/>
+	  <property name="password" value="${jdbc.password}"/>
+	</bean>
+	
+	<bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+	  <property name="dataSource" ref="dataSource" />
+	</bean>
+	<tx:annotation-driven transaction-manager="txManager"/>
+	
+	
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+	  <property name="configLocation" value="WEB-INF/sqlmap-config.xml"/>
+	  <property name="dataSource" ref="dataSource"/>
+	</bean>
+	
 	<bean id="userService" class="com.mob.commons.service.clients.DefaultUserServiceClient">
         <property name="endpoint"><value>http://localhost:8080/mob-platform-service/user</value></property>
     </bean>
 	
 	<bean id="pluginAccessLayer" class="com.mob.plugin.dal.PluginDeploymentSqlAccessLayer">
-		<property name="databaseUrl"><value>jdbc:mysql://localhost/photolude</value></property>
-		<property name="userName"><value>serviceuser</value></property>
-		<property name="password"><value>password</value></property>
+		<property name="sqlMapClient" ref="sqlMapClient"/>
 	</bean>
 	
 	<bean id="developmentDomain" class="com.mob.plugin.domain.DevelopmentDomain">

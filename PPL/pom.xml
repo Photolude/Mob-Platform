@@ -4,9 +4,13 @@
 
     <groupId>com.photolude.sdk</groupId>
     <artifactId>mob-ppl</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${mob.version}</version>
     <packaging>jar</packaging>
 
+    <properties>
+        <mob.version>1.0.1</mob.version>
+    </properties>
+    
     <repositories>
         <repository>
             <id>com.mob</id>
@@ -71,7 +75,7 @@
         <dependency>
 		  <groupId>com.mob</groupId>
 		  <artifactId>mob-platform-commons</artifactId>
-		  <version>0.0.1-SNAPSHOT</version>
+		  <version>${mob.version}</version>
 		</dependency>
 		
         <!-- Logging -->

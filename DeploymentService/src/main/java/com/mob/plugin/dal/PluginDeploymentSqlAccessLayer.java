@@ -154,7 +154,7 @@ public class PluginDeploymentSqlAccessLayer extends SqlMapClientDaoSupport imple
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("pluginId", pluginId);
 		
-		return queryForArray("getPageScripts", params, "Plugin-Id: " + pluginId, MainMenuItem.class);
+		return queryForArray("getPluginMenuItems", params, "Plugin-Id: " + pluginId, MainMenuItem.class);
 	}
 	
 	@Override

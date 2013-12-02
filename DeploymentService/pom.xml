@@ -3,11 +3,12 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mob.platform</groupId>
     <artifactId>mob-deployment-service</artifactId>
-    <version>1.0.1</version>
+    <version>${mob.version}</version>
     <packaging>war</packaging>
     <name>Mob Platform Plugin Deployment Service</name>
     <description>This artifact contains services which provide the service layer to the mob platform for deploying ppl files.</description>
     <properties>
+        <mob.version>1.0.1</mob.version>
         <maven.compiler>1.7</maven.compiler>
         <jackson.version>1.8.6</jackson.version>
         <spring.version>3.0.7.RELEASE</spring.version>
@@ -98,11 +99,23 @@
 			<version>1.2.17</version>
 		</dependency>
 		
+		<!-- Database -->
+		<dependency>
+			<groupId>commons-dbcp</groupId>
+			<artifactId>commons-dbcp</artifactId>
+			<version>1.2.2</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.6</version>
+		</dependency>    
+		
 		<!-- Photolude -->
 		<dependency>
 		  <groupId>com.mob</groupId>
 		  <artifactId>mob-platform-commons</artifactId>
-		  <version>0.0.1-SNAPSHOT</version>
+		  <version>${mob.version}</version>
 		</dependency>
 		
 		<!-- Testing -->
@@ -118,12 +131,6 @@
 		    <version>4.11</version>
 		    <scope>test</scope>
 		</dependency>
-		<dependency> 
-		    <groupId>org.springframework</groupId> 
-		    <artifactId>spring-tx</artifactId> 
-		    <version>${spring.version}</version>
-		    <scope>test</scope> 
-	    </dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-all</artifactId>

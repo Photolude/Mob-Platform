@@ -9,7 +9,20 @@
 
 include_recipe "tomcat"
 
-if compare_to("version.txt").compare_to(path node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/") do
+newVersionPath = node["temp_dir"] + "/version.txt"
+cookbook_file "version.txt" do
+	path newVersionPath
+end
+newVersion = File.read(newVersionPath)
+File.delete(newVersionPath)
+
+currentVersionPath = node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt"
+currentVersion = null
+if File.exists(currentVersionPath) do
+	currentVersion = File.read(node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt")
+end
+
+if newVersion != currentVersion do
 	previousVersion = File.read(path node["tomcat"]["webapp_dir"] + "/version.txt")
 	cookbook_file "version.txt" do 
 

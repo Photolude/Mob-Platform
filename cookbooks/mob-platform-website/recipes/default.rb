@@ -7,7 +7,7 @@
 # The rights for this file fall under the same rights as the git repository containing it
 #
 
-include_recipe "tomcat"
+#include_recipe "tomcat"
 
 newVersionPath = node["temp_dir"] + "/version.txt"
 cookbook_file "version.txt" do

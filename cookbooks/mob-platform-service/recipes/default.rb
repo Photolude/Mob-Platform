@@ -9,36 +9,52 @@
 
 # Stop tomcat as in some cases it can try to pick up the new war file before
 # the file has been completely copied
-service "Tomcat7" do
-	retries 4
-	retry_delay 30
-	action :stop
+newVersionPath = node["temp_dir"] + "/version.txt"
+cookbook_file "version.txt" do
+	path newVersionPath
+end
+newVersion = File.read(newVersionPath)
+File.delete(newVersionPath)
+
+currentVersionPath = node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt"
+currentVersion = null
+if File.exists(currentVersionPath) do
+	currentVersion = File.read(node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt")
 end
 
-# Deploy the new war file
-cookbook_file "mob-platform-service.war" do
-	path node["tomcat"]["webapp_dir"] + "/mob-platform-service.war"
-	action :create_if_missing
-end
+if newVersion != currentVersion do
 
-# Start tomcat to pick up the new war and extract it in order to make the
-# configuration files available to modify
-service "Tomcat7" do
-	retries 4
-	retry_delay 30
-	action [:start]
-end
+	service "Tomcat7" do
+		retries 4
+		retry_delay 30
+		action :stop
+	end
 
-# Setup the configuration
-template "config.properties" do
-	path node["tomcat"]["webapp_dir"] + "/mob-platform-service/WEB-INF/config.properties"
-	source "config.properties"
-	action :create
-end
+	# Deploy the new war file
+	cookbook_file "mob-platform-service.war" do
+		path node["tomcat"]["webapp_dir"] + "/mob-platform-service.war"
+		action :create_if_missing
+	end
 
-# Restart tomcat to pick up the new configurations
-service "Tomcat7" do
-	retries 4
-	retry_delay 30
-	action [:restart]
+	# Start tomcat to pick up the new war and extract it in order to make the
+	# configuration files available to modify
+	service "Tomcat7" do
+		retries 4
+		retry_delay 30
+		action [:start]
+	end
+
+	# Setup the configuration
+	template "config.properties" do
+		path node["tomcat"]["webapp_dir"] + "/mob-platform-service/WEB-INF/config.properties"
+		source "config.properties"
+		action :create
+	end
+
+	# Restart tomcat to pick up the new configurations
+	service "Tomcat7" do
+		retries 4
+		retry_delay 30
+		action [:restart]
+	end
 end

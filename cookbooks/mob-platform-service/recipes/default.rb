@@ -60,6 +60,6 @@ if newVersion != currentVersion do
 	service "Tomcat7" do
 		retries 4
 		retry_delay 30
-		action [:restart]
+		action [:stop, :start]
 	end
 end

@@ -27,13 +27,13 @@ if newVersion != currentVersion do
 	service "Tomcat7" do
 		retries 4
 		retry_delay 120
-		action :stop
+		action :stop, :immediately
 	end
 
 	# Deploy the new war file
 	cookbook_file "mob-platform-service.war" do
 		path node["tomcat"]["webapp_dir"] + "/mob-platform-service.war"
-		action :create
+		action :create, :immediately
 	end
 
 	# Start tomcat to pick up the new war and extract it in order to make the
@@ -41,7 +41,7 @@ if newVersion != currentVersion do
 	service "Tomcat7" do
 		retries 4
 		retry_delay 30
-		action [:start]
+		action :start, :immediately
 	end
 
 	# Setup the configuration
@@ -60,6 +60,6 @@ if newVersion != currentVersion do
 	service "Tomcat7" do
 		retries 4
 		retry_delay 30
-		action [:stop, :start]
+		action :restart, :immediately
 	end
 end

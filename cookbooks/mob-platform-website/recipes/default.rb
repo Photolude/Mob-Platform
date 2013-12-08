@@ -33,7 +33,7 @@ if newVersion != currentVersion do
 	service "Tomcat7" do
 		retries 4
 		retry_delay 30
-		action :stop
+		action :stop, :immediately
 	end
 
 	# Deploy the new war file
@@ -47,7 +47,7 @@ if newVersion != currentVersion do
 	service "Tomcat7" do
 		retries 4
 		retry_delay 30
-		action [:start]
+		action :start, :immediately
 	end
 
 	# Deploy the new war file
@@ -67,6 +67,6 @@ if newVersion != currentVersion do
 	service "Tomcat7" do
 		retries 4
 		retry_delay 30
-		action [:stop, :start]
+		action :restart, :immediately
 	end
 end

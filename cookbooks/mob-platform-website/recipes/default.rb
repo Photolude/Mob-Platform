@@ -35,6 +35,7 @@ if newVersion != currentVersion do
 		retry_delay 30
 		action :stop, :immediately
 	end
+	sleep(120)
 
 	# Deploy the new war file
 	cookbook_file "mob-platform-website.war" do
@@ -42,7 +43,6 @@ if newVersion != currentVersion do
 		action :create
 	end
 
-	sleep(20)
 	# Start tomcat to pick up the new war and extract it in order to make the
 	# configuration files available to modify
 	service "Tomcat7" do
@@ -50,6 +50,7 @@ if newVersion != currentVersion do
 		retry_delay 30
 		action :start, :immediately
 	end
+	sleep(60)
 
 	# Deploy the new war file
 	cookbook_file "version.txt" do

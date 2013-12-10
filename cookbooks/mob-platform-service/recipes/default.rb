@@ -36,6 +36,8 @@ if newVersion != currentVersion do
 		action :create, :immediately
 	end
 
+	sleep(20)
+	
 	# Start tomcat to pick up the new war and extract it in order to make the
 	# configuration files available to modify
 	service "Tomcat7" do
@@ -56,16 +58,11 @@ if newVersion != currentVersion do
 		action :create
 	end
 
+	sleep(20)
 	# Restart tomcat to pick up the new configurations
 	service "Tomcat7" do
 		retries 4
 		retry_delay 30
-		action :stop, :immediately
-	end
-	
-	service "Tomcat7" do
-		retries 4
-		retry_delay 30
-		action :start, :immediately
+		action :restart, :immediately
 	end
 end

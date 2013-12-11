@@ -12,7 +12,7 @@
 newVersionPath = node["temp_dir"] + "/version.txt"
 cookbook_file "version.txt" do
 	path newVersionPath
-	action :create, :immediately
+	action :create
 end
 
 newVersion = File.read(newVersionPath)

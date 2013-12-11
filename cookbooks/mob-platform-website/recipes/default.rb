@@ -27,16 +27,6 @@ if newVersion != currentVersion do
 	previousVersion = File.read(path node["tomcat"]["webapp_dir"] + "/version.txt")
 	cookbook_file "version.txt" do 
 
-
-	# Stop tomcat as in some cases it can try to pick up the new war file before
-	# the file has been completely copied
-	service "Tomcat7" do
-		retries 4
-		retry_delay 30
-		action :stop, :immediately
-	end
-	sleep(120)
-
 	# Deploy the new war file
 	cookbook_file "mob-platform-website.war" do
 		path node["tomcat"]["webapp_dir"] + "/mob-platform-website.war"
@@ -48,11 +38,11 @@ if newVersion != currentVersion do
 	service "Tomcat7" do
 		retries 4
 		retry_delay 30
-		action :start, :immediately
+		action :restart, :immediately
 	end
-	sleep(60)
+	sleep(30)
 
-	# Deploy the new war file
+	# Deploy the new version file
 	cookbook_file "version.txt" do
 		path node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt"
 		action :create

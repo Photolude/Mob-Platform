@@ -40,7 +40,7 @@ if newVersion != currentVersion do
 		retry_delay 30
 		action :restart, :immediately
 	end
-	sleep(30)
+	sleep(60)
 
 	# Deploy the new version file
 	cookbook_file "version.txt" do

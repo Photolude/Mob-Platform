@@ -19,11 +19,12 @@ File.delete(newVersionPath)
 
 currentVersionPath = node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt"
 currentVersion = null
-if File.exists(currentVersionPath) do
+if File.exists(currentVersionPath)
 	currentVersion = File.read(node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt")
 end
 
-if newVersion != currentVersion do
+if newVersion != currentVersion
+
 	previousVersion = File.read(path node["tomcat"]["webapp_dir"] + "/version.txt")
 	cookbook_file "version.txt" do 
 
@@ -40,6 +41,7 @@ if newVersion != currentVersion do
 		retry_delay 30
 		action :restart, :immediately
 	end
+	
 	sleep(60)
 
 	# Deploy the new version file
@@ -54,8 +56,7 @@ if newVersion != currentVersion do
 		source "config.properties"
 		action :create
 	end
-
-	sleep(20)
+	
 	# Restart tomcat to pick up the new configurations
 	service "Tomcat7" do
 		retries 4

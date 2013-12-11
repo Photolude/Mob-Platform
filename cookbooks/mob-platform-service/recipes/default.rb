@@ -18,11 +18,12 @@ File.delete(newVersionPath)
 
 currentVersionPath = node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt"
 currentVersion = null
-if File.exists(currentVersionPath) do
+
+if File.exists(currentVersionPath)
 	currentVersion = File.read(node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt")
 end
 
-if newVersion != currentVersion do
+if newVersion != currentVersion
 
 	# Deploy the new war file
 	cookbook_file "mob-platform-service.war" do

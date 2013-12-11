@@ -14,6 +14,7 @@ cookbook_file "version.txt" do
 	path newVersionPath
 	action :create
 end
+
 newVersion = File.read(newVersionPath)
 File.delete(newVersionPath)
 
@@ -24,9 +25,6 @@ if File.exists(currentVersionPath)
 end
 
 if newVersion != currentVersion
-
-	previousVersion = File.read(path node["tomcat"]["webapp_dir"] + "/version.txt")
-	cookbook_file "version.txt" do 
 
 	# Deploy the new war file
 	cookbook_file "mob-platform-website.war" do
@@ -57,6 +55,7 @@ if newVersion != currentVersion
 		action :create
 	end
 	
+	sleep(20)
 	# Restart tomcat to pick up the new configurations
 	service "Tomcat7" do
 		retries 4

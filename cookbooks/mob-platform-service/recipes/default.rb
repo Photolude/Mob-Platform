@@ -21,7 +21,7 @@ end
 service "Tomcat7" do
 	retries 4
 	retry_delay 30
-	action :restart, :immediately
+	action :restart
 end
 
 sleep(60)
@@ -44,5 +44,5 @@ sleep(20)
 service "Tomcat7" do
 	retries 4
 	retry_delay 30
-	action :restart, :immediately
+	action :restart
 end

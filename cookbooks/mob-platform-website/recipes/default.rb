@@ -9,57 +9,39 @@
 
 #include_recipe "tomcat"
 
-newVersionPath = node["temp_dir"] + "/version.txt"
-cookbook_file "version.txt" do
-	path newVersionPath
+# Deploy the new war file
+cookbook_file "mob-platform-website.war" do
+	path node["tomcat"]["webapp_dir"] + "/mob-platform-website.war"
 	action :create
 end
 
-newVersion = File.read(newVersionPath)
-File.delete(newVersionPath)
-
-currentVersionPath = node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt"
-currentVersion = null
-if File.exists(currentVersionPath)
-	currentVersion = File.read(node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt")
+# Start tomcat to pick up the new war and extract it in order to make the
+# configuration files available to modify
+service "Tomcat7" do
+	retries 4
+	retry_delay 30
+	action :restart, :immediately
 end
 
-if newVersion != currentVersion
+sleep(60)
 
-	# Deploy the new war file
-	cookbook_file "mob-platform-website.war" do
-		path node["tomcat"]["webapp_dir"] + "/mob-platform-website.war"
-		action :create
-	end
+# Deploy the new version file
+cookbook_file "version.txt" do
+	path node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt"
+	action :create
+end
 
-	# Start tomcat to pick up the new war and extract it in order to make the
-	# configuration files available to modify
-	service "Tomcat7" do
-		retries 4
-		retry_delay 30
-		action :restart, :immediately
-	end
-	
-	sleep(60)
+# Setup the configuration
+template "config.properties" do
+	path node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/config.properties"
+	source "config.properties"
+	action :create
+end
 
-	# Deploy the new version file
-	cookbook_file "version.txt" do
-		path node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt"
-		action :create
-	end
-	
-	# Setup the configuration
-	template "config.properties" do
-		path node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/config.properties"
-		source "config.properties"
-		action :create
-	end
-	
-	sleep(20)
-	# Restart tomcat to pick up the new configurations
-	service "Tomcat7" do
-		retries 4
-		retry_delay 30
-		action :restart, :immediately
-	end
+sleep(20)
+# Restart tomcat to pick up the new configurations
+service "Tomcat7" do
+	retries 4
+	retry_delay 30
+	action :restart, :immediately
 end

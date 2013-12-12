@@ -24,6 +24,8 @@ service "Tomcat7" do
 	action :restart
 end
 
+FileUtils.mkdir_p(node["tomcat"]["webapp_dir"] + "/mob-platform-service/WEB-INF")
+
 # Deploy the new version file
 cookbook_file "version.txt" do
 	path node["tomcat"]["webapp_dir"] + "/mob-platform-service/WEB-INF/version.txt"

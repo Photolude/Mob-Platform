@@ -23,8 +23,6 @@ service "Tomcat7" do
 	action :restart
 end
 
-sleep(60)
-
 # Deploy the new version file
 cookbook_file "version.txt" do
 	path node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt"
@@ -38,7 +36,6 @@ template "config.properties" do
 	action :create
 end
 
-sleep(20)
 # Restart tomcat to pick up the new configurations
 service "Tomcat7" do
 	retries 4

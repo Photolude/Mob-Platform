@@ -28,7 +28,7 @@ sleep(60)
 
 # Deploy the new version file
 cookbook_file "version.txt" do
-	path node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt"
+	path node["tomcat"]["webapp_dir"] + "/mob-platform-service/WEB-INF/version.txt"
 	action :create
 end
 

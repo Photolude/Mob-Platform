@@ -11,7 +11,7 @@
 
 FileUtils.mkdir_p(node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF")
 
-if(File::exists?(node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt")) do
+if(File.file?(node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt")) do
 	# Deploy the new version file
 	cookbook_file "version.txt" do
 		path node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version_new.txt"

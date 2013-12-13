@@ -10,20 +10,6 @@
 # Stop tomcat as in some cases it can try to pick up the new war file before
 # the file has been completely copied
 
-# Deploy the new war file
-cookbook_file "mob-platform-service.war" do
-	path node["tomcat"]["webapp_dir"] + "/mob-platform-service.war"
-	action :create
-end
-
-# Start tomcat to pick up the new war and extract it in order to make the
-# configuration files available to modify
-service "Tomcat7" do
-	retries 4
-	retry_delay 30
-	action :restart
-end
-
 FileUtils.mkdir_p(node["tomcat"]["webapp_dir"] + "/mob-platform-service/WEB-INF")
 
 # Deploy the new version file
@@ -39,9 +25,8 @@ template "config.properties" do
 	action :create
 end
 
-# Restart tomcat to pick up the new configurations
-service "Tomcat7" do
-	retries 4
-	retry_delay 30
-	action :restart
+# Deploy the new war file
+cookbook_file "mob-platform-service.war" do
+	path node["tomcat"]["webapp_dir"] + "/mob-platform-service.war"
+	action :create
 end

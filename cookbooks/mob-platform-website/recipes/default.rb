@@ -9,6 +9,21 @@
 
 #include_recipe "tomcat"
 
+FileUtils.mkdir_p(node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF")
+
+if(File::exists?(node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt")) do
+	# Deploy the new version file
+	cookbook_file "version.txt" do
+		path node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version_new.txt"
+		action :create
+	end
+
+	newVersion = File.read(node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version_new.txt")
+	oldVersion = File.read(node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt")
+
+	if( newVersion == oldVersion) return;
+end
+
 # Deploy the new war file
 cookbook_file "mob-platform-website.war" do
 	path node["tomcat"]["webapp_dir"] + "/mob-platform-website.war"
@@ -22,8 +37,6 @@ service "Tomcat7" do
 	retry_delay 30
 	action :restart
 end
-
-FileUtils.mkdir_p(node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF")
 
 # Deploy the new version file
 cookbook_file "version.txt" do

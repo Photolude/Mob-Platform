@@ -7,15 +7,18 @@
 # The rights for this file fall under the same rights as the git repository containing it
 #
 
-# Stop tomcat as in some cases it can try to pick up the new war file before
-# the file has been completely copied
-
-FileUtils.mkdir_p(node["tomcat"]["webapp_dir"] + "/mob-platform-service/WEB-INF")
+# Deploy the new war file
+cookbook_file "mob-platform-service.war" do
+	path node["tomcat"]["webapp_dir"] + "/mob-platform-service.war"
+	action :create
+	notify: :restart, "service[tomcat7]"
+end
 
 # Deploy the new version file
 cookbook_file "version.txt" do
 	path node["tomcat"]["webapp_dir"] + "/mob-platform-service/WEB-INF/version.txt"
 	action :create
+	notify: :restart, "service[tomcat7]"
 end
 
 # Setup the configuration
@@ -23,10 +26,5 @@ template "config.properties" do
 	path node["tomcat"]["webapp_dir"] + "/mob-platform-service/WEB-INF/config.properties"
 	source "config.properties"
 	action :create
-end
-
-# Deploy the new war file
-cookbook_file "mob-platform-service.war" do
-	path node["tomcat"]["webapp_dir"] + "/mob-platform-service.war"
-	action :create
+	notify: :restart, "service[tomcat7]"
 end

@@ -17,6 +17,7 @@ cookbook_file "mob-platform-website.war" do
 	action :create
 	notifies :restart, "service[tomcat7]", :immediately
 end
+sleep(20)
 
 # Deploy the new version file
 cookbook_file "version.txt" do

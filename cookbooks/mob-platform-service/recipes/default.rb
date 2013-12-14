@@ -9,6 +9,8 @@
 
 service "tomcat7" do
 	supports :restart => true, :status => true
+	retries 3
+	retry_delay 60
 end
 
 # Deploy the new war file

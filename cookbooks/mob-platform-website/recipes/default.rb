@@ -13,7 +13,7 @@ end
 
 # Deploy the new war file
 cookbook_file "mob-platform-website.war" do
-	path 
+	path node["tomcat"]["webapp_dir"] + "/mob-platform-website.war"
 	action :create
 	notifies :restart, "service[tomcat7]", :immediately
 end

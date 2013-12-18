@@ -13,9 +13,9 @@ public class EhArtCache implements IArtCache {
 	private EhArtCache()
 	{
 		// Construct cache
-		CacheManager cacheManager = CacheManager.getInstance();
-		cacheManager.addCache("ArtCache");
-		this.cache = cacheManager.getCache("ArtCache");
+		//CacheManager cacheManager = CacheManager.getInstance();
+		//cacheManager.addCache("ArtCache");
+		//this.cache = cacheManager.getCache("ArtCache");
 	}
 	
 	@Override

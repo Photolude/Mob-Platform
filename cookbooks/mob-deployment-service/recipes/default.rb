@@ -20,6 +20,9 @@ cookbook_file "mob-deployment-service.war" do
 	notifies :restart, "service[tomcat7]", :immediately
 end
 
+# Wait for tomcat to pick up the war and create the application directory
+sleep(60)
+
 # Deploy the new version file
 cookbook_file "version.txt" do
 	path node["tomcat"]["webapp_dir"] + "/mob-deployment-service/WEB-INF/version.txt"

@@ -12,6 +12,7 @@
         <maven.compiler>1.7</maven.compiler>
         <jackson.version>1.8.6</jackson.version>
         <spring.version>3.0.7.RELEASE</spring.version>
+        <google.api.version>1.2.3-alpha</google.api.version>
     </properties>
     <repositories>
     	<repository>
@@ -21,6 +22,10 @@
             <snapshots><enabled>true</enabled></snapshots>
             <url>http://www.photolude.com:9081/nexus/content/repositories/snapshots</url>
         </repository>
+        <repository>
+		    <id>sonatype-oss</id>
+		    <url>https://oss.sonatype.org/content/groups/public</url>
+		</repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -105,6 +110,38 @@
 			<version>5.1.6</version>
 		</dependency>    
 		
+		<!-- External Logon Services -->
+		<dependency>
+	      <groupId>com.google.apis</groupId>
+	      <artifactId>google-api-services-bigquery</artifactId>
+	      <version>v2-rev114-1.17.0-rc</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.google.apis</groupId>
+	        <artifactId>google-api-services-drive</artifactId>
+	        <version>v2-rev98-1.17.0-rc</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.google.apis</groupId>
+	        <artifactId>google-api-services-oauth2</artifactId>
+	        <version>v2-rev50-1.17.0-rc</version>
+	    </dependency>
+	    <dependency>
+		    <groupId>com.google.http-client</groupId>
+		    <artifactId>google-http-client-jackson</artifactId>
+		    <version>1.15.0-rc</version>
+		</dependency>
+	    <dependency>
+	        <groupId>com.google.api-client</groupId>
+	        <artifactId>google-api-client-appengine</artifactId>
+	        <version>1.17.0-rc</version>
+	    </dependency>
+	    <dependency>
+	        <groupId>com.google.http-client</groupId>
+	        <artifactId>google-http-client</artifactId>
+	        <version>1.5.0-beta</version>
+	      </dependency>
+		
 		<!-- Logging -->
 		<dependency>
 			<groupId>log4j</groupId>
@@ -177,6 +214,39 @@
                         <wtpapplicationxml>true</wtpapplicationxml>
                         <wtpversion>2.0</wtpversion>
                     </configuration>
+                </plugin>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                	<groupId>org.eclipse.m2e</groupId>
+                	<artifactId>lifecycle-mapping</artifactId>
+                	<version>1.0.0</version>
+                	<configuration>
+                		<lifecycleMappingMetadata>
+                			<pluginExecutions>
+                				<pluginExecution>
+                					<pluginExecutionFilter>
+                						<groupId>
+                							org.codehaus.mojo
+                						</groupId>
+                						<artifactId>
+                							build-helper-maven-plugin
+                						</artifactId>
+                						<versionRange>
+                							[1.5,)
+                						</versionRange>
+                						<goals>
+                							<goal>
+                								reserve-network-port
+                							</goal>
+                						</goals>
+                					</pluginExecutionFilter>
+                					<action>
+                						<ignore></ignore>
+                					</action>
+                				</pluginExecution>
+                			</pluginExecutions>
+                		</lifecycleMappingMetadata>
+                	</configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

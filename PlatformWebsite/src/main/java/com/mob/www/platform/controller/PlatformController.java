@@ -17,10 +17,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.mob.commons.plugins.servicemodel.MainMenuItem;
 import com.mob.commons.service.clients.IPluginService;
 import com.mob.commons.service.clients.IUserServiceClient;
+import com.mob.www.platform.model.GooglePlusLogin;
 import com.mob.www.platform.model.LogonRequest;
 import com.mob.www.platform.services.IAnonymousAccess;
 import com.mob.www.platform.services.IServiceContracts;
 import com.mob.www.platform.services.ServiceCallContext;
+import com.mysql.jdbc.StringUtils;
 
 @Controller
 @RequestMapping("/")
@@ -108,6 +110,26 @@ public class PlatformController
 		
 		if(userToken != null && userToken.length() > 0)
 		{
+			loadUserData(request, userToken);
+			
+			return new ModelAndView(REDIRECT_TO_HOME);
+		}
+		else
+		{
+			//
+			// Logon failed
+			//
+			return new ModelAndView("redirect:" + request.getHeader(REQUEST_HEADER_REFERER) + "?error=logon");
+		}
+	}
+	
+	@RequestMapping(value = "/logon/googleplus", method = RequestMethod.POST)
+	public ModelAndView logonGooglePlus(GooglePlusLogin loginInfo, HttpServletRequest request)
+	{
+		
+		if(loginInfo != null && !StringUtils.isNullOrEmpty(loginInfo.getToken()))
+		{
+			String userToken = this.userServiceClient.logonViaGoogle(loginInfo.getToken());
 			loadUserData(request, userToken);
 			
 			return new ModelAndView(REDIRECT_TO_HOME);

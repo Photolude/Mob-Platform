@@ -71,7 +71,7 @@ public class PluginDomain_HealthUnitTests
 		// Generate stub User Account Client
 		//
 		IUserAccountDomain accountDomain = mock(IUserAccountDomain.class);
-		Mockito.when(accountDomain.getStaticIdFromEmail(any(String.class))).thenReturn(1L);
+		Mockito.when(accountDomain.getStaticIdFromEmail(anyString(), anyString())).thenReturn(1L);
 		
 		//
 		// Create domain

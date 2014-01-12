@@ -7,8 +7,11 @@ import java.util.UUID;
 import com.mob.user.dal.ILogonAccessLayer;
 import com.mob.user.dal.IUserAccessLayer;
 import com.mob.user.dal.UserLogonData;
+import com.mysql.jdbc.StringUtils;
 
 public class UserAccountDomain implements IUserAccountDomain {
+	private static final String USER_SOURCE = "Custom";
+	
 	private int timeoutMinutes = 5;
 	public int getTimeoutMinutes(){ return this.timeoutMinutes; }
 	public UserAccountDomain setTimeoutMinutes(int value)
@@ -33,36 +36,60 @@ public class UserAccountDomain implements IUserAccountDomain {
 		return this;
 	}
 	
+	private boolean allowGoogleLogon;
+	public boolean getAllowGoogleLogon(){ return this.allowGoogleLogon; }
+	public UserAccountDomain setAllowGoogleLogon(boolean value)
+	{
+		this.allowGoogleLogon = value;
+		return this;
+	}
+	
 	@Override
 	public String logon(String username, String password) {
-		if(username == null || password == null || username.length() == 0 || password.length() == 0)
+		if(StringUtils.isNullOrEmpty(username) || StringUtils.isNullOrEmpty(password))
 		{
 			// Exit due to bad arguments
 			return null;
 		}
 		
 		Long userStaticId = this.logonAccessLayer.attemptLogOn(username, password);
-		String temporaryId = null;
 		
 		if(userStaticId != null)
 		{
-			// Generate tempararyId
-			temporaryId = UUID.randomUUID().toString();
-			
-			// Set temporary timeout
-			Calendar calendar = Calendar.getInstance();
-			calendar.add(Calendar.MINUTE, this.timeoutMinutes);
-			Date timeout = calendar.getTime();
-			
-			//
-			// Register temporary id
-			//
-			if(!this.userAccessLayer.setTemporaryUserId(userStaticId, temporaryId, timeout))
-			{
-				temporaryId = null;
-			}
+			return null;
 		}
-		return temporaryId;
+
+		// Set temporary timeout
+		Calendar calendar = Calendar.getInstance();
+		calendar.add(Calendar.MINUTE, this.timeoutMinutes);
+		Date timeout = calendar.getTime();
+		
+		// Create temporary id
+		Calendar expiration = Calendar.getInstance();
+		expiration.add(Calendar.HOUR, 2);
+		TemporaryId temporaryId = new TemporaryId(USER_SOURCE, timeout);
+		
+		//
+		// Register temporary id
+		//
+		if(!this.userAccessLayer.setTemporaryUserId(userStaticId, temporaryId.toString(), timeout, null))
+		{
+			temporaryId = null;
+		}
+		
+		return temporaryId.toString();
+	}
+	
+	@Override
+	public String logonViaGoogle(String token) {
+		if(StringUtils.isNullOrEmpty(token) || !this.allowGoogleLogon)
+		{
+			return null;
+		}
+		
+		
+		
+		return null;
 	}
 
 	@Override
@@ -92,13 +119,13 @@ public class UserAccountDomain implements IUserAccountDomain {
 	}
 	
 	@Override
-	public Long getStaticIdFromEmail(String email) {
-		if(email == null || email.length() == 0)
+	public Long getStaticIdFromEmail(String email, String source) {
+		if(StringUtils.isNullOrEmpty(email) || StringUtils.isNullOrEmpty(source))
 		{
 			return null;
 		}
 		
-		return this.userAccessLayer.getUserIdFromEmail(email);
+		return this.userAccessLayer.getUserIdFromEmail(email, source);
 	}
 	
 	private boolean isTemporaryIdValid(String temporaryId)

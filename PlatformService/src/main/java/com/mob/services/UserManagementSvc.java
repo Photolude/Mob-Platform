@@ -20,10 +20,30 @@ public class UserManagementSvc {
 	}
 	
 	@GET
-	@Path("/logon/{username}/{password}")
+	@Path("/logon/mob/{username}/{password}")
 	public Response logon(@PathParam("username") String username, @PathParam("password") String password)
 	{
 		String output = this.userDomain.logon(username, password);
+		
+		Response retval;
+		
+		if(output == null || output.length() == 0)
+		{
+			retval = Response.serverError().build();
+		}
+		else
+		{
+			retval = Response.ok(output).build();
+		}
+		
+		return retval;
+	}
+	
+	@GET
+	@Path("/logon/google/{token}")
+	public Response logonViaGoogle(@PathParam("token") String token)
+	{
+		String output = this.userDomain.logonViaGoogle(token);
 		
 		Response retval;
 		

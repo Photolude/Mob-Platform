@@ -54,6 +54,7 @@
 				<property name="endpoint"><value>${mob.services.access}</value></property>
 			</bean>
 		</property>
+		<property name="allowGoogleLogon"><value>${logon.google.allow}</value></property>
 	</bean>
 	<bean id="pluginAccessLayer" class="com.mob.plugin.dal.PluginSqlAccessLayer">
 		<property name="sqlMapClient" ref="sqlMapClient"/>

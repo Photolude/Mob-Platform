@@ -104,7 +104,7 @@ public class UserAccountDomainLogonUnitTests {
 		this.callSucceeds = succeeds;
 		
 		this.testUserAccessLayer = mock(IUserAccessLayer.class);
-		Mockito.when(this.testUserAccessLayer.setTemporaryUserId(eq(userId), anyString(), any(Date.class))).thenReturn(userCall);
+		Mockito.when(this.testUserAccessLayer.setTemporaryUserId(eq(userId), anyString(), any(Date.class), anyString())).thenReturn(userCall);
 		
 		this.testLogonAccessLayer = mock(ILogonAccessLayer.class);
 		Mockito.when(this.testLogonAccessLayer.attemptLogOn(username, password)).thenReturn(userId);
@@ -133,11 +133,11 @@ public class UserAccountDomainLogonUnitTests {
 		
 		if(this.userCalled)
 		{
-			verify(this.testUserAccessLayer, atLeast(1)).setTemporaryUserId(eq(this.userId), any(String.class), any(Date.class));
+			verify(this.testUserAccessLayer, atLeast(1)).setTemporaryUserId(eq(this.userId), anyString(), any(Date.class), anyString());
 		}
 		else
 		{
-			verify(this.testUserAccessLayer, atMost(0)).setTemporaryUserId(eq(this.userId), any(String.class), any(Date.class));
+			verify(this.testUserAccessLayer, atMost(0)).setTemporaryUserId(eq(this.userId), anyString(), any(Date.class), anyString());
 		}
 		
 		if(!this.callSucceeds)

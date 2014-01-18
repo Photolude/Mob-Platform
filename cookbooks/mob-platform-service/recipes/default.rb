@@ -2,19 +2,37 @@
 # Cookbook Name:: mob-platform-service
 # Recipe:: default
 #
-# Copyright 2013, YOUR_COMPANY_NAME
+# Copyright 2013, Photolude, LLC
 #
-# All rights reserved - Do Not Redistribute
+# The rights for this file fall under the same rights as the git repository containing it
 #
 
-cookbook_file "mob-platform-service.war" do
-	path node["tomcat"]["webapp_dir"] + "/mob-platform-service.war"
-	action :create_if_missing
+service "tomcat7" do
+	supports :restart => true, :status => true
+	retries 3
+	retry_delay 300
 end
 
+# Deploy the new war file
+cookbook_file "mob-platform-service.war" do
+	path node["tomcat"]["webapp_dir"] + "/mob-platform-service.war"
+	action :create
+	notifies :restart, "service[tomcat7]", :immediately
+end
+
+# Wait for tomcat to pick up the war and create the application directory
+sleep(60)
+
+# Deploy the new version file
+cookbook_file "version.txt" do
+	path node["tomcat"]["webapp_dir"] + "/mob-platform-service/WEB-INF/version.txt"
+	action :create
+end
+
+# Setup the configuration
 template "config.properties" do
 	path node["tomcat"]["webapp_dir"] + "/mob-platform-service/WEB-INF/config.properties"
 	source "config.properties"
 	action :create
+	notifies :restart, "service[tomcat7]", :immediately
 end
-

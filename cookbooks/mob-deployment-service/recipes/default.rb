@@ -1,5 +1,5 @@
 #
-# Cookbook Name:: mob-platform-website
+# Cookbook Name:: mob-deployment-service
 # Recipe:: default
 #
 # Copyright 2013, Photolude, LLC
@@ -14,8 +14,8 @@ service "tomcat7" do
 end
 
 # Deploy the new war file
-cookbook_file "mob-platform-website.war" do
-	path node["tomcat"]["webapp_dir"] + "/mob-platform-website.war"
+cookbook_file "mob-deployment-service.war" do
+	path node["tomcat"]["webapp_dir"] + "/mob-deployment-service.war"
 	action :create
 	notifies :restart, "service[tomcat7]", :immediately
 end
@@ -25,14 +25,15 @@ sleep(60)
 
 # Deploy the new version file
 cookbook_file "version.txt" do
-	path node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/version.txt"
+	path node["tomcat"]["webapp_dir"] + "/mob-deployment-service/WEB-INF/version.txt"
 	action :create
 end
 
 # Setup the configuration
 template "config.properties" do
-	path node["tomcat"]["webapp_dir"] + "/mob-platform-website/WEB-INF/config.properties"
+	path node["tomcat"]["webapp_dir"] + "/mob-deployment-service/WEB-INF/config.properties"
 	source "config.properties"
 	action :create
 	notifies :restart, "service[tomcat7]", :immediately
 end
+

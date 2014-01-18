@@ -1,3 +1,10 @@
+#
+# This script assembles and uploads the chef cookbooks for the build system
+#
+# Copyright 2013, Photolude, LLC
+#
+require 'pathname'
+require 'FileUtils'
 
 version = File.read("version.txt") + "." + ENV["BUILD_NUMBER"]
 Dir.glob("cookbooks/*/metadata.rb") do |filename|

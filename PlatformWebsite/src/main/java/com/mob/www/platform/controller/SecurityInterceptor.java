@@ -19,7 +19,9 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
 	
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception
 	{
-        if (request.getRequestURI().endsWith("/logon") || request.getRequestURI().endsWith("/logon/anonymous")) {
+        if (request.getRequestURI().endsWith("/logon") || 
+        		request.getRequestURI().endsWith("/logon/anonymous") ||
+        		request.getRequestURI().endsWith("/logon/googleplus")) {
             return true;
         }
         

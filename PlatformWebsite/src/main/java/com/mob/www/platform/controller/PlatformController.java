@@ -126,7 +126,6 @@ public class PlatformController
 	@RequestMapping(value = "/logon/googleplus", method = RequestMethod.POST)
 	public ModelAndView logonGooglePlus(GooglePlusLogin loginInfo, HttpServletRequest request)
 	{
-		
 		if(loginInfo != null && !StringUtils.isNullOrEmpty(loginInfo.getToken()))
 		{
 			String userToken = this.userServiceClient.logonViaGoogle(loginInfo.getToken());

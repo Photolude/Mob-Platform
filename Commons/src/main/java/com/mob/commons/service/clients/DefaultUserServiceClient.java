@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
@@ -65,7 +66,8 @@ public class DefaultUserServiceClient implements IUserServiceClient {
 		DefaultHttpClient client = new DefaultHttpClient();
 		
 		try {
-			HttpResponse response = client.execute(new HttpGet(this.endpoint + "logon/google/" + URIUtil.encodeAll(token)));
+			String dest = this.endpoint + "logon/google/" + URIUtil.encodeQuery(token);
+			HttpResponse response = client.execute(new HttpGet(dest));
 			
 			if(response.getStatusLine().getStatusCode() == STATUS_OK)
 			{
@@ -96,7 +98,7 @@ public class DefaultUserServiceClient implements IUserServiceClient {
 		
 		DefaultHttpClient client = new DefaultHttpClient();
 		try {
-			String endpointCall = this.endpoint + userToken + "/logout";
+			String endpointCall = this.endpoint + URLEncoder.encode(userToken, "ISO-8859-1") + "/logout";
 			HttpResponse response = client.execute(new HttpGet(endpointCall));
 
 			if(response.getStatusLine().getStatusCode() != STATUS_OK)
@@ -122,7 +124,7 @@ public class DefaultUserServiceClient implements IUserServiceClient {
 		
 		HttpGet request;
 		try {
-			request = new HttpGet(this.endpoint + "user/" + token + "/staticid");
+			request = new HttpGet(this.endpoint + "user/" + URLEncoder.encode(token, "ISO-8859-1") + "/staticid");
 			HttpResponse response = client.execute(request);
 			
 			if(response.getStatusLine().getStatusCode() == 200)

@@ -43,18 +43,26 @@
 	  <property name="dataSource" ref="dataSource"/>
 	</bean>
 
+	<bean id="userAccessLayer" class="com.mob.user.dal.UserAccessLayer">
+		<property name="sqlMapClient" ref="sqlMapClient"/>
+	</bean>
+	
 	<bean id="userDomain" class="com.mob.user.domain.UserAccountDomain">
-		<property name="userAccessLayer">
-			<bean class="com.mob.user.dal.UserAccessLayer">
-				<property name="sqlMapClient" ref="sqlMapClient"/>
-			</bean>
-		</property>
+		<property name="userAccessLayer"><ref bean="userAccessLayer"/></property>
 		<property name="logonAccessLayer">
 			<bean class="com.mob.user.dal.DefaultLogonAccessLayer">
 				<property name="endpoint"><value>${mob.services.access}</value></property>
 			</bean>
 		</property>
-		<property name="allowGoogleLogon"><value>${logon.google.allow}</value></property>
+		<property name="sourceLoginClients">
+			<list>
+				<bean class="com.mob.user.externallogin.GoogleLoginClient">
+					<property name="clientId"><value>${google.client.id}</value></property>
+					<property name="clientSecret"><value>${google.client.secret}</value></property>
+					<property name="userAccessLayer"><ref bean="userAccessLayer"/></property>
+				</bean>
+			</list>
+		</property>
 	</bean>
 	<bean id="pluginAccessLayer" class="com.mob.plugin.dal.PluginSqlAccessLayer">
 		<property name="sqlMapClient" ref="sqlMapClient"/>

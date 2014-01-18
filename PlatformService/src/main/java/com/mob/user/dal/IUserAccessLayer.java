@@ -8,5 +8,5 @@ public interface IUserAccessLayer {
 	UserLogonData getLogonData(String temporaryId);
 	Long getUserIdFromToken(String temporaryId);
 	Long getUserIdFromEmail(String email, String source);
-	void addUser(String email, String userSource, String temporaryId, Date expiration, String sourceData);
+	boolean addUser(String email, String userSource, String temporaryId, Date expiration, String sourceData);
 }

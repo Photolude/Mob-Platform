@@ -25,7 +25,6 @@ CREATE  TABLE IF NOT EXISTS `mob`.`plugin` (
   `serviceCalls` TEXT NULL DEFAULT NULL ,
   PRIMARY KEY (`idplugin`) )
 ENGINE = InnoDB
-AUTO_INCREMENT = 397
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -47,7 +46,6 @@ CREATE  TABLE IF NOT EXISTS `mob`.`art` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 132
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -85,7 +83,6 @@ CREATE  TABLE IF NOT EXISTS `mob`.`datacall` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 114
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -101,7 +98,6 @@ CREATE  TABLE IF NOT EXISTS `mob`.`menu` (
   `defaultPriority` INT(11) NOT NULL ,
   PRIMARY KEY (`idmenu`) )
 ENGINE = InnoDB
-AUTO_INCREMENT = 331
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -121,7 +117,6 @@ CREATE  TABLE IF NOT EXISTS `mob`.`page` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 278
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -139,7 +134,6 @@ CREATE  TABLE IF NOT EXISTS `mob`.`script` (
   PRIMARY KEY (`idscript`) ,
   INDEX `idplugin` (`idplugin` ASC) )
 ENGINE = InnoDB
-AUTO_INCREMENT = 3039
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -173,33 +167,44 @@ CREATE  TABLE IF NOT EXISTS `mob`.`required_roles` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
+
 -- -----------------------------------------------------
 -- Table `mob`.`user_source`
 -- -----------------------------------------------------
-CREATE TABLE `user_source` (
-  `iduser_source` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
-  PRIMARY KEY (`iduser_source`),
-  UNIQUE KEY `iduser_source_UNIQUE` (`iduser_source`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE  TABLE IF NOT EXISTS `mob`.`user_source` (
+  `iduser_source` INT(11) NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`iduser_source`) ,
+  UNIQUE INDEX `iduser_source_UNIQUE` (`iduser_source` ASC) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
 
 -- -----------------------------------------------------
 -- Table `mob`.`user`
 -- -----------------------------------------------------
-CREATE TABLE `user` (
-  `staticId` bigint(20) NOT NULL AUTO_INCREMENT,
-  `email` varchar(250) NOT NULL,
-  `iduser_source` int(11) NOT NULL,
-  `temporaryId` varchar(250) NOT NULL,
-  `expiration` datetime NOT NULL,
-  `source_data` blob,
-  PRIMARY KEY (`email`,`iduser_source`),
-  UNIQUE KEY `UserIdentity_UNIQUE` (`temporaryId`),
-  UNIQUE KEY `staticId_UNIQUE` (`staticId`),
-  KEY `email_Index` (`email`),
-  KEY `fk_user_user_source` (`iduser_source`),
-  CONSTRAINT `fk_user_user_source` FOREIGN KEY (`iduser_source`) REFERENCES `user_source` (`iduser_source`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE  TABLE IF NOT EXISTS `mob`.`user` (
+  `staticId` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `email` VARCHAR(250) NOT NULL ,
+  `iduser_source` INT(11) NOT NULL ,
+  `temporaryId` VARCHAR(250) NOT NULL ,
+  `expiration` DATETIME NOT NULL ,
+  `source_data` BLOB NULL DEFAULT NULL ,
+  PRIMARY KEY (`email`, `iduser_source`) ,
+  UNIQUE INDEX `UserIdentity_UNIQUE` (`temporaryId` ASC) ,
+  UNIQUE INDEX `staticId_UNIQUE` (`staticId` ASC) ,
+  INDEX `email_Index` (`email` ASC) ,
+  INDEX `fk_user_user_source` (`iduser_source` ASC) ,
+  CONSTRAINT `fk_user_user_source`
+    FOREIGN KEY (`iduser_source` )
+    REFERENCES `mob`.`user_source` (`iduser_source` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 3
+DEFAULT CHARACTER SET = utf8;
+
 
 -- -----------------------------------------------------
 -- Table `mob`.`user_plugin`
@@ -229,7 +234,7 @@ DEFAULT CHARACTER SET = utf8;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `addArt`(pluginId int, artPath varchar(250), artData TEXT, contentType varchar(250))
+CREATE PROCEDURE `addArt`(pluginId int, artPath varchar(250), artData TEXT, contentType varchar(250))
 BEGIN
     insert into art (plugin_idplugin, path, data, contentType)
     values (pluginId, artPath, artData, contentType);
@@ -245,7 +250,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `addDataCall`(page varchar(250), method varchar(50), uri varchar(250), content text, contentType varchar(50), pageVariable varchar(250), idplugin int)
+CREATE PROCEDURE `addDataCall`(page varchar(250), method varchar(50), uri varchar(250), content text, contentType varchar(50), pageVariable varchar(250), idplugin int)
 BEGIN
     insert into datacall (page, method, uri, content, contentType, pageVariable, idplugin)
     values (page, method, uri, content, contentType, pageVariable, idplugin);
@@ -261,7 +266,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `addMenuItem`(displayName varchar(45), icon text, pluginId int, reference varchar(250), priority int)
+CREATE PROCEDURE `addMenuItem`(displayName varchar(45), icon text, pluginId int, reference varchar(250), priority int)
 BEGIN
     insert into menu (displayName, icon, plugin_idplugin, reference, defaultPriority)
     values (displayName, icon, pluginId, reference, priority);
@@ -277,7 +282,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `addPage`(pageName varchar(250), pluginId int)
+CREATE PROCEDURE `addPage`(pageName varchar(250), pluginId int)
 BEGIN
     insert into page (name, plugin_idplugin) values (pageName, pluginId);
     
@@ -292,7 +297,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `addPlugin`(pluginName VARCHAR(250), pluginCompany VARCHAR(250), pluginVersion VARCHAR(250), pluginRole varchar(250), tags varchar(250), deployIdentity varchar(250), externalServices text, serviceCalls text, description text, icon text, priority int, attributeBlob text)
+CREATE PROCEDURE `addPlugin`(pluginName VARCHAR(250), pluginCompany VARCHAR(250), pluginVersion VARCHAR(250), pluginRole varchar(250), tags varchar(250), deployIdentity varchar(250), externalServices text, serviceCalls text, description text, icon text, priority int, attributeBlob text)
 BEGIN
     insert into plugin (name, company, version, role, deployIdentity, externalservices, serviceCalls, description, icon, tags, priority, attributeBlob) 
     values (pluginName, pluginCompany, pluginVersion, pluginRole, deployIdentity, externalServices, serviceCalls, description, icon, tags, priority, attributeBlob);
@@ -308,7 +313,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `addPluginToUser`(pluginId int, userStaticId bigint)
+CREATE PROCEDURE `addPluginToUser`(pluginId int, userStaticId bigint)
 BEGIN
     insert into user_plugin (plugin_idplugin, user_staticId) values( pluginId, userStaticId);
 END$$
@@ -321,7 +326,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `addScript`(pluginid int, scriptOrder int, scriptData text, scriptType varchar(100), pageName varchar(250), scriptName varchar(250))
+CREATE PROCEDURE `addScript`(pluginid int, scriptOrder int, scriptData text, scriptType varchar(100), pageName varchar(250), scriptName varchar(250))
 BEGIN
     DECLARE itemid INT DEFAULT 1;
     
@@ -336,12 +341,30 @@ END$$
 DELIMITER ;
 
 -- -----------------------------------------------------
+-- procedure addUser
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mob`$$
+CREATE PROCEDURE `addUser`(email varchar(250), source varchar(45), temporaryId varchar(250), expiration DATETIME, data blob)
+BEGIN
+    declare sourceId int;
+    Select iduser_source into sourceId from user_source
+    where name = source;
+    
+    insert into user (email, iduser_source, temporaryId, expiration, source_data)
+    values (email, sourceId, temporaryId, expiration, data);
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
 -- procedure associateScriptToPage
 -- -----------------------------------------------------
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `associateScriptToPage`(pageid int, scriptid int)
+CREATE PROCEDURE `associateScriptToPage`(pageid int, scriptid int)
 BEGIN
     insert into page_script (idpage, idscript) values (pageid, scriptid);
 END$$
@@ -354,7 +377,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `deleteArt`(artId int)
+CREATE PROCEDURE `deleteArt`(artId int)
 BEGIN
     delete from art
     where idart = artId;
@@ -368,7 +391,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `deleteDataCall`(datacallId int)
+CREATE PROCEDURE `deleteDataCall`(datacallId int)
 BEGIN
     delete from datacall
     where iddatacall = datacallId;
@@ -382,7 +405,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `deleteMenuItem`(menuItemId int)
+CREATE PROCEDURE `deleteMenuItem`(menuItemId int)
 BEGIN
     delete from menu
     where idmenu = menuItemId;
@@ -396,7 +419,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `deletePage`(pageId int)
+CREATE PROCEDURE `deletePage`(pageId int)
 BEGIN
     delete from page where idpage = pageId;
 END$$
@@ -409,7 +432,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `deletePlugin`(pluginid int)
+CREATE PROCEDURE `deletePlugin`(pluginid int)
 BEGIN
     delete from page_script 
     where idPair <> 0 and idscript in (Select script.idscript from script where script.idplugin = pluginid);
@@ -429,7 +452,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `deleteScript`(scriptId int)
+CREATE PROCEDURE `deleteScript`(scriptId int)
 BEGIN
     delete from script where idscript = scriptId;
 END$$
@@ -442,7 +465,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getCompanyName`(companykey varchar(250))
+CREATE PROCEDURE `getCompanyName`(companykey varchar(250))
 BEGIN
     Select name from company where company.key = companykey;
 END$$
@@ -455,7 +478,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getDataCall`(userStaticId bigint, page varchar(250))
+CREATE PROCEDURE `getDataCall`(userStaticId bigint, page varchar(250))
 BEGIN
     Select * from datacall
     where datacall.page = page
@@ -475,7 +498,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getLogonData`(temporaryId varchar(250))
+CREATE PROCEDURE `getLogonData`(temporaryId varchar(250))
 BEGIN
     Select staticId, expiration from user where user.temporaryId = temporaryId;
 END$$
@@ -488,7 +511,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getPagePlugins`(staticUserId bigint, page varchar(250))
+CREATE PROCEDURE `getPagePlugins`(staticUserId bigint, page varchar(250))
 BEGIN
     Select plugin.* from plugin
     where
@@ -513,7 +536,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getPageScripts`(page varchar(250), staticUserId bigint)
+CREATE PROCEDURE `getPageScripts`(page varchar(250), staticUserId bigint)
 BEGIN
     Select script.idscript as idscript, script.script as script, script.type as type, script.scriptName as scriptName, script.pageName as pageName from script
     where 
@@ -541,7 +564,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getPages`(user_staticId bigint)
+CREATE PROCEDURE `getPages`(user_staticId bigint)
 BEGIN
     Select page.* from page, plugin, user_plugin
     where plugin.idplugin = page.plugin_idplugin
@@ -561,7 +584,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getPluginArt`(pluginId int)
+CREATE PROCEDURE `getPluginArt`(pluginId int)
 BEGIN
     Select * from art
     where plugin_idplugin = pluginId;
@@ -575,7 +598,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getPluginArtByPath`(userToken varchar(250), role varchar(250), path varchar(250))
+CREATE PROCEDURE `getPluginArtByPath`(userToken varchar(250), role varchar(250), path varchar(250))
 BEGIN
     Select art.* from art, user, user_plugin, plugin
     where user.temporaryId = userToken
@@ -596,7 +619,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getPluginByCompanyNameVersionToken`(companyName varchar(250), pluginName varchar(250), version varchar(250), deployIdentity varchar(250))
+CREATE PROCEDURE `getPluginByCompanyNameVersionToken`(companyName varchar(250), pluginName varchar(250), version varchar(250), deployIdentity varchar(250))
 BEGIN
     Select idplugin from plugin
     where plugin.name = pluginName
@@ -624,7 +647,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getPluginById`(pluginId int)
+CREATE PROCEDURE `getPluginById`(pluginId int)
 BEGIN
     Select * from plugin where idplugin = pluginId;
 END$$
@@ -637,7 +660,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getPluginByUserAndRole`(userToken varchar(250), role varchar(250))
+CREATE PROCEDURE `getPluginByUserAndRole`(userToken varchar(250), role varchar(250))
 BEGIN
     Select * from plugin
     where plugin.deployIdentity = userToken
@@ -658,7 +681,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getPluginDataCall`(pluginid int)
+CREATE PROCEDURE `getPluginDataCall`(pluginid int)
 BEGIN
     Select * from datacall where idplugin = pluginid;
 END$$
@@ -671,7 +694,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getPluginMenuItems`(pluginId int(11))
+CREATE PROCEDURE `getPluginMenuItems`(pluginId int(11))
 BEGIN
     Select * from menu
     where plugin_idplugin = pluginId
@@ -686,7 +709,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getPluginScripts`(pluginId int(11))
+CREATE PROCEDURE `getPluginScripts`(pluginId int(11))
 BEGIN
     Select * from script
     where idplugin = pluginId;
@@ -700,7 +723,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE  PROCEDURE `getPlugins`(userTempId varchar(250))
+CREATE PROCEDURE `getPlugins`(userTempId varchar(250))
 BEGIN
     Select * from (
     Select * from plugin where deployIdentity is null
@@ -731,9 +754,11 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE PROCEDURE `getUserIdFromEmail`(email varchar(250))
+CREATE PROCEDURE `getUserIdFromEmail`(email varchar(250), source varchar(45))
 BEGIN
-    Select staticId from user where user.email = email;
+    Select user.staticId from user
+    left join user_source us on us.name = source and us.iduser_source = user.iduser_source
+    where user.email = email;
 END$$
 
 DELIMITER ;
@@ -823,8 +848,8 @@ DELIMITER ;
 -- procedure setTemporaryUserId
 -- -----------------------------------------------------
 
-delimiter $$
-
+DELIMITER $$
+USE `mob`$$
 CREATE PROCEDURE `setTemporaryUserId`(staticId bigint, temporaryId varchar(250), expiration datetime, sourceData blob)
 BEGIN
     update user
@@ -856,18 +881,6 @@ BEGIN
     plugin.serviceCalls = serviceCalls
     where idplugin = pluginId;
 END$$
-
-DELIMITER $$
-
-CREATE PROCEDURE `addUser`(email varchar(250), source varchar(45), temporaryId varchar(250), expiration DATETIME, data BLOB)
-BEGIN
-    declare sourceId int;
-    Select sourceId = iduser_source from user_source
-    where name = source;
-    
-    insert into user (email, iduser_source, temporaryId, expiration, source_data)
-    values (email, sourceId, temporaryId, expiration, data);
-END
 
 DELIMITER ;
 

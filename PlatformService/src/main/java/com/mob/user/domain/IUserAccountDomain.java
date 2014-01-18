@@ -2,7 +2,7 @@ package com.mob.user.domain;
 
 public interface IUserAccountDomain {
 	String logon(String username, String password);
-	String logonViaGoogle(String token);
+	String logonViaSource(String token, String source);
 	
 	void logoff(String temporaryId);
 	boolean isLoggedIn(String temporaryId);

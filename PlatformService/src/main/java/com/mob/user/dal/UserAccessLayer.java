@@ -53,11 +53,11 @@ public class UserAccessLayer extends SqlMapClientDaoSupport implements IUserAcce
 		params.put("email", email);
 		params.put("source", source);
 		
-		return queryForObject("getLogonData", params, email);
+		return queryForObject("getUserIdFromEmail", params, email);
 	}
 	
 	@Override
-	public void addUser(String email, String userSource, String temporaryId, Date expiration, String sourceData) {
+	public boolean addUser(String email, String userSource, String temporaryId, Date expiration, String sourceData) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("email", email);
 		params.put("userSource", userSource);
@@ -65,7 +65,7 @@ public class UserAccessLayer extends SqlMapClientDaoSupport implements IUserAcce
 		params.put("expiration", expiration);
 		params.put("sourceData", sourceData);
 		
-		updateCall("addUser", params, temporaryId);
+		return updateCall("addUser", params, temporaryId);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -94,14 +94,11 @@ public class UserAccessLayer extends SqlMapClientDaoSupport implements IUserAcce
 		
 		int updateResult = 0;
 		try {
-			updateResult = super.getSqlMapClient().update(queryId, params);
+			super.getSqlMapClient().update(queryId, params);
+			retval = true;
 		} catch (SQLException e) {
 			logger.warn(String.format("An error occured while trying to %s for user %s", queryId, userIdentifier));
 			logger.debug(e);
-		}
-		if(updateResult > 0)
-		{
-			retval = true;
 		}
 		
 		return retval;

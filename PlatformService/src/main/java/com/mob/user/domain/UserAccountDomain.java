@@ -1,12 +1,16 @@
 package com.mob.user.domain;
 
+import java.security.InvalidParameterException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.UUID;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import com.mob.user.dal.ILogonAccessLayer;
 import com.mob.user.dal.IUserAccessLayer;
 import com.mob.user.dal.UserLogonData;
+import com.mob.user.externallogin.ISourceLoginClient;
 import com.mysql.jdbc.StringUtils;
 
 public class UserAccountDomain implements IUserAccountDomain {
@@ -44,6 +48,30 @@ public class UserAccountDomain implements IUserAccountDomain {
 		return this;
 	}
 	
+	private List<ISourceLoginClient> sourceLoginClients;
+	private Map<String, ISourceLoginClient> loginClientsLookup;
+	public List<ISourceLoginClient> getSourceLoginClients(){ return this.sourceLoginClients; }
+	public UserAccountDomain setSourceLoginClients(List<ISourceLoginClient> value)
+	{
+		if(value != null)
+		{
+			this.loginClientsLookup = new HashMap<String, ISourceLoginClient>();
+			for(ISourceLoginClient client : value)
+			{
+				if(!this.loginClientsLookup.containsKey(client.getSourceName()))
+				{
+					this.loginClientsLookup.put(client.getSourceName(), client);
+				}
+				else
+				{
+					throw new InvalidParameterException(String.format("The values provided has two clients which are responsible for the same source (%s)", client.getSourceName()));
+				}
+			}
+		}
+		this.sourceLoginClients = value;
+		return this;
+	}
+	
 	@Override
 	public String logon(String username, String password) {
 		if(StringUtils.isNullOrEmpty(username) || StringUtils.isNullOrEmpty(password))
@@ -54,7 +82,7 @@ public class UserAccountDomain implements IUserAccountDomain {
 		
 		Long userStaticId = this.logonAccessLayer.attemptLogOn(username, password);
 		
-		if(userStaticId != null)
+		if(userStaticId == null)
 		{
 			return null;
 		}
@@ -74,22 +102,28 @@ public class UserAccountDomain implements IUserAccountDomain {
 		//
 		if(!this.userAccessLayer.setTemporaryUserId(userStaticId, temporaryId.toString(), timeout, null))
 		{
-			temporaryId = null;
+			return null;
 		}
 		
 		return temporaryId.toString();
 	}
 	
 	@Override
-	public String logonViaGoogle(String token) {
-		if(StringUtils.isNullOrEmpty(token) || !this.allowGoogleLogon)
+	public String logonViaSource(String token, String source) {
+		if(StringUtils.isNullOrEmpty(token))
 		{
 			return null;
 		}
 		
+		ISourceLoginClient sourceClient = this.loginClientsLookup.get(source);
+		if(sourceClient == null)
+		{
+			return null;
+		}
 		
+		TemporaryId tempId = sourceClient.login(token);
 		
-		return null;
+		return (tempId != null)? tempId.toString() : null;
 	}
 
 	@Override

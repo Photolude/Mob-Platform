@@ -40,10 +40,10 @@ public class UserManagementSvc {
 	}
 	
 	@GET
-	@Path("/logon/google/{token}")
-	public Response logonViaGoogle(@PathParam("token") String token)
+	@Path("/logon/{source}/{token:.+}")
+	public Response logonViaSource(@PathParam("token") String token, @PathParam("source") String source)
 	{
-		String output = this.userDomain.logonViaGoogle(token);
+		String output = this.userDomain.logonViaSource(token, source);
 		
 		Response retval;
 		

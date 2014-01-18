@@ -5,6 +5,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import com.mob.www.platform.services.IAnonymousAccess;
 import com.mob.www.platform.services.ServiceCallContext;
 import com.mysql.jdbc.StringUtils;
 
@@ -14,6 +15,14 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
 	public SecurityInterceptor setLoggedOutPage(String value)
 	{
 		this.loggedOutPage = value;
+		return this;
+	}
+	
+	private IAnonymousAccess anonymousAccess;
+	public IAnonymousAccess getAnonymousAccess(){ return this.anonymousAccess; }
+	public SecurityInterceptor setAnonymousAccess(IAnonymousAccess value)
+	{
+		this.anonymousAccess = value;
 		return this;
 	}
 	
@@ -38,13 +47,16 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
         
         if(context != null && !StringUtils.isNullOrEmpty(context.getUserToken()))
         {
-        	succeeded = true;
+        	return true;
         }
         
-        if(!succeeded)
+        if(this.anonymousAccess != null && !StringUtils.isNullOrEmpty(this.anonymousAccess.getDefaultIdentity()))
         {
-        	response.sendRedirect(this.loggedOutPage);
+        	response.sendRedirect("/logon/anonymous");
+        	return false;
         }
-        return succeeded;
+        
+    	response.sendRedirect(this.loggedOutPage);
+    	return false;
     }
 }

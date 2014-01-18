@@ -29,7 +29,7 @@ import com.mob.www.platform.services.IServiceContracts;
 import com.mob.www.platform.services.ServiceCallContext;
 
 @Controller
-@RequestMapping("/apps/")
+@RequestMapping("/")
 public class AppsController {
 	private IPluginService pluginService;
 	public IPluginService getPluginService(){ return this.pluginService; }

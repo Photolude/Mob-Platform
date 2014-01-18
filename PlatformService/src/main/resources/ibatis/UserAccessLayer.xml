@@ -8,9 +8,10 @@
         <parameter property="staticId"/>
         <parameter property="temporaryId"/>
         <parameter property="expiration"/>
+        <parameter property="sourceData"/>
     </parameterMap>
     <procedure id="setTemporaryUserId" parameterMap="setTemporaryUserIdParams">
-        { call setTemporaryUserId (?,?,?) }
+        { call setTemporaryUserId (?,?,?,?) }
     </procedure>
 	
     <parameterMap class="java.util.Map" id="removeTemporaryUserIdParams">
@@ -36,8 +37,20 @@
     
     <parameterMap class="java.util.Map" id="getUserIdFromEmailParams">
         <parameter property="email"/>
+        <parameter property="source"/>
     </parameterMap>
     <procedure id="getUserIdFromEmail" parameterMap="getUserIdFromEmailParams" resultClass="Long">
-        { call getUserIdFromEmail (?) }
+        { call getUserIdFromEmail (?, ?) }
+    </procedure>
+    
+    <parameterMap class="java.util.Map" id="addUserParams">
+        <parameter property="email"/>
+        <parameter property="userSource"/>
+        <parameter property="temporaryId"/>
+        <parameter property="expiration"/>
+        <parameter property="sourceData"/>
+    </parameterMap>
+    <procedure id="addUser" parameterMap="addUserParams">
+    	{ call addUser(?, ?, ?, ?, ?) }
     </procedure>
 </sqlMap>

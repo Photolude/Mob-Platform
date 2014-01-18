@@ -12,6 +12,7 @@ import com.mob.user.domain.UserAccountDomain;
 
 public class UserAccountDomain_getStaticId_UnitTests {
 	private static final String TOKEN_VALID = "Token";
+	private static final String SOURCE_VALID = "ValidSource";
 	
 	private UserAccountDomain domain;
 	private IUserAccessLayer dal;
@@ -54,8 +55,8 @@ public class UserAccountDomain_getStaticId_UnitTests {
 	@Test
 	public void getStaticIdFromEmail_Valid()
 	{
-		Mockito.when(this.dal.getUserIdFromEmail(TOKEN_VALID)).thenReturn(1L);
-		Long staticId = this.domain.getStaticIdFromEmail(TOKEN_VALID);
+		Mockito.when(this.dal.getUserIdFromEmail(TOKEN_VALID, SOURCE_VALID)).thenReturn(1L);
+		Long staticId = this.domain.getStaticIdFromEmail(TOKEN_VALID, SOURCE_VALID);
 		
 		Assert.assertEquals((Long)1L, staticId);
 	}
@@ -63,8 +64,8 @@ public class UserAccountDomain_getStaticId_UnitTests {
 	@Test
 	public void getStaticIdFromEmail_NullToken()
 	{
-		Mockito.when(this.dal.getUserIdFromEmail(null)).thenReturn(1L);
-		Long staticId = this.domain.getStaticIdFromEmail(null);
+		Mockito.when(this.dal.getUserIdFromEmail(null, SOURCE_VALID)).thenReturn(1L);
+		Long staticId = this.domain.getStaticIdFromEmail(null, SOURCE_VALID);
 		
 		Assert.assertEquals((Long)null, staticId);
 	}
@@ -72,8 +73,8 @@ public class UserAccountDomain_getStaticId_UnitTests {
 	@Test
 	public void getStaticIdFromEmail_EmptyToken()
 	{
-		Mockito.when(this.dal.getUserIdFromEmail("")).thenReturn(1L);
-		Long staticId = this.domain.getStaticIdFromEmail("");
+		Mockito.when(this.dal.getUserIdFromEmail("", SOURCE_VALID)).thenReturn(1L);
+		Long staticId = this.domain.getStaticIdFromEmail("", SOURCE_VALID);
 		
 		Assert.assertEquals((Long)null, staticId);
 	}

@@ -25,7 +25,6 @@ CREATE  TABLE IF NOT EXISTS `mob`.`plugin` (
   `serviceCalls` TEXT NULL DEFAULT NULL ,
   PRIMARY KEY (`idplugin`) )
 ENGINE = InnoDB
-AUTO_INCREMENT = 397
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -47,7 +46,6 @@ CREATE  TABLE IF NOT EXISTS `mob`.`art` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 132
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -85,7 +83,6 @@ CREATE  TABLE IF NOT EXISTS `mob`.`datacall` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 114
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -101,7 +98,6 @@ CREATE  TABLE IF NOT EXISTS `mob`.`menu` (
   `defaultPriority` INT(11) NOT NULL ,
   PRIMARY KEY (`idmenu`) )
 ENGINE = InnoDB
-AUTO_INCREMENT = 331
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -121,7 +117,6 @@ CREATE  TABLE IF NOT EXISTS `mob`.`page` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 278
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -139,7 +134,6 @@ CREATE  TABLE IF NOT EXISTS `mob`.`script` (
   PRIMARY KEY (`idscript`) ,
   INDEX `idplugin` (`idplugin` ASC) )
 ENGINE = InnoDB
-AUTO_INCREMENT = 3039
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -175,18 +169,40 @@ DEFAULT CHARACTER SET = utf8;
 
 
 -- -----------------------------------------------------
+-- Table `mob`.`user_source`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `mob`.`user_source` (
+  `iduser_source` INT(11) NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(45) NOT NULL ,
+  PRIMARY KEY (`iduser_source`) ,
+  UNIQUE INDEX `iduser_source_UNIQUE` (`iduser_source` ASC) )
+ENGINE = InnoDB
+AUTO_INCREMENT = 2
+DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
 -- Table `mob`.`user`
 -- -----------------------------------------------------
 CREATE  TABLE IF NOT EXISTS `mob`.`user` (
-  `staticId` BIGINT(20) NOT NULL ,
+  `staticId` BIGINT(20) NOT NULL AUTO_INCREMENT ,
+  `email` VARCHAR(250) NOT NULL ,
+  `iduser_source` INT(11) NOT NULL ,
   `temporaryId` VARCHAR(250) NOT NULL ,
   `expiration` DATETIME NOT NULL ,
-  `email` VARCHAR(250) NULL DEFAULT NULL ,
-  PRIMARY KEY (`staticId`) ,
+  `source_data` BLOB NULL DEFAULT NULL ,
+  PRIMARY KEY (`email`, `iduser_source`) ,
   UNIQUE INDEX `UserIdentity_UNIQUE` (`temporaryId` ASC) ,
   UNIQUE INDEX `staticId_UNIQUE` (`staticId` ASC) ,
-  INDEX `email_Index` (`email` ASC) )
+  INDEX `email_Index` (`email` ASC) ,
+  INDEX `fk_user_user_source` (`iduser_source` ASC) ,
+  CONSTRAINT `fk_user_user_source`
+    FOREIGN KEY (`iduser_source` )
+    REFERENCES `mob`.`user_source` (`iduser_source` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB
+AUTO_INCREMENT = 3
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -320,6 +336,24 @@ BEGIN
     set itemid = last_insert_id();
     
     select itemid;
+END$$
+
+DELIMITER ;
+
+-- -----------------------------------------------------
+-- procedure addUser
+-- -----------------------------------------------------
+
+DELIMITER $$
+USE `mob`$$
+CREATE PROCEDURE `addUser`(email varchar(250), source varchar(45), temporaryId varchar(250), expiration DATETIME, data blob)
+BEGIN
+    declare sourceId int;
+    Select iduser_source into sourceId from user_source
+    where name = source;
+    
+    insert into user (email, iduser_source, temporaryId, expiration, source_data)
+    values (email, sourceId, temporaryId, expiration, data);
 END$$
 
 DELIMITER ;
@@ -720,9 +754,11 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE PROCEDURE `getUserIdFromEmail`(email varchar(250))
+CREATE PROCEDURE `getUserIdFromEmail`(email varchar(250), source varchar(45))
 BEGIN
-    Select staticId from user where user.email = email;
+    Select user.staticId from user
+    left join user_source us on us.name = source and us.iduser_source = user.iduser_source
+    where user.email = email;
 END$$
 
 DELIMITER ;
@@ -814,10 +850,11 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE PROCEDURE `setTemporaryUserId`(staticId bigint, temporaryId varchar(250), expiration datetime)
+CREATE PROCEDURE `setTemporaryUserId`(staticId bigint, temporaryId varchar(250), expiration datetime, sourceData blob)
 BEGIN
     update user
-    set user.temporaryId = temporaryId
+    set user.temporaryId = temporaryId,
+    user.source_data = sourceData
     where user.staticId = staticId;
     -- delete from user where user.staticId = staticId;    
     -- insert into user (staticId, temporaryId, expiration) values (staticId, temporaryId, expiration);

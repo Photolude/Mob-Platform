@@ -26,6 +26,14 @@ public class PluginDomain implements IPluginDomain {
 		return this;
 	}
 	
+	private String defaultPluginUserSource = null;
+	public String getDefaultPluginUserSource(){ return this.defaultPluginUserSource; }
+	public PluginDomain setDefaultPluginUserSource(String value)
+	{
+		this.defaultPluginUserSource = value;
+		return this;
+	}
+	
 	private String defaultPluginUser = null;
 	public String getDefaultPluginUser(){ return this.defaultPluginUser; }
 	public PluginDomain setDefaultPluginUser(String value)
@@ -61,7 +69,7 @@ public class PluginDomain implements IPluginDomain {
 				// The user is new, so we need to setup their default plug-ins based
 				// of the default user settings
 				//
-				Long defaultId = this.userAccountService.getStaticIdFromEmail(this.defaultPluginUser);
+				Long defaultId = this.userAccountService.getStaticIdFromEmail(this.defaultPluginUser, this.defaultPluginUserSource);
 				
 				if(defaultId != null)
 				{
@@ -211,7 +219,7 @@ public class PluginDomain implements IPluginDomain {
 			
 			if(succeeded)
 			{
-				defaultId = this.userAccountService.getStaticIdFromEmail(this.defaultPluginUser);
+				defaultId = this.userAccountService.getStaticIdFromEmail(this.defaultPluginUser, this.defaultPluginUserSource);
 				
 				if(defaultId == null)
 				{
@@ -242,7 +250,7 @@ public class PluginDomain implements IPluginDomain {
 		// The user is new, so we need to setup their default plug-ins based
 		// of the default user settings
 		//
-		Long defaultId = this.userAccountService.getStaticIdFromEmail(this.defaultPluginUser);
+		Long defaultId = this.userAccountService.getStaticIdFromEmail(this.defaultPluginUser, this.defaultPluginUserSource);
 		
 		if(defaultId != null)
 		{

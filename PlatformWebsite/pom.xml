@@ -1,12 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.mob.platform</groupId>
 	<artifactId>mob-platform-website</artifactId>
-	<packaging>war</packaging>
 	<version>${mob.version}</version>
+	<packaging>war</packaging>
 	<name>Mob Platform Website</name>
-	
+	<description>This artifact contains services which provide the web layer to the mob platform.</description>
+	<properties>
+	    <mob.version>1.0.1</mob.version>
+		<spring.version>3.0.4.RELEASE</spring.version>
+		<tiles.version>2.2.2</tiles.version>
+		<javax.version>2.5</javax.version>
+		<jackson.version>1.8.6</jackson.version>
+	    <httpcore.version>4.3</httpcore.version>
+	    <httpclient.version>4.3</httpclient.version>
+	</properties>
 	<repositories>
 		<repository>
 			<id>central</id>
@@ -17,23 +26,13 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-		<repository>
-            <id>com.mob</id>
+        <repository>
+            <id>local.mob</id>
             <name>mob local repo snapshots</name>
-            <releases><enabled>true</enabled></releases>
             <snapshots><enabled>true</enabled></snapshots>
-            <url>http://www.photolude.com:9081/nexus/content/repositories/snapshots</url>
+            <url>http://localhost:9081/nexus/content/repositories/snapshots</url>
         </repository>
 	</repositories>
-	<properties>
-	    <mob.version>1.0.1</mob.version>
-		<spring.version>3.0.4.RELEASE</spring.version>
-		<tiles.version>2.2.2</tiles.version>
-		<javax.version>2.5</javax.version>
-		<jackson.version>1.8.6</jackson.version>
-	    <httpcore.version>4.3</httpcore.version>
-	    <httpclient.version>4.3</httpclient.version>
-	</properties>
 
 	<dependencies>
 	    <!-- JavaX dependencies -->

@@ -102,6 +102,6 @@ public class PluginDomain_GetUserMenu_UnitTests {
 		MainMenuItem[] result = this.domain.getUserMenu(this.token);
 		
 		Assert.assertArrayEquals(this.expectedResult, result);
-		verify(this.userAccountDomain, times((userPluginsInitialized? 1 : 0))).getStaticIdFromEmail(any(String.class));
+		verify(this.userAccountDomain, times((userPluginsInitialized? 1 : 0))).getStaticIdFromEmail(anyString(), anyString());
 	}
 }

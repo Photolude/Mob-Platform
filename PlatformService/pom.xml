@@ -12,6 +12,10 @@
         <maven.compiler>1.7</maven.compiler>
         <jackson.version>1.8.6</jackson.version>
         <spring.version>3.0.7.RELEASE</spring.version>
+        <google.api.version>1.17.0-rc</google.api.version>
+        <google.apis.version>v1-rev99-1.17.0-rc</google.apis.version>
+        <google.drive.version>v2-rev111-1.17.0-rc</google.drive.version>
+        <google.oauth.version>v2-rev60-1.17.0-rc</google.oauth.version>
     </properties>
     <repositories>
     	<repository>
@@ -21,6 +25,10 @@
             <snapshots><enabled>true</enabled></snapshots>
             <url>http://www.photolude.com:9081/nexus/content/repositories/snapshots</url>
         </repository>
+        <repository>
+		    <id>sonatype-oss</id>
+		    <url>https://oss.sonatype.org/content/groups/public</url>
+		</repository>
     </repositories>
     <dependencies>
         <dependency>
@@ -105,6 +113,66 @@
 			<version>5.1.6</version>
 		</dependency>    
 		
+		<!-- External Logon Services -->
+		<dependency>
+	      <groupId>com.google.api-client</groupId>
+	      <artifactId>google-api-client</artifactId>
+	      <version>${google.api.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>com.google.api-client</groupId>
+	      <artifactId>google-api-client-appengine</artifactId>
+	      <version>${google.api.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>com.google.api-client</groupId>
+	      <artifactId>google-api-client-gson</artifactId>
+	      <version>${google.api.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>com.google.api-client</groupId>
+	      <artifactId>google-api-client-jackson2</artifactId>
+	      <version>${google.api.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>com.google.api-client</groupId>
+	      <artifactId>google-api-client-java6</artifactId>
+	      <version>${google.api.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>com.google.api-client</groupId>
+	      <artifactId>google-api-client-protobuf</artifactId>
+	      <version>${google.api.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>com.google.api-client</groupId>
+	      <artifactId>google-api-client-xml</artifactId>
+	      <version>${google.api.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>com.google.http-client</groupId>
+	      <artifactId>google-http-client-jackson</artifactId>
+	      <version>${google.api.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>com.google.apis</groupId>
+	      <artifactId>google-api-services-plus</artifactId>
+	      <version>${google.apis.version}</version>
+	    </dependency>
+	    <dependency>
+	      <groupId>com.google.apis</groupId>
+	      <artifactId>google-api-services-oauth2</artifactId>
+	      <version>${google.apis.version}</version>
+	    </dependency>
+	    <dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-oauth2</artifactId>
+			<version>${google.oauth.version}</version>
+		</dependency>
+		            
+
+            
+
 		<!-- Logging -->
 		<dependency>
 			<groupId>log4j</groupId>
@@ -177,6 +245,39 @@
                         <wtpapplicationxml>true</wtpapplicationxml>
                         <wtpversion>2.0</wtpversion>
                     </configuration>
+                </plugin>
+                <!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+                <plugin>
+                	<groupId>org.eclipse.m2e</groupId>
+                	<artifactId>lifecycle-mapping</artifactId>
+                	<version>1.0.0</version>
+                	<configuration>
+                		<lifecycleMappingMetadata>
+                			<pluginExecutions>
+                				<pluginExecution>
+                					<pluginExecutionFilter>
+                						<groupId>
+                							org.codehaus.mojo
+                						</groupId>
+                						<artifactId>
+                							build-helper-maven-plugin
+                						</artifactId>
+                						<versionRange>
+                							[1.5,)
+                						</versionRange>
+                						<goals>
+                							<goal>
+                								reserve-network-port
+                							</goal>
+                						</goals>
+                					</pluginExecutionFilter>
+                					<action>
+                						<ignore></ignore>
+                					</action>
+                				</pluginExecution>
+                			</pluginExecutions>
+                		</lifecycleMappingMetadata>
+                	</configuration>
                 </plugin>
             </plugins>
         </pluginManagement>

@@ -3,6 +3,9 @@ package com.mob.commons.service.clients;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+
+import javax.print.DocFlavor.URL;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
@@ -38,7 +41,7 @@ public class DefaultPluginServiceClient implements IPluginService {
 		Logger logger = Logger.getLogger(this.getClass());
 		
 		try {
-			HttpGet get = new HttpGet(this.endpoint + "user/" + userToken + "/menu");
+			HttpGet get = new HttpGet(this.endpoint + "user/" +  URLEncoder.encode(userToken, "ISO-8859-1") + "/menu");
 			
 			HttpResponse response = client.execute(get);
 			
@@ -67,7 +70,7 @@ public class DefaultPluginServiceClient implements IPluginService {
 		Logger logger = Logger.getLogger(this.getClass());
 		
 		try {
-			String requestPath = UriUtils.encodePath(this.endpoint + "user/" + userToken + "/page/" + page + "/get", "UTF-8");
+			String requestPath = UriUtils.encodePath(this.endpoint + "user/" + URLEncoder.encode(userToken, "ISO-8859-1") + "/page/" + page + "/get", "UTF-8");
 			HttpGet get = new HttpGet(requestPath);
 			
 			HttpResponse response = client.execute(get);
@@ -97,7 +100,7 @@ public class DefaultPluginServiceClient implements IPluginService {
 		Logger logger = Logger.getLogger(this.getClass());
 		
 		try {
-			String requestPath = UriUtils.encodePath(this.endpoint + "user/" + userToken + "/art/" + role + "/" + artPath, "UTF-8");
+			String requestPath = UriUtils.encodePath(this.endpoint + "user/" + URLEncoder.encode(userToken, "ISO-8859-1") + "/art/" + role + "/" + artPath, "UTF-8");
 			HttpGet get = new HttpGet(requestPath);
 			
 			HttpResponse response = client.execute(get);
@@ -126,7 +129,7 @@ public class DefaultPluginServiceClient implements IPluginService {
 		Logger logger = Logger.getLogger(this.getClass());
 		
 		try {
-			String requestPath = UriUtils.encodePath(this.endpoint + "user/" + userToken + "/role/" + role, "UTF-8");
+			String requestPath = UriUtils.encodePath(this.endpoint + "user/" + URLEncoder.encode(userToken, "ISO-8859-1") + "/role/" + role, "UTF-8");
 			HttpGet get = new HttpGet(requestPath);
 			
 			HttpResponse response = client.execute(get);

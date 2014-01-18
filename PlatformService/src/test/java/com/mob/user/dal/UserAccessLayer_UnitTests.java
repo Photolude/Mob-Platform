@@ -42,7 +42,7 @@ public class UserAccessLayer_UnitTests {
 	//@Test
 	public void setTemporaryUserId()
 	{
-		this.dal.setTemporaryUserId(USER_ID, TEMP_ID, this.timeout);
+		this.dal.setTemporaryUserId(USER_ID, TEMP_ID, this.timeout, null);
 		
 		UserLogonData data = this.dal.getLogonData(TEMP_ID);
 		Assert.assertNotNull(data);

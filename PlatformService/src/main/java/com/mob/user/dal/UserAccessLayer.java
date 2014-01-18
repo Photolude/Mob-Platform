@@ -13,11 +13,12 @@ public class UserAccessLayer extends SqlMapClientDaoSupport implements IUserAcce
 	private static Logger logger = Logger.getLogger(UserAccessLayer.class);
 	
 	@Override
-	public boolean setTemporaryUserId(Long staticUserId, String temporaryId, Date expiration) {
+	public boolean setTemporaryUserId(Long staticUserId, String temporaryId, Date expiration, String sourceData) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("staticId", staticUserId);
 		params.put("temporaryId", temporaryId);
 		params.put("expiration", expiration);
+		params.put("sourceData", sourceData);
 		
 		return updateCall("setTemporaryUserId", params, Long.toString(staticUserId));
 	}
@@ -47,11 +48,24 @@ public class UserAccessLayer extends SqlMapClientDaoSupport implements IUserAcce
 	}
 
 	@Override
-	public Long getUserIdFromEmail(String email) {
+	public Long getUserIdFromEmail(String email, String source) {
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("email", email);
+		params.put("source", source);
 		
-		return queryForObject("getLogonData", params, email);
+		return queryForObject("getUserIdFromEmail", params, email);
+	}
+	
+	@Override
+	public boolean addUser(String email, String userSource, String temporaryId, Date expiration, String sourceData) {
+		Map<String,Object> params = new HashMap<String,Object>();
+		params.put("email", email);
+		params.put("userSource", userSource);
+		params.put("temporaryId", temporaryId);
+		params.put("expiration", expiration);
+		params.put("sourceData", sourceData);
+		
+		return updateCall("addUser", params, temporaryId);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -80,14 +94,11 @@ public class UserAccessLayer extends SqlMapClientDaoSupport implements IUserAcce
 		
 		int updateResult = 0;
 		try {
-			updateResult = super.getSqlMapClient().update(queryId, params);
+			super.getSqlMapClient().update(queryId, params);
+			retval = true;
 		} catch (SQLException e) {
 			logger.warn(String.format("An error occured while trying to %s for user %s", queryId, userIdentifier));
 			logger.debug(e);
-		}
-		if(updateResult > 0)
-		{
-			retval = true;
 		}
 		
 		return retval;

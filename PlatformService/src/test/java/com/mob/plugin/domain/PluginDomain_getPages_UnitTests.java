@@ -102,7 +102,7 @@ public class PluginDomain_getPages_UnitTests {
 		
 		IUserAccountDomain mockUserClient = mock(IUserAccountDomain.class);
 		Mockito.when(mockUserClient.getStaticIdFromToken(usertoken)).thenReturn(1L);
-		Mockito.when(mockUserClient.getStaticIdFromEmail(DEFAULT_PLUGIN_USER)).thenReturn(2L);
+		Mockito.when(mockUserClient.getStaticIdFromEmail(eq(DEFAULT_PLUGIN_USER), anyString())).thenReturn(2L);
 		
 		this.mockDAL = mock(IPluginAccessLayer.class);
 		Mockito.when(this.mockDAL.getPages(1L)).thenReturn(dalResults).thenReturn(defaultResults);

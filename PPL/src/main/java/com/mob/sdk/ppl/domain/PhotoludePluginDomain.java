@@ -1,5 +1,11 @@
 package com.mob.sdk.ppl.domain;
 
+import java.io.File;
+
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.configuration.ConfigurationBuilder;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
 import com.mob.commons.plugins.ppl.*;
@@ -35,11 +41,13 @@ public class PhotoludePluginDomain {
 	
 	public boolean validate(Ppl ppl)
 	{
+		constructPplIdentity(ppl);
 		return PplUtils.validate(ppl, false);
 	}
 	
 	public boolean deployForDevelopment(Ppl ppl, String target, String token)
 	{
+		constructPplIdentity(ppl);
 		Logger logger = Logger.getLogger(this.getClass());
 		logger.info("Packaging up the plugin module");
 		if(!this.transformService.packagePpl(ppl))
@@ -69,6 +77,7 @@ public class PhotoludePluginDomain {
 	
 	public boolean publish(Ppl ppl, String target)
 	{
+		constructPplIdentity(ppl);
 		Logger logger = Logger.getLogger(this.getClass());
 		logger.info("Packaging up the plugin module");
 		if(!this.transformService.packagePpl(ppl))
@@ -94,5 +103,22 @@ public class PhotoludePluginDomain {
 		}
 		
 		return true;
+	}
+	
+	private void constructPplIdentity(Ppl ppl)
+	{
+		File file = new File("~/.ppl/ppl.properties");
+		
+		if(file.exists())
+		{
+			
+			try {
+				Configuration config = new PropertiesConfiguration(file.getAbsolutePath());
+				
+				ppl.setCompanykey(config.getString("company.key"));
+				
+			} catch (ConfigurationException e) {
+			}
+		}
 	}
 }

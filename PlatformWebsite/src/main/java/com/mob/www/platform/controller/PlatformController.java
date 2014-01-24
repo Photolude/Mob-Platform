@@ -144,11 +144,16 @@ public class PlatformController
 	
 	private void loadUserData(HttpServletRequest request, String userToken)
 	{
+		if(StringUtils.isNullOrEmpty(userToken))
+		{
+			return;
+		}
 		//
 		// Logon succeeded
 		//
 		request.getSession();
 		ServiceCallContext context = ServiceCallContext.getContext(request);
+		
 		context.setUserToken(userToken);
 		
 		MainMenuItem[] menuItems = this.pluginService.getUserMenu(userToken);

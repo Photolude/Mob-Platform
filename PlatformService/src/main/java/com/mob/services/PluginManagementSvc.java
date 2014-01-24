@@ -6,6 +6,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.httpclient.URIException;
+import org.apache.commons.httpclient.util.URIUtil;
+import org.apache.log4j.Logger;
+
 import com.mob.commons.plugins.servicemodel.MainMenuItem;
 import com.mob.commons.plugins.servicemodel.PluginArt;
 import com.mob.commons.plugins.servicemodel.PluginCatalog;
@@ -16,7 +20,7 @@ import com.mob.plugin.domain.IPluginDomain;
 
 @Path("/Plugins")
 public class PluginManagementSvc {
-	
+	private static final Logger logger = Logger.getLogger(PluginManagementSvc.class);
 	public static final int STATUS_SUCCEEDED = 200;
 	public static final int STATUS_BAD_REQUEST = 400;
 	public static final int STATUS_NOT_IMPLEMENTED = 501;
@@ -65,7 +69,12 @@ public class PluginManagementSvc {
 	@Produces("application/json")
 	public Response getUserPagePlugins(@PathParam("userToken") String userToken, @PathParam("page") String page)
 	{	
-		PluginPage retval = this.domain.getPagePlugins(userToken, page);
+		PluginPage retval = null;
+		try {
+			retval = this.domain.getPagePlugins(URIUtil.decode(userToken), page);
+		} catch (URIException e) {
+			logger.error(e);
+		}
 		
 		if(retval == null)
 		{
@@ -79,7 +88,13 @@ public class PluginManagementSvc {
 	@Produces("application/json")
 	public Response getUserPluginForRole(@PathParam("userToken") String userToken, @PathParam("role") String role)
 	{
-		PluginDefinition retval = this.domain.getPluginForRole(userToken, role);
+		PluginDefinition retval = null;
+		try {
+			retval = this.domain.getPluginForRole(URIUtil.decode(userToken), role);
+		} catch (URIException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		if(retval == null)
 		{
@@ -95,7 +110,13 @@ public class PluginManagementSvc {
 	@Produces("application/json")
 	public Response getCatalog(@PathParam("UserToken") String userToken)
 	{
-		PluginCatalog catalog = this.domain.getCatalog(userToken);
+		PluginCatalog catalog = null;
+		try {
+			catalog = this.domain.getCatalog(URIUtil.decode(userToken));
+		} catch (URIException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		if(catalog == null)
 		{
@@ -109,9 +130,13 @@ public class PluginManagementSvc {
 	@Path("/user/{UserToken}/plugin/{PluginId}/install")
 	public Response installPluginForUser(@PathParam("PluginId") int pluginId, @PathParam("UserToken") String userToken)
 	{
-		if(this.domain.installPluginForUser(pluginId, userToken))
-		{
-			return Response.ok().build();
+		try {
+			if(this.domain.installPluginForUser(pluginId, URIUtil.decode(userToken)))
+			{
+				return Response.ok().build();
+			}
+		} catch (URIException e) {
+			logger.error(e);
 		}
 		return Response.serverError().build();
 	}
@@ -120,9 +145,13 @@ public class PluginManagementSvc {
 	@Path("/user/{UserToken}/plugin/{PluginId}/uninstall")
 	public Response uninstallPluginForUser(@PathParam("PluginId") int pluginId, @PathParam("UserToken") String userToken)
 	{
-		if(this.domain.uninstallPluginForUser(pluginId, userToken))
-		{
-			return Response.ok().build();
+		try {
+			if(this.domain.uninstallPluginForUser(pluginId, URIUtil.decode(userToken)))
+			{
+				return Response.ok().build();
+			}
+		} catch (URIException e) {
+			logger.error(e);
 		}
 		return Response.serverError().build();
 	}
@@ -132,7 +161,13 @@ public class PluginManagementSvc {
 	@Produces("application/json")
 	public Response getArt(@PathParam("UserToken") String userToken, @PathParam("role") String role, @PathParam("artPath") String artPath)
 	{
-		PluginArt art = this.domain.getArt(userToken, role, artPath);
+		PluginArt art = null;
+		try {
+			art = this.domain.getArt(URIUtil.decode(userToken), role, artPath);
+		} catch (URIException e) {
+			logger.error(e);
+		}
+		
 		if(art == null)
 		{
 			return Response.serverError().build();

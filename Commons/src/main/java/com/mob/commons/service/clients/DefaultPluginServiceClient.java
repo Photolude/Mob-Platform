@@ -3,10 +3,8 @@ package com.mob.commons.service.clients;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URLEncoder;
 
-import javax.print.DocFlavor.URL;
-
+import org.apache.commons.httpclient.util.URIUtil;
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -26,9 +24,9 @@ public class DefaultPluginServiceClient implements IPluginService {
 	public String getEndpoint(){ return this.endpoint; }
 	public DefaultPluginServiceClient setEndpoint(String value)
 	{
-		if(!value.endsWith("/"))
+		if(value.endsWith("/"))
 		{
-			value += "/";
+			value += value.substring(0, value.length() - 1);
 		}
 		this.endpoint = value;
 		return this;
@@ -41,7 +39,7 @@ public class DefaultPluginServiceClient implements IPluginService {
 		Logger logger = Logger.getLogger(this.getClass());
 		
 		try {
-			HttpGet get = new HttpGet(this.endpoint + "user/" +  URLEncoder.encode(userToken, "ISO-8859-1") + "/menu");
+			HttpGet get = new HttpGet(String.format("%s/user/%s/menu", this.endpoint, URIUtil.encodeAll(userToken)));
 			
 			HttpResponse response = client.execute(get);
 			
@@ -70,7 +68,7 @@ public class DefaultPluginServiceClient implements IPluginService {
 		Logger logger = Logger.getLogger(this.getClass());
 		
 		try {
-			String requestPath = UriUtils.encodePath(this.endpoint + "user/" + URLEncoder.encode(userToken, "ISO-8859-1") + "/page/" + page + "/get", "UTF-8");
+			String requestPath = UriUtils.encodePath(String.format("%s/user/%s/page/%s/get", this.endpoint, URIUtil.encodeAll(userToken), page), "UTF-8");
 			HttpGet get = new HttpGet(requestPath);
 			
 			HttpResponse response = client.execute(get);
@@ -100,7 +98,7 @@ public class DefaultPluginServiceClient implements IPluginService {
 		Logger logger = Logger.getLogger(this.getClass());
 		
 		try {
-			String requestPath = UriUtils.encodePath(this.endpoint + "user/" + URLEncoder.encode(userToken, "ISO-8859-1") + "/art/" + role + "/" + artPath, "UTF-8");
+			String requestPath = UriUtils.encodePath(String.format("%s/user/%s/art/%s/%s", this.endpoint, URIUtil.encodeAll(userToken), role, artPath), "UTF-8");
 			HttpGet get = new HttpGet(requestPath);
 			
 			HttpResponse response = client.execute(get);
@@ -129,7 +127,7 @@ public class DefaultPluginServiceClient implements IPluginService {
 		Logger logger = Logger.getLogger(this.getClass());
 		
 		try {
-			String requestPath = UriUtils.encodePath(this.endpoint + "user/" + URLEncoder.encode(userToken, "ISO-8859-1") + "/role/" + role, "UTF-8");
+			String requestPath = UriUtils.encodePath(String.format("%s/user/%s/role/%s", this.endpoint, URIUtil.encodeAll(userToken), role), "UTF-8");
 			HttpGet get = new HttpGet(requestPath);
 			
 			HttpResponse response = client.execute(get);

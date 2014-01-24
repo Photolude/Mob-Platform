@@ -1,6 +1,8 @@
 package com.mob.commons.plugins.utils;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -8,8 +10,18 @@ import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.stream.XMLInputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamReader;
+import javax.xml.transform.sax.SAXSource;
+import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
+import org.xml.sax.InputSource;
+import org.xml.sax.XMLReader;
+import org.xml.sax.helpers.XMLFilterImpl;
 
 import com.mob.commons.plugins.ppl.Alias;
 import com.mob.commons.plugins.ppl.ArtType;
@@ -30,9 +42,16 @@ public class PplUtils {
 		Ppl retval = null;
 		JAXBContext context;
 		try {
-			context = JAXBContext.newInstance(Ppl.class, PluginType.class, PageDefinitionType.class, MainMenuType.class, MainMenuItemType.class, DataCallType.class);
-			retval = (Ppl) context.createUnmarshaller().unmarshal(url);
-		} catch (JAXBException e) {
+			context = JAXBContext.newInstance("com.mob.commons.plugins.ppl");
+			Unmarshaller unmarshaller = context.createUnmarshaller();
+			
+			XMLInputFactory xif = XMLInputFactory.newFactory();
+	        xif.setProperty(XMLInputFactory.IS_NAMESPACE_AWARE, false);
+	        StreamSource source = new StreamSource(url.getPath());
+	        XMLStreamReader xsr = xif.createXMLStreamReader(source);
+			
+			retval = (Ppl) unmarshaller.unmarshal(xsr);
+		} catch (JAXBException | XMLStreamException e) {
 			Logger logger = Logger.getLogger(PplUtils.class);
 			logger.error("Could not read file \"" + url.getFile() + "\" successfully");
 			logger.error(e);

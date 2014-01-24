@@ -10,9 +10,9 @@ import com.mob.commons.plugins.servicemodel.ServiceAlias;
 public interface IPluginDeploymentAccessLayer {
 	boolean canConnect();
 	
-	Integer addPlugin(String pluginName, String company, String version, String role, String tags, String deployIdentity, String externalServices, ServiceAlias[]  serviceAliases, String description, String icon, Integer priority, ExternalAttribution[] attributes);
+	Integer addPlugin(String pluginName, String company, String version, String role, String tags, String deployIdentity, String externalServices, ServiceAlias[]  serviceAliases, String description, String icon, Integer priority, ExternalAttribution[] attributes, boolean isPublic);
 	boolean deletePlugin(int pluginId);
-	boolean updatePluginData(int pluginId, String role, String externalServices, ServiceAlias[] serviceAliases, String description, String icon, String tags, Integer priority, ExternalAttribution[] attributeBlob);
+	boolean updatePluginData(int pluginId, String role, String externalServices, ServiceAlias[] serviceAliases, String description, String icon, String tags, Integer priority, ExternalAttribution[] attributeBlob, boolean isPublic);
 	
 	Integer addScript(int pluginId, int orderId, String script, String type, String pageName, String scriptName);
 	boolean deleteScript(int scriptId);

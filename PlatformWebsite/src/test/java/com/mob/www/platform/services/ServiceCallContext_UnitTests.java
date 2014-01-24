@@ -42,7 +42,7 @@ public class ServiceCallContext_UnitTests {
 	public void ServiceCallContextTest_Valid()
 	{
 		when(this.session.getAttribute(ServiceCallContext.SESSION_USER_TOKEN)).thenReturn("token");
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		
 		Assert.assertEquals("token", this.context.getUserToken()); 
 	}
@@ -51,7 +51,7 @@ public class ServiceCallContext_UnitTests {
 	public void ServiceCallContextTest_Null()
 	{
 		when(this.session.getAttribute(ServiceCallContext.SESSION_USER_TOKEN)).thenReturn(null);
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		
 		Assert.assertEquals(null, this.context.getUserToken()); 
 	}
@@ -61,7 +61,7 @@ public class ServiceCallContext_UnitTests {
 	{
 		PluginScript[] pluginScripts = new PluginScript[1];
 		when(this.session.getAttribute(ServiceCallContext.ACTIVE_SCRIPTS)).thenReturn(pluginScripts);
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		
 		Assert.assertArrayEquals(pluginScripts, this.context.getActiveScripts()); 
 	}
@@ -71,7 +71,7 @@ public class ServiceCallContext_UnitTests {
 	{
 		PluginScript[] pluginScripts = null;
 		when(this.session.getAttribute(ServiceCallContext.ACTIVE_SCRIPTS)).thenReturn(pluginScripts);
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		
 		Assert.assertArrayEquals(pluginScripts, this.context.getActiveScripts()); 
 	}
@@ -81,7 +81,7 @@ public class ServiceCallContext_UnitTests {
 	{
 		MainMenuItem[] menu = new MainMenuItem[1];
 		when(this.session.getAttribute(ServiceCallContext.SESSION_MENU)).thenReturn(menu);
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		
 		Assert.assertArrayEquals(menu, this.context.getMenuItems()); 
 	}
@@ -91,7 +91,7 @@ public class ServiceCallContext_UnitTests {
 	{
 		MainMenuItem[] menu = null;
 		when(this.session.getAttribute(ServiceCallContext.SESSION_MENU)).thenReturn(menu);
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		
 		Assert.assertArrayEquals(menu, this.context.getMenuItems()); 
 	}
@@ -101,7 +101,7 @@ public class ServiceCallContext_UnitTests {
 	{
 		Map<String,PluginDefinition> roleMap = new HashMap<String,PluginDefinition>();
 		when(this.session.getAttribute(ServiceCallContext.SESSION_ROLE_MAP)).thenReturn(roleMap);
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		
 		Assert.assertEquals(roleMap, this.context.getRoleMap()); 
 	}
@@ -111,7 +111,7 @@ public class ServiceCallContext_UnitTests {
 	{
 		Map<String,PluginDefinition> roleMap = null;
 		when(this.session.getAttribute(ServiceCallContext.SESSION_ROLE_MAP)).thenReturn(roleMap);
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		
 		Assert.assertNotNull(this.context.getRoleMap()); 
 	}
@@ -121,7 +121,7 @@ public class ServiceCallContext_UnitTests {
 	{
 		Map<String,String> serviceLookup = new HashMap<String,String>();
 		when(this.session.getAttribute(ServiceCallContext.SESSION_EXTERNALS)).thenReturn(serviceLookup);
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		
 		Assert.assertEquals(serviceLookup, this.context.getServiceLookup()); 
 	}
@@ -131,7 +131,7 @@ public class ServiceCallContext_UnitTests {
 	{
 		Map<String,String> serviceLookup = null;
 		when(this.session.getAttribute(ServiceCallContext.SESSION_EXTERNALS)).thenReturn(serviceLookup);
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		Assert.assertEquals(serviceLookup, this.context.getServiceLookup()); 
 	}
 	
@@ -139,7 +139,7 @@ public class ServiceCallContext_UnitTests {
 	public void ServiceCallContextTest_TokenLookup_UserToken()
 	{
 		when(this.session.getAttribute(ServiceCallContext.SESSION_USER_TOKEN)).thenReturn("token");
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		Map<String,String> tokenLookup = this.context.getTokenLookup(); 
 		
 		Assert.assertEquals("token", tokenLookup.get("usertoken"));
@@ -149,7 +149,7 @@ public class ServiceCallContext_UnitTests {
 	public void ServiceCallContextTest_TokenLookup_UserToken_Null()
 	{
 		when(this.session.getAttribute(ServiceCallContext.SESSION_USER_TOKEN)).thenReturn(null);
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		Map<String,String> tokenLookup = this.context.getTokenLookup(); 
 		
 		Assert.assertEquals(null, tokenLookup.get("usertoken"));
@@ -159,7 +159,7 @@ public class ServiceCallContext_UnitTests {
 	public void ServiceCallContextTest_ExtendedPath_WithValue()
 	{
 		when(this.request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).thenReturn("test/test/1");
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		String result = this.context.getExtendedPath();
 		
 		Assert.assertEquals("1", result);
@@ -169,7 +169,7 @@ public class ServiceCallContext_UnitTests {
 	public void ServiceCallContextTest_ExtendedPath_WithValueAndFrontSlash()
 	{
 		when(this.request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).thenReturn("/test/test/1");
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		String result = this.context.getExtendedPath();
 		
 		Assert.assertEquals("1", result);
@@ -179,7 +179,7 @@ public class ServiceCallContext_UnitTests {
 	public void ServiceCallContextTest_ExtendedPath_MultipleValues()
 	{
 		when(this.request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).thenReturn("test/test/1/2/3");
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		String result = this.context.getExtendedPath();
 		
 		Assert.assertEquals("1/2/3", result);
@@ -189,7 +189,7 @@ public class ServiceCallContext_UnitTests {
 	public void ServiceCallContextTest_ExtendedPath_NoValue()
 	{
 		when(this.request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).thenReturn("test/test");
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		String result = this.context.getExtendedPath();
 		
 		Assert.assertEquals(null, result);
@@ -199,7 +199,7 @@ public class ServiceCallContext_UnitTests {
 	public void ServiceCallContextTest_ExtendedPath_NullPath()
 	{
 		when(this.request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).thenReturn(null);
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		String result = this.context.getExtendedPath();
 		
 		Assert.assertEquals(null, result);
@@ -209,7 +209,7 @@ public class ServiceCallContext_UnitTests {
 	public void ServiceCallContextTest_ExtendedPath_IncompletePath()
 	{
 		when(this.request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE)).thenReturn("test");
-		this.context = new ServiceCallContext(this.request);
+		this.context = ServiceCallContext.getContext(this.request);
 		String result = this.context.getExtendedPath();
 		
 		Assert.assertEquals(null, result);

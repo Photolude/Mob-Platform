@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ppl>
+<ppl xmlns="http://localhost:13444/schema/ppl_1_0.xsd">
     <companykey>test</companykey>
 	<plugin>
 		<pluginName>Apps Manager</pluginName>

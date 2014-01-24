@@ -74,13 +74,9 @@ public class AppsController {
 			return new ModelAndView(PlatformController.REDIRECT_TO_HOME);
 		}
 		
-		ServiceCallContext context = null;
+		ServiceCallContext context = ServiceCallContext.getContext(request);
 		
-		try
-		{
-			context = new ServiceCallContext(request);
-		}
-		catch(IllegalArgumentException e)
+		if(context == null)
 		{
 			return new ModelAndView(PlatformController.REDIRECT_TO_HOME);
 		}
@@ -140,7 +136,7 @@ public class AppsController {
 	@ResponseBody
 	public String getScript(@PathVariable String scriptName, HttpServletRequest request, HttpServletResponse response)
 	{
-		ServiceCallContext context = new ServiceCallContext(request);
+		ServiceCallContext context = ServiceCallContext.getContext(request);
 		
 		PluginScript[] scripts = context.getActiveScripts();
 

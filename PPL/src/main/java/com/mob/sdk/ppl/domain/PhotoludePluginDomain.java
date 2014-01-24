@@ -15,6 +15,8 @@ import com.mob.sdk.ppl.dal.ISystemAccessLayer;
 
 
 public class PhotoludePluginDomain {
+	private Logger logger = Logger.getLogger(this.getClass());
+	
 	private ISystemAccessLayer systemAccessLayer = new DefaultSystemAccessLayer();
 	public ISystemAccessLayer getSystemAccessLayer(){ return this.systemAccessLayer; }
 	public PhotoludePluginDomain setSystemAccessLayer(ISystemAccessLayer value)
@@ -48,7 +50,6 @@ public class PhotoludePluginDomain {
 	public boolean deployForDevelopment(Ppl ppl, String target, String token)
 	{
 		constructPplIdentity(ppl);
-		Logger logger = Logger.getLogger(this.getClass());
 		logger.info("Packaging up the plugin module");
 		if(!this.transformService.packagePpl(ppl))
 		{
@@ -78,7 +79,6 @@ public class PhotoludePluginDomain {
 	public boolean publish(Ppl ppl, String target)
 	{
 		constructPplIdentity(ppl);
-		Logger logger = Logger.getLogger(this.getClass());
 		logger.info("Packaging up the plugin module");
 		if(!this.transformService.packagePpl(ppl))
 		{
@@ -107,9 +107,9 @@ public class PhotoludePluginDomain {
 	
 	private void constructPplIdentity(Ppl ppl)
 	{
-		File file = new File("~/.ppl/ppl.properties");
+		File file = new File(System.getProperty("user.home") + "/.ppl/ppl.properties");
 		
-		if(file.exists())
+		if(file.getAbsoluteFile().exists())
 		{
 			
 			try {
@@ -118,6 +118,7 @@ public class PhotoludePluginDomain {
 				ppl.setCompanykey(config.getString("company.key"));
 				
 			} catch (ConfigurationException e) {
+				logger.error(e);
 			}
 		}
 	}

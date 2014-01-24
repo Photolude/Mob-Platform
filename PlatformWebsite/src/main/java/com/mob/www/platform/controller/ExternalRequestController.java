@@ -37,7 +37,7 @@ public class ExternalRequestController {
 	public void get(HttpServletRequest request, HttpServletResponse response)
 	{
 		String serviceCall = (String) request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE);
-		ServiceCallContext context = new ServiceCallContext(request);
+		ServiceCallContext context = ServiceCallContext.getContext(request);
 		
 		HttpResponse serviceResponse = this.serviceCallManager.callServiceWithGet(serviceCall, context);
 		if(serviceResponse != null)
@@ -80,7 +80,7 @@ public class ExternalRequestController {
 	@RequestMapping(value = "/post", method = RequestMethod.POST )
 	public void post(ExternalPostRequest requestDetails, HttpServletRequest request, HttpServletResponse response)
 	{
-		ServiceCallContext context = new ServiceCallContext(request);
+		ServiceCallContext context = ServiceCallContext.getContext(request);
 		HttpResponse serviceResponse = this.serviceCallManager.callServiceWithPost(requestDetails.getRequest(), requestDetails.getData(), requestDetails.getRequestDataType(), context);
 
 		if(serviceResponse != null)
@@ -122,7 +122,7 @@ public class ExternalRequestController {
 	@RequestMapping(value = "/put", method = RequestMethod.POST )
 	public void put(ExternalPostRequest requestDetails, HttpServletRequest request, HttpServletResponse response)
 	{
-		ServiceCallContext context = new ServiceCallContext(request);
+		ServiceCallContext context = ServiceCallContext.getContext(request);
 		HttpResponse serviceResponse = this.serviceCallManager.callServiceWithPut(requestDetails.getRequest(), requestDetails.getData(), requestDetails.getRequestDataType(), context);
 		
 		if(serviceResponse != null)
@@ -164,7 +164,7 @@ public class ExternalRequestController {
 	@RequestMapping(value = "/delete", method = RequestMethod.POST )
 	public void delete(ExternalPostRequest requestDetails, HttpServletRequest request, HttpServletResponse response)
 	{
-		ServiceCallContext context = new ServiceCallContext(request);
+		ServiceCallContext context = ServiceCallContext.getContext(request);
 		HttpResponse serviceResponse = this.serviceCallManager.callServiceWithDelete(requestDetails.getRequest(), requestDetails.getData(), requestDetails.getRequestDataType(), context);
 
 		if(serviceResponse != null)

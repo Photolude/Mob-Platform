@@ -18,6 +18,7 @@
 			<xs:element name="icon" type="xs:string" />
 			<xs:element name="tags" type="xs:string" minOccurs="0" />
 			<xs:element name="priority" type="xs:int" minOccurs="0" />
+			<xs:element name="public" type="xs:boolean" minOccurs="0" />
 			
 			<xs:element name="external" type="resourceList" minOccurs="0" maxOccurs="1" />
 			

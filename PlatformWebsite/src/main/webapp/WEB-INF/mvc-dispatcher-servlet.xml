@@ -27,6 +27,9 @@
     <mvc:interceptors>
 	    <bean class="com.mob.www.platform.controller.SecurityInterceptor">
 	        <property name="loggedOutPage"><value>${website.pages.loggedout}</value></property>
+	        <property name="anonymousAccess">
+	            <ref bean="anonymousAccess" />
+	        </property>
 	    </bean>
 	</mvc:interceptors>
 

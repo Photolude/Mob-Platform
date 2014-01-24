@@ -55,6 +55,7 @@ import javax.xml.bind.annotation.XmlType;
     "icon",
     "tags",
     "priority",
+    "publicVisible",
     "external",
     "mainMenu",
     "pageDefinition",
@@ -79,6 +80,8 @@ public class PluginType {
     protected List<PageDefinitionType> pageDefinition;
     protected ArtType art;
     protected List<AttributeType> attribute;
+    @XmlElement(name="public")
+    protected boolean publicVisible = true;
 
     /**
      * Gets the value of the pluginName property.
@@ -377,5 +380,20 @@ public class PluginType {
         }
         return this.attribute;
     }
+    
+    /**
+     * Gets weather this plugin is to be made public for others
+     * to be able to see and install.  This is generally used
+     * for website functionality which is part of a logged out
+     * portion of a website.
+     * @return true if the plugin can be viewed by a user while managing their plugins
+     */
+    public boolean getPublic(){ return this.publicVisible; }
+    
+    /**
+     * Sets the plugin public token.
+     * @param value true if the plugin can be viewed by a user while managing their plugins
+     */
+    public void setPublic(boolean value) { this.publicVisible = value; }
 
 }

@@ -217,11 +217,12 @@ public class DefaultDevelopmentDomain_PublishPlugin_UnitTests {
 		Mockito.when(this.pluginAccessLayer.getPluginScripts(anyInt())).thenReturn(previousScripts);
 		Mockito.when(this.pluginAccessLayer.getPluginDataCalls(anyInt())).thenReturn(this.previousDataCalls);
 
-		Mockito.when(this.pluginAccessLayer.addPlugin(any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(ServiceAlias[].class), any(String.class), any(String.class), anyInt(), any(ExternalAttribution[].class))).thenReturn(newPluginId);
+		Mockito.when(this.pluginAccessLayer.addPlugin(any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(ServiceAlias[].class), any(String.class), any(String.class), anyInt(), any(ExternalAttribution[].class), anyBoolean())).thenReturn(newPluginId);
 		Mockito.when(this.pluginAccessLayer.addMenuItem(anyInt(), any(String.class), any(String.class), any(String.class), anyInt())).thenReturn(addMenuItemRetval);
 		Mockito.when(this.pluginAccessLayer.addScript(anyInt(), anyInt(), any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(addScriptRetval);
-		Mockito.when(this.pluginAccessLayer.addDataCall(anyInt(), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(addDataCallRetval);
-		Mockito.when(this.pluginAccessLayer.addArt(anyInt(), any(String.class), any(String.class), any(String.class))).thenReturn(addArtRetval);
+		Mockito.when(this.pluginAccessLayer.addDataCall(anyInt(), anyString(), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(addDataCallRetval);
+		Mockito.when(this.pluginAccessLayer.addArt(anyInt(), anyString(), any(String.class), any(String.class))).thenReturn(addArtRetval);
+		Mockito.when(this.pluginAccessLayer.updatePluginData(anyInt(), anyString(), anyString(), any(ServiceAlias[].class), anyString(), anyString(), anyString(), anyInt(), any(ExternalAttribution[].class), anyBoolean())).thenReturn(newPluginId != null);
 
 		IUserServiceClient accountDomain = mock(IUserServiceClient.class);
 		
@@ -241,57 +242,6 @@ public class DefaultDevelopmentDomain_PublishPlugin_UnitTests {
 			if(this.oldPluginId != null)
 			{
 				Mockito.verify(this.pluginAccessLayer).deletePlugin(this.oldPluginId);
-			}
-		}
-		
-		if(this.expectCleanUp || this.oldPluginId == null)
-		{
-			if(this.previousMenu != null)
-			{
-				for(MainMenuItem item : this.previousMenu)
-				{
-					Mockito.verify(this.pluginAccessLayer, times(0)).deleteMenuItem(item.getId());
-				}
-			}
-			
-			if(this.previousScript != null)
-			{
-				for(PluginScript script : this.previousScript)
-				{
-					Mockito.verify(this.pluginAccessLayer, times(0)).deleteScript(script.getId());
-				}
-			}
-			
-			if(this.previousDataCalls != null)
-			{
-				for(PluginDataCall dataCall : this.previousDataCalls)
-				{
-					Mockito.verify(this.pluginAccessLayer, times(0)).deleteDataCall(dataCall.getId());
-				}
-			}
-		}
-		else
-		{
-			if(this.previousMenu != null)
-			{
-				for(MainMenuItem item : this.previousMenu)
-				{
-					Mockito.verify(this.pluginAccessLayer).deleteMenuItem(item.getId());
-				}
-			}
-			if(this.previousScript != null)
-			{
-				for(PluginScript script : this.previousScript)
-				{
-					Mockito.verify(this.pluginAccessLayer).deleteScript(script.getId());
-				}
-			}
-			if(this.previousDataCalls != null)
-			{
-				for(PluginDataCall dataCall : this.previousDataCalls)
-				{
-					Mockito.verify(this.pluginAccessLayer).deleteDataCall(dataCall.getId());
-				}
 			}
 		}
 	}

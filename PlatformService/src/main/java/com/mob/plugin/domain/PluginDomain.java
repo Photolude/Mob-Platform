@@ -17,6 +17,7 @@ import com.mysql.jdbc.StringUtils;
 
 public class PluginDomain implements IPluginDomain {
 	private static final int MAX_USER_ID_LENGTH = 100;
+	private static final Logger logger = Logger.getLogger(PluginDomain.class);
 	
 	private IPluginAccessLayer dataAccessLayer = null;
 	public IPluginAccessLayer getDataAccessLayer() { return this.dataAccessLayer; }
@@ -103,8 +104,6 @@ public class PluginDomain implements IPluginDomain {
 		{
 			return null;
 		}
-		
-		Logger logger = Logger.getLogger(this.getClass());
 		
 		Long staticId = this.userAccountService.getStaticIdFromToken(userToken);
 		if(staticId == null)

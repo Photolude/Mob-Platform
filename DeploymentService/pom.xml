@@ -152,7 +152,7 @@
                                 <goal>run</goal>
                             </goals>
                             <configuration>
-                                <port>13050</port>
+                                <port>13051</port>
                                 <path>/</path>
                                 <useSeparateTomcatClassLoader>true</useSeparateTomcatClassLoader>
                             </configuration>

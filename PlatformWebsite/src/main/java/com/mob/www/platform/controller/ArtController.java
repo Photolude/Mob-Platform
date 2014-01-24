@@ -51,16 +51,7 @@ public class ArtController {
 			return;
 		}
 		
-		ServiceCallContext context = null;
-		try
-		{
-			context = new ServiceCallContext(request);
-		}
-		catch(IllegalArgumentException e)
-		{
-			response.setStatus(500);
-			return;
-		}
+		ServiceCallContext context = ServiceCallContext.getContext(request);
 		
 		Map<String,PluginDefinition> definitions = context.getRoleMap();
 		

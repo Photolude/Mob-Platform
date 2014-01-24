@@ -30,20 +30,12 @@ public class SecurityInterceptor extends HandlerInterceptorAdapter {
 	{
         if (request.getRequestURI().endsWith("/logon") || 
         		request.getRequestURI().endsWith("/logon/anonymous") ||
-        		request.getRequestURI().endsWith("/logon/googleplus")) {
+        		request.getRequestURI().endsWith("/logon/googleplus") ||
+        		request.getRequestURI().endsWith("/schema/ppl_1_0.xsd")) {
             return true;
         }
         
-        boolean succeeded = false;
-        ServiceCallContext context = null;
-        
-        try
-        {
-        	context = new ServiceCallContext(request);
-        }
-        catch(IllegalArgumentException e)
-        {
-        }
+        ServiceCallContext context = ServiceCallContext.getContext(request);
         
         if(context != null && !StringUtils.isNullOrEmpty(context.getUserToken()))
         {

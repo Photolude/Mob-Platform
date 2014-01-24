@@ -42,7 +42,7 @@ public class PluginDeploymentSqlAccessLayer extends SqlMapClientDaoSupport imple
 	}
 	
 	@Override
-	public Integer addPlugin(String pluginName, String company, String version, String role, String tags, String deployIdentity, String externalServices, ServiceAlias[] serviceAliases, String description, String icon, Integer priority, ExternalAttribution[] attributions)
+	public Integer addPlugin(String pluginName, String company, String version, String role, String tags, String deployIdentity, String externalServices, ServiceAlias[] serviceAliases, String description, String icon, Integer priority, ExternalAttribution[] attributions, boolean isPublic)
 	{
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("pluginName", pluginName);
@@ -57,6 +57,7 @@ public class PluginDeploymentSqlAccessLayer extends SqlMapClientDaoSupport imple
 		params.put("icon", icon);
 		params.put("priority", priority);
 		params.put("attributions", getObjectBlob(attributions, "attributions"));
+		params.put("isPublic", isPublic);
 		
 		return queryForObject("addPlugin", params, company + "-" + pluginName);
 	}
@@ -71,7 +72,7 @@ public class PluginDeploymentSqlAccessLayer extends SqlMapClientDaoSupport imple
 	}
 	
 	@Override
-	public boolean updatePluginData(int pluginId, String role, String externalServices, ServiceAlias[] serviceAliases, String description, String icon, String tags, Integer priority, ExternalAttribution[] attributions)
+	public boolean updatePluginData(int pluginId, String role, String externalServices, ServiceAlias[] serviceAliases, String description, String icon, String tags, Integer priority, ExternalAttribution[] attributions, boolean isPublic)
 	{
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("pluginId", pluginId);
@@ -83,6 +84,7 @@ public class PluginDeploymentSqlAccessLayer extends SqlMapClientDaoSupport imple
 		params.put("tags", tags);
 		params.put("priority", priority);
 		params.put("attributions", getObjectBlob(attributions, "attributions"));
+		params.put("isPublic", isPublic);
 		
 		return updateCall("updatePlugin", params, "Plugin-Id: " + pluginId);
 	}
@@ -107,7 +109,7 @@ public class PluginDeploymentSqlAccessLayer extends SqlMapClientDaoSupport imple
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("scriptId", scriptId);
 		
-		return updateCall("deleteScript", params, "Script-Id: " + scriptId);
+		return updateCall("deleteScript", params, String.format("Script-Id: %d", scriptId));
 	}
 	
 	@Override
@@ -146,7 +148,7 @@ public class PluginDeploymentSqlAccessLayer extends SqlMapClientDaoSupport imple
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("menuItemId", menuItemId);
 		
-		return updateCall("deleteMenuItem", params, "MenuItem-Id: " + menuItemId);
+		return updateCall("deleteMenuItem", params, String.format("MenuItem-Id: %d", menuItemId));
 	}
 	
 	@Override
@@ -225,7 +227,7 @@ public class PluginDeploymentSqlAccessLayer extends SqlMapClientDaoSupport imple
 		Map<String,Object> params = new HashMap<String,Object>();
 		params.put("artId", artId);
 		
-		return updateCall("deleteDataCall", params, "Art-Id: " + artId);
+		return updateCall("deleteArt", params, "Art-Id: " + artId);
 	}
 	
 	private String getObjectBlob(Object obj, String objectTypeName)

@@ -41,3 +41,5 @@
 /cookbooks/mob-deployment-service/files/default
 /cookbooks/mob-platform-service/files/default
 /cookbooks/mob-platform-website/files/default
+/.project
+/.settings

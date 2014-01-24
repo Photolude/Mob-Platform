@@ -94,12 +94,13 @@ public class UserAccessLayer extends SqlMapClientDaoSupport implements IUserAcce
 		
 		int updateResult = 0;
 		try {
-			super.getSqlMapClient().update(queryId, params);
-			retval = true;
+			updateResult = super.getSqlMapClient().update(queryId, params);
 		} catch (SQLException e) {
 			logger.warn(String.format("An error occured while trying to %s for user %s", queryId, userIdentifier));
 			logger.debug(e);
 		}
+		
+		retval = updateResult > 0;
 		
 		return retval;
 	}

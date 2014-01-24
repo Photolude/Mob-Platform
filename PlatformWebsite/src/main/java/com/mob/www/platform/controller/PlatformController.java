@@ -148,7 +148,7 @@ public class PlatformController
 		// Logon succeeded
 		//
 		request.getSession();
-		ServiceCallContext context = new ServiceCallContext(request);
+		ServiceCallContext context = ServiceCallContext.getContext(request);
 		context.setUserToken(userToken);
 		
 		MainMenuItem[] menuItems = this.pluginService.getUserMenu(userToken);
@@ -169,22 +169,12 @@ public class PlatformController
 	@RequestMapping(method = RequestMethod.GET)
 	public ModelAndView homePage(HttpServletRequest request)
 	{
-		ServiceCallContext context = null;
-		try
-		{
-			context = new ServiceCallContext(request);
-		}
-		catch(IllegalArgumentException e)
-		{
-		}
+		ServiceCallContext context = ServiceCallContext.getContext(request);
 		
-		if(context != null)
+		MainMenuItem[] menuItems = context.getMenuItems();
+		if(menuItems != null && menuItems.length > 0)
 		{
-			MainMenuItem[] menuItems = context.getMenuItems();
-			if(menuItems != null && menuItems.length > 0)
-			{
-				return new ModelAndView("redirect:" + "/apps/" + menuItems[0].getTarget());
-			}
+			return new ModelAndView("redirect:" + "/" + menuItems[0].getTarget());
 		}
 		
 		return new ModelAndView("index");
@@ -199,7 +189,7 @@ public class PlatformController
 	@RequestMapping(value = "/session/refresh", method = RequestMethod.GET)
 	public ModelAndView refreshSession(HttpServletRequest request)
 	{
-		ServiceCallContext context = new ServiceCallContext(request);
+		ServiceCallContext context = ServiceCallContext.getContext(request);
 		
 		String userToken = context.getUserToken();
 		

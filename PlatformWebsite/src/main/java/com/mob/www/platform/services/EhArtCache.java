@@ -22,7 +22,7 @@ public class EhArtCache implements IArtCache {
 	public PluginArt getArt(int pluginId, String path)
 	{
 		String key = generateKey(pluginId, path);
-		if(key == null || !this.cache.isKeyInCache(key))
+		if(key == null || this.cache == null || !this.cache.isKeyInCache(key))
 		{
 			return null;
 		}
@@ -41,7 +41,7 @@ public class EhArtCache implements IArtCache {
 	public boolean cacheArt(int pluginId, String path, PluginArt art)
 	{
 		String key = generateKey(pluginId, path);
-		if(key == null)
+		if(key == null || this.cache == null)
 		{
 			return false;
 		}

@@ -27,19 +27,27 @@ public class ServiceCallContext {
 	private String extendedPath;
 	private Map<String, String> tokenLookup;
 	
-	public ServiceCallContext(HttpServletRequest request) throws IllegalArgumentException
+	private ServiceCallContext()
+	{
+	}
+	
+	public static ServiceCallContext getContext(HttpServletRequest request)
 	{
 		if(request == null)
 		{
-			throw new IllegalArgumentException("The request provided is null");
+			return null;
 		}
 		
-		this.request = request;
-		this.session = request.getSession();
-		if(this.session == null)
+		HttpSession session = request.getSession();
+		if(session == null)
 		{
-			throw new IllegalArgumentException("The request provided does not have a session");
+			return null;
 		}
+		
+		ServiceCallContext retval = new ServiceCallContext();
+		retval.session = session;
+		retval.request = request;
+		return retval;
 	}
 	
 	public String getExtendedPath()

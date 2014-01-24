@@ -32,6 +32,13 @@
 	    <result property="role" column="role"/>
 	    <result property="serviceCalls" column="serviceCalls"/>
 	</resultMap>
+	<resultMap id="menuItem" class="com.mob.commons.plugins.servicemodel.MainMenuItem">
+		<result property="displayName" column="displayName" />
+		<result property="id" column="idmenu" />
+		<result property="iconData" column="icon" />
+		<result property="priority" column="defaultPriority" />
+		<result property="target" column="reference" />
+	</resultMap>
 
   <select id="canConnect" resultClass="Integer">
     Select 1;
@@ -56,7 +63,7 @@
   <parameterMap class="java.util.Map" id="getUserMenuItemsParams">
       <parameter property="userStaticId"/>
   </parameterMap>
-  <procedure id="getUserMenuItems" parameterMap="getUserMenuItemsParams" resultClass="com.mob.commons.plugins.servicemodel.MainMenuItem">
+  <procedure id="getUserMenuItems" parameterMap="getUserMenuItemsParams" resultMap="menuItem">
       { call getUserMenuItems(?) }
   </procedure>
   

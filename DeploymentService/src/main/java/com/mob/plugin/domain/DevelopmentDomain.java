@@ -6,6 +6,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mob.commons.plugins.ppl.Alias;
 import com.mob.commons.plugins.ppl.AttributeType;
@@ -54,7 +56,11 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 	
 	public boolean publishPlugin(Ppl pluginRequest)
 	{
-		return putPluginInDB(null, pluginRequest);
+		try {
+			return putPluginInDB(null, pluginRequest);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
 	public boolean DeployPluginForDebugging(String userToken, Ppl pluginRequest)
@@ -67,10 +73,15 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 			return false;
 		}
 		
-		return putPluginInDB(userToken, pluginRequest);
+		try {
+			return putPluginInDB(userToken, pluginRequest);
+		} catch (Exception e) {
+			return false;
+		}
 	}
 	
-	private boolean putPluginInDB(String userToken, Ppl pluginRequest)
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	private boolean putPluginInDB(String userToken, Ppl pluginRequest) throws Exception
 	{
 		Logger logger = Logger.getLogger(this.getClass());
 		
@@ -93,22 +104,10 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 		//
 		// Start adding the plug-ins
 		//
-		boolean retval = true;
 		
 		//
 		// create id lists for roll back scenarios
 		//
-		List<Integer> pluginIdRollbackList = new LinkedList<Integer>();
-		List<Integer> previousPlugins = new LinkedList<Integer>();
-		List<Integer> removeMenuOnCommit = new LinkedList<Integer>();
-		List<Integer> removeScriptOnCommit = new LinkedList<Integer>();
-		List<Integer> removeDataCallOnCommit = new LinkedList<Integer>();
-		List<Integer> removeArtOnCommit = new LinkedList<Integer>();
-		List<Integer> menuItemsCreated = new LinkedList<Integer>();
-		List<Integer> scriptsCreated = new LinkedList<Integer>();
-		List<Integer> datacallsCreated = new LinkedList<Integer>();
-		List<Integer> artCreated = new LinkedList<Integer>();
-		
 		for(PluginType plugin : pluginRequest.getPlugin())
 		{
 			//
@@ -116,7 +115,7 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 			//
 			Integer previousPluginId = this.dataAccessLayer.getPluginByCompanyNameVersionToken(companyName, plugin.getPluginName(), plugin.getVersion(), userToken);
 			
-			this.prepareForOldPluginCleanup(previousPluginId, userToken, previousPlugins, removeMenuOnCommit, removeScriptOnCommit, removeDataCallOnCommit, removeArtOnCommit);
+			this.deleteOldPluginCleanup(previousPluginId, userToken);
 			
 			ServiceAlias[] serviceAliases = null;
 			StringBuilder externalServices = new StringBuilder();
@@ -126,7 +125,6 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 			// Add new plugin
 			//
 			Integer pluginId = previousPluginId; 
-			Integer newPluginId = null;
 			
 			if(plugin.getPriority() == null)
 			{
@@ -151,133 +149,49 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 			if(pluginId == null || userToken != null)
 			{
 				// Plugin does not exist, so create it
-				pluginId = this.dataAccessLayer.addPlugin(plugin.getPluginName(), companyName, plugin.getVersion(), plugin.getRole(), plugin.getTags(), userToken, externalServices.toString(), serviceAliases, plugin.getDescription(), plugin.getIcon(), plugin.getPriority(), attributions);
-				newPluginId = pluginId;
-			}
-			else
-			{
-				this.dataAccessLayer.updatePluginData(pluginId, plugin.getRole(), externalServices.toString(), serviceAliases, plugin.getDescription(), plugin.getIcon(), plugin.getTags(), plugin.getPriority(), attributions);
-			}
-			
-			if(pluginId != null)
-			{
-				if(newPluginId != null)
-				{
-					pluginIdRollbackList.add(newPluginId);
-				}
+				pluginId = this.dataAccessLayer.addPlugin(plugin.getPluginName(), companyName, plugin.getVersion(), plugin.getRole(), plugin.getTags(), userToken, externalServices.toString(), serviceAliases, plugin.getDescription(), plugin.getIcon(), plugin.getPriority(), attributions, plugin.getPublic());
 				
-				if(!this.addMenuItem(plugin, pluginId, menuItemsCreated))
+				if(pluginId == null)
 				{
-					retval = false;
-					break;
-				}
-				
-				Pattern pageName = Pattern.compile("@page=[1-9|a-z|A-Z|\\.|_]*");
-				
-				for(PageDefinitionType page : plugin.getPageDefinition())
-				{
-					if(!this.addScripts(plugin, pluginId, page,  pageName, scriptsCreated) || 
-						!this.addHtml(pluginId, page, scriptsCreated) ||
-						!this.addDataCalls(pluginId, page, datacallsCreated))
-					{
-						retval = false;
-						break;
-					}
-				}
-				
-				if(retval && !this.addArt(plugin, pluginId, artCreated))
-				{
-					retval = false;
+					throw new Exception("Could not create new plugin");
 				}
 			}
 			else
 			{
-				// Do not return so we can roll back
-				retval = false;
+				if(!this.dataAccessLayer.updatePluginData(pluginId, plugin.getRole(), externalServices.toString(), serviceAliases, plugin.getDescription(), plugin.getIcon(), plugin.getTags(), plugin.getPriority(), attributions, plugin.getPublic()))
+				{
+					throw new Exception("Could not update plugin");
+				}
 			}
-			
-			if(!retval)
+				
+			if(!this.addMenuItem(plugin, pluginId))
 			{
-				break;
+				throw new Exception(String.format("Adding plugins failed for %s", plugin.getPluginName()));
 			}
+				
+			Pattern pageName = Pattern.compile("@page=[1-9|a-z|A-Z|\\.|_]*");
+				
+			for(PageDefinitionType page : plugin.getPageDefinition())
+			{
+				this.addScripts(plugin, pluginId, page,  pageName);
+				this.addHtml(pluginId, page);
+				this.addDataCalls(pluginId, page);
+			}
+				
+			this.addArt(plugin, pluginId);
 		}
 		
-		if(retval)
-		{
-			//
-			// Delete any previous plugins
-			//
-			for(Integer id : previousPlugins)
-			{
-				this.dataAccessLayer.deletePlugin(id);
-			}
-			
-			// delete previous menu items
-			for(Integer id : removeMenuOnCommit)
-			{
-				this.dataAccessLayer.deleteMenuItem(id);
-			}
-			
-			// delete previous scripts
-			for(Integer id : removeScriptOnCommit)
-			{
-				this.dataAccessLayer.deleteScript(id);
-			}
-			
-			// delete data calls
-			for(Integer id : removeDataCallOnCommit)
-			{
-				this.dataAccessLayer.deleteDataCall(id);
-			}
-			
-			// delete art
-			for(Integer id : removeArtOnCommit)
-			{
-				this.dataAccessLayer.deleteArt(id);
-			}
-		}
-		else
-		{
-			//
-			// Roll back changes
-			//
-			for(Integer id : pluginIdRollbackList)
-			{
-				this.dataAccessLayer.deletePlugin(id);
-			}
-			
-			for(Integer id : menuItemsCreated)
-			{
-				this.dataAccessLayer.deleteMenuItem(id);
-			}
-			
-			for(Integer id : scriptsCreated)
-			{
-				this.dataAccessLayer.deleteScript(id);
-			}
-			
-			for(Integer id : datacallsCreated)
-			{
-				this.dataAccessLayer.deleteDataCall(id);
-			}
-			
-			for(Integer id : artCreated)
-			{
-				this.dataAccessLayer.deleteArt(id);
-			}
-		}
-		
-		return retval;
+		return true;
 	}
 	
-	private void prepareForOldPluginCleanup(Integer previousPluginId, String userToken, List<Integer> previousPlugins, List<Integer> removeMenuOnCommit, List<Integer> removeScriptOnCommit, List<Integer> removeDataCallOnCommit, List<Integer> removeArtOnCommit)
+	private void deleteOldPluginCleanup(Integer previousPluginId, String userToken)
 	{
 		if(previousPluginId != null)
 		{
 			if(userToken != null)
 			{
 				// If we're developing then remove the plugin entirely
-				previousPlugins.add(previousPluginId);
+				this.dataAccessLayer.deletePlugin(previousPluginId);
 			}
 			else
 			{
@@ -289,7 +203,7 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 				{
 					for(MainMenuItem item : items)
 					{
-						removeMenuOnCommit.add(item.getId());
+						this.dataAccessLayer.deleteMenuItem(item.getId());
 					}
 				}
 				
@@ -298,7 +212,7 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 				{
 					for(PluginScript script : scripts)
 					{
-						removeScriptOnCommit.add(script.getId());
+						this.dataAccessLayer.deleteScript(script.getId());
 					}
 				}
 				
@@ -307,7 +221,7 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 				{
 					for(PluginDataCall call : calls)
 					{
-						removeDataCallOnCommit.add(call.getId());
+						this.dataAccessLayer.deleteDataCall(call.getId());
 					}
 				}
 				
@@ -316,7 +230,7 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 				{
 					for(PluginArt art : artItems)
 					{
-						removeArtOnCommit.add(art.getId());
+						this.dataAccessLayer.deleteArt(art.getId());
 					}
 				}
 			}
@@ -353,7 +267,7 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 		return retval;
 	}
 	
-	private boolean addMenuItem(PluginType plugin, int pluginId, List<Integer> menuItemsCreated)
+	private boolean addMenuItem(PluginType plugin, int pluginId) throws Exception
 	{
 		boolean retval = true;
 		if(plugin.getMainMenu() != null)
@@ -365,18 +279,15 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 				if(menuId == null)
 				{
 					// Do not return so we can roll back
-					retval = false;
-					break;
+					throw new Exception(String.format("Could not add in plugin (%s)", item.getDisplayName()));
 				}
-				
-				menuItemsCreated.add(menuId);
 			}
 		}
 		
 		return retval;
 	}
 	
-	private boolean addScripts(PluginType plugin, int pluginId, PageDefinitionType page, Pattern pageName, List<Integer> scriptsCreated)
+	private void addScripts(PluginType plugin, int pluginId, PageDefinitionType page, Pattern pageName) throws Exception
 	{
 		//
 		// Create script content
@@ -395,10 +306,8 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 			if(scriptId == null)
 			{
 				// Do not return so we can roll back
-				return false;
+				throw new Exception("Could not create script.");
 			}
-			
-			scriptsCreated.add(scriptId);
 		}
 		
 		//
@@ -418,16 +327,12 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 			if(scriptId == null)
 			{
 				// Do not return so we can roll back
-				return false;
+				throw new Exception("Could not create style");
 			}
-			
-			scriptsCreated.add(scriptId);
 		}
-		
-		return true;
 	}
 	
-	private boolean addHtml(Integer pluginId, PageDefinitionType page, List<Integer> scriptsCreated)
+	private void addHtml(Integer pluginId, PageDefinitionType page) throws Exception
 	{
 		//
 		// Create html content
@@ -439,16 +344,12 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 			if(htmlId == null)
 			{
 				// Do not return so we can roll back
-				return false;
+				throw new Exception("Could not add html");
 			}
-			
-			scriptsCreated.add(htmlId);
 		}
-		
-		return true;
 	}
 	
-	private boolean addDataCalls(Integer pluginId, PageDefinitionType page, List<Integer> datacallsCreated)
+	private void addDataCalls(Integer pluginId, PageDefinitionType page) throws Exception
 	{
 		if(page.getDatacall() != null)
 		{
@@ -464,17 +365,13 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 				if(datacallId == null)
 				{
 					// Do not return so we can roll back
-					return false;
+					throw new Exception(String.format("Could not add datacall %s", datacall.getUri()));
 				}
-				
-				datacallsCreated.add(datacallId);
 			}
 		}
-		
-		return true;
 	}
 	
-	private boolean addArt(PluginType plugin, int pluginId, List<Integer> artCreated)
+	private void addArt(PluginType plugin, int pluginId) throws Exception
 	{
 		if(plugin.getArt() != null)
 		{
@@ -495,13 +392,9 @@ public class DevelopmentDomain implements IDevelopmentDomain {
 				
 				if(imageId == null)
 				{
-					return false;
+					throw new Exception(String.format("Could not add image %s", image.getPath()));
 				}
-				
-				artCreated.add(imageId);
 			}
 		}
-		
-		return true;
 	}
 }

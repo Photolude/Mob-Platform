@@ -23,8 +23,10 @@ CREATE  TABLE IF NOT EXISTS `mob`.`plugin` (
   `priority` INT(11) NULL DEFAULT NULL ,
   `attributeBlob` TEXT NULL DEFAULT NULL ,
   `serviceCalls` TEXT NULL DEFAULT NULL ,
+  `public` BIT(1) NULL DEFAULT NULL ,
   PRIMARY KEY (`idplugin`) )
 ENGINE = InnoDB
+AUTO_INCREMENT = 11
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -35,7 +37,7 @@ CREATE  TABLE IF NOT EXISTS `mob`.`art` (
   `idart` INT(11) NOT NULL AUTO_INCREMENT ,
   `plugin_idplugin` INT(11) NOT NULL ,
   `path` VARCHAR(250) NOT NULL ,
-  `data` TEXT NOT NULL ,
+  `data` LONGTEXT NOT NULL ,
   `contentType` VARCHAR(250) NOT NULL ,
   PRIMARY KEY (`idart`) ,
   INDEX `art_plugin_fk` (`plugin_idplugin` ASC) ,
@@ -46,6 +48,7 @@ CREATE  TABLE IF NOT EXISTS `mob`.`art` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
+AUTO_INCREMENT = 297
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -98,6 +101,7 @@ CREATE  TABLE IF NOT EXISTS `mob`.`menu` (
   `defaultPriority` INT(11) NOT NULL ,
   PRIMARY KEY (`idmenu`) )
 ENGINE = InnoDB
+AUTO_INCREMENT = 56
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -126,7 +130,7 @@ DEFAULT CHARACTER SET = utf8;
 CREATE  TABLE IF NOT EXISTS `mob`.`script` (
   `idscript` INT(11) NOT NULL AUTO_INCREMENT ,
   `idplugin` INT(11) NOT NULL ,
-  `script` TEXT NOT NULL ,
+  `script` LONGTEXT NOT NULL ,
   `sortOrder` INT(11) NOT NULL DEFAULT '0' ,
   `type` VARCHAR(100) NOT NULL DEFAULT 'text/javascript' ,
   `pageName` VARCHAR(250) NOT NULL ,
@@ -134,6 +138,7 @@ CREATE  TABLE IF NOT EXISTS `mob`.`script` (
   PRIMARY KEY (`idscript`) ,
   INDEX `idplugin` (`idplugin` ASC) )
 ENGINE = InnoDB
+AUTO_INCREMENT = 510
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -177,7 +182,7 @@ CREATE  TABLE IF NOT EXISTS `mob`.`user_source` (
   PRIMARY KEY (`iduser_source`) ,
   UNIQUE INDEX `iduser_source_UNIQUE` (`iduser_source` ASC) )
 ENGINE = InnoDB
-AUTO_INCREMENT = 2
+AUTO_INCREMENT = 3
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -202,7 +207,7 @@ CREATE  TABLE IF NOT EXISTS `mob`.`user` (
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
-AUTO_INCREMENT = 3
+AUTO_INCREMENT = 4
 DEFAULT CHARACTER SET = utf8;
 
 
@@ -234,7 +239,7 @@ DEFAULT CHARACTER SET = utf8;
 
 DELIMITER $$
 USE `mob`$$
-CREATE PROCEDURE `addArt`(pluginId int, artPath varchar(250), artData TEXT, contentType varchar(250))
+CREATE PROCEDURE `addArt`(pluginId int, artPath varchar(250), artData longtext, contentType varchar(250))
 BEGIN
     insert into art (plugin_idplugin, path, data, contentType)
     values (pluginId, artPath, artData, contentType);
@@ -297,10 +302,10 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE PROCEDURE `addPlugin`(pluginName VARCHAR(250), pluginCompany VARCHAR(250), pluginVersion VARCHAR(250), pluginRole varchar(250), tags varchar(250), deployIdentity varchar(250), externalServices text, serviceCalls text, description text, icon text, priority int, attributeBlob text)
+CREATE PROCEDURE `addPlugin`(pluginName VARCHAR(250), pluginCompany VARCHAR(250), pluginVersion VARCHAR(250), pluginRole varchar(250), tags varchar(250), deployIdentity varchar(250), externalServices text, serviceCalls text, description text, icon text, priority int, attributeBlob text, isPublic bit)
 BEGIN
-    insert into plugin (name, company, version, role, deployIdentity, externalservices, serviceCalls, description, icon, tags, priority, attributeBlob) 
-    values (pluginName, pluginCompany, pluginVersion, pluginRole, deployIdentity, externalServices, serviceCalls, description, icon, tags, priority, attributeBlob);
+    insert into plugin (name, company, version, role, deployIdentity, externalservices, serviceCalls, description, icon, tags, priority, attributeBlob, public) 
+    values (pluginName, pluginCompany, pluginVersion, pluginRole, deployIdentity, externalServices, serviceCalls, description, icon, tags, priority, attributeBlob, isPublic);
     
     select last_insert_id();
 END$$
@@ -326,7 +331,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE PROCEDURE `addScript`(pluginid int, scriptOrder int, scriptData text, scriptType varchar(100), pageName varchar(250), scriptName varchar(250))
+CREATE PROCEDURE `addScript`(pluginid int, scriptOrder int, scriptData longtext, scriptType varchar(100), pageName varchar(250), scriptName varchar(250))
 BEGIN
     DECLARE itemid INT DEFAULT 1;
     
@@ -437,6 +442,8 @@ BEGIN
     delete from page_script 
     where idPair <> 0 and idscript in (Select script.idscript from script where script.idplugin = pluginid);
     
+    delete from user_plugin where plugin_idplugin = pluginid;
+    delete from art where plugin_idplugin = pluginid and idart > 0;
     delete from menu where plugin_idplugin = pluginid and idmenu > 0;
     delete from script where idplugin = pluginid and idscript > 0;
     delete from page where plugin_idplugin = pluginid and idpage > 0;
@@ -726,7 +733,7 @@ USE `mob`$$
 CREATE PROCEDURE `getPlugins`(userTempId varchar(250))
 BEGIN
     Select * from (
-    Select * from plugin where deployIdentity is null
+    Select * from plugin where deployIdentity is null and public = 1
     union
     Select * from plugin where deployIdentity = userTempId
     ) A
@@ -786,15 +793,15 @@ CREATE PROCEDURE `getUserMenuItems`(userStaticId bigint)
 BEGIN
     Select * from
     (
-    Select menu.* from menu, user_plugin
-    where menu.plugin_idplugin = user_plugin.plugin_idplugin
-    and user_plugin.user_staticId = userStaticId
-    union
     Select menu.* from menu, user, plugin
     where plugin.deployIdentity = user.temporaryId
     and user.temporaryId is not null
     and menu.plugin_idplugin = plugin.idplugin
     and user.staticId = userStaticId
+    union all
+    Select menu.* from menu, user_plugin
+    where menu.plugin_idplugin = user_plugin.plugin_idplugin
+    and user_plugin.user_staticId = userStaticId
     ) A
     order by defaultPriority desc;
 END$$
@@ -868,7 +875,7 @@ DELIMITER ;
 
 DELIMITER $$
 USE `mob`$$
-CREATE PROCEDURE `updatePlugin`(pluginId int(11), role varchar(250), externalServices TEXT, serviceCalls text, description TEXT, icon text, tags varchar(250), priority int, attributeBlob text)
+CREATE PROCEDURE `updatePlugin`(pluginId int(11), role varchar(250), externalServices TEXT, serviceCalls text, description TEXT, icon text, tags varchar(250), priority int, attributeBlob text, isPublic bit)
 BEGIN
     update plugin
     set plugin.role = role,
@@ -878,7 +885,8 @@ BEGIN
     plugin.tags = tags,
     plugin.priority = priority,
     plugin.attributeBlob = attributeBlob,
-    plugin.serviceCalls = serviceCalls
+    plugin.serviceCalls = serviceCalls,
+    plugin.public = isPublic
     where idplugin = pluginId;
 END$$
 

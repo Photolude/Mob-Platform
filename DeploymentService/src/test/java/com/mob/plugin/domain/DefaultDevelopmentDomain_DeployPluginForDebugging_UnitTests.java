@@ -17,6 +17,8 @@ import com.mob.plugin.dal.IPluginDeploymentAccessLayer;
 import com.mob.plugin.domain.DevelopmentDomain;
 
 import org.mockito.Mockito;
+
+import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.*;
 
 @RunWith(Parameterized.class)
@@ -126,13 +128,13 @@ public class DefaultDevelopmentDomain_DeployPluginForDebugging_UnitTests {
 		}
 		
 		this.dal = mock(IPluginDeploymentAccessLayer.class);
-		Mockito.when(this.dal.addPlugin(any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(ServiceAlias[].class), any(String.class), any(String.class), anyInt(), any(ExternalAttribution[].class))).thenReturn(1);
-		Mockito.when(this.dal.addScript(anyInt(), anyInt(), any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(2);
-		Mockito.when(this.dal.getCompanyName(any(String.class))).thenReturn("Company X");
-		Mockito.when(this.dal.getPluginByCompanyNameVersionToken(any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(previousId);
-		Mockito.when(this.dal.addMenuItem(anyInt(), any(String.class), any(String.class), any(String.class), anyInt())).thenReturn(menuId);
-		Mockito.when(this.dal.addDataCall(anyInt(), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(datacallId);
-		Mockito.when(this.dal.addArt(anyInt(), any(String.class), any(String.class), any(String.class))).thenReturn(1);
+		Mockito.when(this.dal.addPlugin(anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString(), any(ServiceAlias[].class), anyString(), anyString(), anyInt(), any(ExternalAttribution[].class), anyBoolean())).thenReturn(1);
+		Mockito.when(this.dal.addScript(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(2);
+		Mockito.when(this.dal.getCompanyName(anyString())).thenReturn("Company X");
+		Mockito.when(this.dal.getPluginByCompanyNameVersionToken(anyString(), anyString(), anyString(), anyString())).thenReturn(previousId);
+		Mockito.when(this.dal.addMenuItem(anyInt(), anyString(), anyString(), anyString(), anyInt())).thenReturn(menuId);
+		Mockito.when(this.dal.addDataCall(anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString())).thenReturn(datacallId);
+		Mockito.when(this.dal.addArt(anyInt(), anyString(), anyString(), anyString())).thenReturn(1);
 		this.domain.setDataAccessLayer(this.dal);
 	}
 	

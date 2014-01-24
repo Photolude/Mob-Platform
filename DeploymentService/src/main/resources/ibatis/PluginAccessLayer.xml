@@ -29,6 +29,13 @@
 	    <result property="data" column="data"/>
 	    <result property="id" column="idart"/>
 	</resultMap>
+	<resultMap id="menuItem" class="com.mob.commons.plugins.servicemodel.MainMenuItem">
+		<result property="displayName" column="displayName" />
+		<result property="id" column="idmenu" />
+		<result property="iconData" column="icon" />
+		<result property="priority" column="defaultPriority" />
+		<result property="target" column="reference" />
+	</resultMap>
   
   	<select id="canConnect" resultClass="Integer">
     	Select 1;
@@ -47,9 +54,10 @@
       <parameter property="icon"/>
       <parameter property="priority"/>
       <parameter property="attributions"/>
+      <parameter property="isPublic"/>
   </parameterMap>
   <procedure id="addPlugin" parameterMap="addPluginParams" resultClass="int">
-      {call addPlugin(?,?,?,?,?,?,?,?,?,?,?,?)}
+      {call addPlugin(?,?,?,?,?,?,?,?,?,?,?,?,?)}
   </procedure>
 
     <parameterMap class="java.util.Map" id="deletePluginParams">
@@ -69,9 +77,10 @@
       <parameter property="tags"/>
       <parameter property="priority"/>
       <parameter property="attributions"/>
+      <parameter property="isPublic"/>
   </parameterMap>
   <procedure id="updatePlugin" parameterMap="updatePluginParams">
-      {call updatePlugin(?,?,?,?,?,?,?,?,?)}
+      {call updatePlugin(?,?,?,?,?,?,?,?,?,?)}
   </procedure>
   
   <parameterMap class="java.util.Map" id="addScriptParams">
@@ -128,7 +137,7 @@
   <parameterMap class="java.util.Map" id="getPluginMenuItemsParams">
       <parameter property="pluginId"/>
   </parameterMap>
-  <procedure id="getPluginMenuItems" parameterMap="getPluginMenuItemsParams" resultClass="com.mob.commons.plugins.servicemodel.MainMenuItem">
+  <procedure id="getPluginMenuItems" parameterMap="getPluginMenuItemsParams" resultMap="menuItem">
       { call getPluginMenuItems(?) }
   </procedure>
   
